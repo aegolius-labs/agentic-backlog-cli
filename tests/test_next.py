@@ -1,12 +1,14 @@
 """Tests for the next command."""
+
 import json
 import os
 import sys
+
 import pytest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from aio_agentic_sdlc.cli import load_backlog, save_backlog
+from aio_agentic_sdlc.cli import save_backlog
 
 
 @pytest.fixture(autouse=True)
@@ -34,10 +36,11 @@ def _save(items_dict):
 
 
 def _run_next(format="json"):
-    from aio_agentic_sdlc.cli import next_cmd
     import argparse
     from io import StringIO
-    
+
+    from aio_agentic_sdlc.cli import next_cmd
+
     old_stdout = sys.stdout
     sys.stdout = StringIO()
     try:
@@ -45,7 +48,7 @@ def _run_next(format="json"):
         output = sys.stdout.getvalue()
     finally:
         sys.stdout = old_stdout
-        
+
     if format == "json":
         return json.loads(output)
     return output
@@ -65,19 +68,23 @@ class TestNextCmd:
         assert "warning" not in result
 
     def test_next_skips_completed(self):
-        _save({
-            "alpha": _make_item(5, 1, status="Completed"),
-            "beta": _make_item(3, 3),
-        })
+        _save(
+            {
+                "alpha": _make_item(5, 1, status="Completed"),
+                "beta": _make_item(3, 3),
+            }
+        )
         result = _run_next()
         assert result["target"]["name"] == "beta"
         assert "warning" not in result  # Only warn for blockers, not normal completion
 
     def test_next_skips_blocked(self):
-        _save({
-            "alpha": _make_item(5, 1, status="Blocked", blockers=["API down"]),
-            "beta": _make_item(3, 3),
-        })
+        _save(
+            {
+                "alpha": _make_item(5, 1, status="Blocked", blockers=["API down"]),
+                "beta": _make_item(3, 3),
+            }
+        )
         result = _run_next()
         assert result["target"]["name"] == "beta"
         assert "warning" in result
@@ -85,10 +92,12 @@ class TestNextCmd:
         assert "API down" in result["warning"]
 
     def test_next_all_unworkable(self):
-        _save({
-            "alpha": _make_item(5, 1, status="Completed"),
-            "beta": _make_item(3, 3, status="Blocked", blockers=["wait"]),
-        })
+        _save(
+            {
+                "alpha": _make_item(5, 1, status="Completed"),
+                "beta": _make_item(3, 3, status="Blocked", blockers=["wait"]),
+            }
+        )
         result = _run_next()
         assert result["target"] is None
         assert "No workable items remain" in result["warning"]

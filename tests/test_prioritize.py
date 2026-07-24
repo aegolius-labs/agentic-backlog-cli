@@ -1,13 +1,14 @@
 """Tests for the topological sorting and scoring engine in prioritize_cmd."""
-import json
+
 import os
 import sys
+
 import pytest
 
 # Ensure the source package is importable
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from aio_agentic_sdlc.cli import load_backlog, save_backlog, BACKLOG_FILE
+from aio_agentic_sdlc.cli import load_backlog, save_backlog
 
 
 @pytest.fixture(autouse=True)
@@ -17,6 +18,7 @@ def clean_backlog(tmp_path, monkeypatch):
 
 
 # ── helpers ──────────────────────────────────────────────────────────────────
+
 
 def _make_item(impact, effort, requires=None, **extra):
     item = {
@@ -33,8 +35,10 @@ def _make_item(impact, effort, requires=None, **extra):
 
 def _run_prioritize():
     """Import and call prioritize_cmd programmatically."""
-    from aio_agentic_sdlc.cli import prioritize_cmd
     import argparse
+
+    from aio_agentic_sdlc.cli import prioritize_cmd
+
     prioritize_cmd(argparse.Namespace())
 
 
@@ -45,8 +49,12 @@ def _load():
     items = {}
     for name, node in nodes.items():
         item = node.copy()
-        item["requires"] = [e["to"] for e in edges if e["from"] == name and e["relation"] == "requires"]
-        parent_edges = [e["to"] for e in edges if e["from"] == name and e["relation"] == "parent"]
+        item["requires"] = [
+            e["to"] for e in edges if e["from"] == name and e["relation"] == "requires"
+        ]
+        parent_edges = [
+            e["to"] for e in edges if e["from"] == name and e["relation"] == "parent"
+        ]
         item["parent_id"] = parent_edges[0] if parent_edges else None
         items[name] = item
     return {"items": items}
@@ -72,6 +80,7 @@ def _save(items_dict):
 
 # ── tests ────────────────────────────────────────────────────────────────────
 
+
 class TestSingleItem:
     def test_single_item_scores(self):
         _save({"alpha": _make_item(impact=5, effort=2)})
@@ -87,11 +96,13 @@ class TestLinearChain:
     """A → B → C  (C requires B, B requires A)."""
 
     def test_order_and_scores(self):
-        _save({
-            "A": _make_item(3, 3),
-            "B": _make_item(4, 2, requires=["A"]),
-            "C": _make_item(5, 1, requires=["B"]),
-        })
+        _save(
+            {
+                "A": _make_item(3, 3),
+                "B": _make_item(4, 2, requires=["A"]),
+                "C": _make_item(5, 1, requires=["B"]),
+            }
+        )
         _run_prioritize()
         data = _load()
         keys = list(data["items"].keys())
@@ -110,12 +121,14 @@ class TestDiamondDependency:
     """
 
     def test_diamond(self):
-        _save({
-            "A": _make_item(2, 2),
-            "B": _make_item(3, 3, requires=["A"]),
-            "C": _make_item(3, 3, requires=["A"]),
-            "D": _make_item(4, 1, requires=["B", "C"]),
-        })
+        _save(
+            {
+                "A": _make_item(2, 2),
+                "B": _make_item(3, 3, requires=["A"]),
+                "C": _make_item(3, 3, requires=["A"]),
+                "D": _make_item(4, 1, requires=["B", "C"]),
+            }
+        )
         _run_prioritize()
         data = _load()
         keys = list(data["items"].keys())
@@ -127,9 +140,11 @@ class TestDiamondDependency:
 
 class TestCircularDependency:
     def test_circular_raises(self):
-        _save({
-            "X": _make_item(3, 3, requires=["Y"]),
-            "Y": _make_item(3, 3, requires=["X"]),
-        })
+        _save(
+            {
+                "X": _make_item(3, 3, requires=["Y"]),
+                "Y": _make_item(3, 3, requires=["X"]),
+            }
+        )
         with pytest.raises(SystemExit):
             _run_prioritize()

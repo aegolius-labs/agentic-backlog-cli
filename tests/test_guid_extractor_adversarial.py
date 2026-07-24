@@ -1,21 +1,25 @@
 import os
 import tempfile
+
 import pytest
-from aio_agentic_sdlc.reality_dag_generator import RealityDAGGenerator
-from aio_agentic_sdlc.dag_models import NodeType
 from pydantic import ValidationError
+
+from aio_agentic_sdlc.reality_dag_generator import RealityDAGGenerator
+
 
 def test_python_malformed_hex_uuid_crash():
     with tempfile.TemporaryDirectory() as tmpdir:
         file_content = "# aio-sdlc-node: abcdef1234\ndef foo(): pass\n"
         with open(os.path.join(tmpdir, "main.py"), "w", encoding="utf-8") as f:
             f.write(file_content)
-        
+
         generator = RealityDAGGenerator(root_dir=tmpdir, system_name="TestSystem")
         try:
-            dag = generator.generate()
+            generator.generate()
         except ValidationError:
-            pytest.fail("RealityDAGGenerator crashed on malformed UUID due to strict validation!")
+            pytest.fail(
+                "RealityDAGGenerator crashed on malformed UUID due to strict validation!"
+            )
 
 
 def test_markdown_invalid_uuid_crash():
@@ -34,7 +38,7 @@ metadata:
 
         generator = RealityDAGGenerator(root_dir=tmpdir, system_name="TestSystem")
         try:
-            dag = generator.generate()
+            generator.generate()
         except ValidationError:
             pytest.fail("RealityDAGGenerator crashed on malformed UUID in markdown!")
 
@@ -55,6 +59,6 @@ metadata:
 
         generator = RealityDAGGenerator(root_dir=tmpdir, system_name="TestSystem")
         try:
-            dag = generator.generate()
+            generator.generate()
         except AttributeError:
             pytest.fail("RealityDAGGenerator crashed on integer UUID in markdown!")

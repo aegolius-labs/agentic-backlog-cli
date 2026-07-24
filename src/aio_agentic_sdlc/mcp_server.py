@@ -1,37 +1,53 @@
-import sys
-import os
 import json
+import os
+
 from mcp.server.fastmcp import FastMCP
 from pydantic import Field
 
 from .core import (
-    add_item, update_item, set_status, add_blocker, remove_blocker, remove_item,
-    prioritize_items, get_next_item, load_backlog, VALID_STATUSES
+    VALID_STATUSES,
+    add_blocker,
+    add_item,
+    get_next_item,
+    load_backlog,
+    prioritize_items,
+    remove_item,
+    set_status,
+    update_item,
 )
-from .templating_engine import generate_document as generate_document_from_template
 from .dag_manager import DAGManager
 from .dag_models import Node, NodeType
 from .intent_ir import IntentIR
 from .intent_store import create_intent_node_file, update_intent_file
-
+from .templating_engine import generate_document as generate_document_from_template
 
 # Create the MCP server instance
 mcp = FastMCP("Agentic Backlog")
+
 
 @mcp.resource("backlog://current")
 def read_current_backlog() -> str:
     """Read the complete prioritized project backlog as JSON from the current working directory."""
     data = load_backlog()
     return json.dumps(data, indent=2)
+
+
 @mcp.resource("backlog://hierarchy-rules")
 def read_hierarchy_rules() -> str:
     """Read the validation mode and graph hierarchy rules."""
     from .config import load_config
+
     config = load_config(".")
-    return json.dumps({
-        "hierarchy": config.get("hierarchy", {"1": ["Epic"], "2": ["Feature"], "3": ["Task", "Bug"]}),
-        "validation_mode": config.get("core", {}).get("validation_mode", "flex")
-    }, indent=2)
+    return json.dumps(
+        {
+            "hierarchy": config.get(
+                "hierarchy", {"1": ["Epic"], "2": ["Feature"], "3": ["Task", "Bug"]}
+            ),
+            "validation_mode": config.get("core", {}).get("validation_mode", "flex"),
+        },
+        indent=2,
+    )
+
 
 @mcp.prompt("pick-next-task")
 def pick_next_task_prompt() -> str:
@@ -41,13 +57,17 @@ def pick_next_task_prompt() -> str:
         "identify the highest priority workable task, and execute it."
     )
 
+
 @mcp.tool()
-def get_next_task(project_path: str = Field(".", description="Absolute path to the project directory")) -> str:
+def get_next_task(
+    project_path: str = Field(".", description="Absolute path to the project directory")
+) -> str:
     """Find and return the highest-priority workable task from the backlog."""
     target_data, warning = get_next_item(project_path)
     if not target_data:
         return f"Warning: {warning}"
     return json.dumps({"target": target_data, "warning": warning}, indent=2)
+
 
 @mcp.tool()
 def add_task(
@@ -56,20 +76,34 @@ def add_task(
     effort: int = Field(..., description="Effort score from 1-5 (1=Easy, 5=Hard)"),
     category: str = Field(..., description="Category (e.g. Core, Feature, Bug)"),
     description: str = Field(..., description="Detailed task description"),
-    requires: str = Field("", description="Comma-separated list of required task names"),
+    requires: str = Field(
+        "", description="Comma-separated list of required task names"
+    ),
     status: str = Field("New", description="Initial status"),
-    project_path: str = Field(".", description="Absolute path to the project directory"),
-    item_type: str = Field("Task", description="Type of the item based on hierarchy rules"),
-    parent_id: str = Field(None, description="Parent item ID if applicable")
+    project_path: str = Field(
+        ".", description="Absolute path to the project directory"
+    ),
+    item_type: str = Field(
+        "Task", description="Type of the item based on hierarchy rules"
+    ),
+    parent_id: str = Field(None, description="Parent item ID if applicable"),
 ) -> str:
     """Add a new task to the project backlog."""
     if status not in VALID_STATUSES:
         return f"Error: Status must be one of {VALID_STATUSES}"
     try:
         warnings = add_item(
-            name=name, impact=impact, effort=effort, category=category,
-            description=description, requires=requires, ai_driven=True, status=status,
-            project_path=project_path, item_type=item_type, parent_id=parent_id
+            name=name,
+            impact=impact,
+            effort=effort,
+            category=category,
+            description=description,
+            requires=requires,
+            ai_driven=True,
+            status=status,
+            project_path=project_path,
+            item_type=item_type,
+            parent_id=parent_id,
         )
         msg = f"Task '{name}' added successfully."
         if warnings:
@@ -78,6 +112,7 @@ def add_task(
     except Exception as e:
         return f"Error: {str(e)}"
 
+
 @mcp.tool()
 def update_task(
     name: str = Field(..., description="The name of the task to update"),
@@ -85,20 +120,35 @@ def update_task(
     effort: int = Field(None, description="Effort score from 1-5 (1=Easy, 5=Hard)"),
     category: str = Field(None, description="Category (e.g. Core, Feature, Bug)"),
     description: str = Field(None, description="Detailed task description"),
-    requires: str = Field(None, description="Comma-separated list of required task names"),
+    requires: str = Field(
+        None, description="Comma-separated list of required task names"
+    ),
     status: str = Field(None, description="Status"),
-    project_path: str = Field(".", description="Absolute path to the project directory"),
-    item_type: str = Field(None, description="Type of the item based on hierarchy rules"),
-    parent_id: str = Field(None, description="Parent item ID if applicable")
+    project_path: str = Field(
+        ".", description="Absolute path to the project directory"
+    ),
+    item_type: str = Field(
+        None, description="Type of the item based on hierarchy rules"
+    ),
+    parent_id: str = Field(None, description="Parent item ID if applicable"),
 ) -> str:
     """Update an existing task in the project backlog."""
     if status is not None and status not in VALID_STATUSES:
         return f"Error: Status must be one of {VALID_STATUSES}"
     try:
         warnings = update_item(
-            name=name, impact=impact, effort=effort, category=category,
-            description=description, requires=requires, ai_driven=None, status=status,
-            blockers=None, project_path=project_path, item_type=item_type, parent_id=parent_id
+            name=name,
+            impact=impact,
+            effort=effort,
+            category=category,
+            description=description,
+            requires=requires,
+            ai_driven=None,
+            status=status,
+            blockers=None,
+            project_path=project_path,
+            item_type=item_type,
+            parent_id=parent_id,
         )
         msg = f"Task '{name}' updated successfully."
         if warnings:
@@ -107,11 +157,16 @@ def update_task(
     except Exception as e:
         return f"Error: {str(e)}"
 
+
 @mcp.tool()
 def update_task_status(
-    name: str = Field(..., description="Task name"), 
-    new_status: str = Field(..., description="New status ('New', 'In Progress', 'Completed', 'Blocked')"),
-    project_path: str = Field(".", description="Absolute path to the project directory")
+    name: str = Field(..., description="Task name"),
+    new_status: str = Field(
+        ..., description="New status ('New', 'In Progress', 'Completed', 'Blocked')"
+    ),
+    project_path: str = Field(
+        ".", description="Absolute path to the project directory"
+    ),
 ) -> str:
     """Quickly update the status of an existing task."""
     if new_status not in VALID_STATUSES:
@@ -122,10 +177,13 @@ def update_task_status(
     except Exception as e:
         return f"Error: {str(e)}"
 
+
 @mcp.tool()
 def remove_task(
     name: str = Field(..., description="Task name"),
-    project_path: str = Field(".", description="Absolute path to the project directory")
+    project_path: str = Field(
+        ".", description="Absolute path to the project directory"
+    ),
 ) -> str:
     """Remove a task entirely from the backlog."""
     try:
@@ -134,8 +192,11 @@ def remove_task(
     except Exception as e:
         return f"Error: {str(e)}"
 
+
 @mcp.tool()
-def prioritize_backlog(project_path: str = Field(".", description="Absolute path to the project directory")) -> str:
+def prioritize_backlog(
+    project_path: str = Field(".", description="Absolute path to the project directory")
+) -> str:
     """Force an immediate topological sort and priority re-calculation of the backlog."""
     try:
         if prioritize_items(project_path):
@@ -144,11 +205,14 @@ def prioritize_backlog(project_path: str = Field(".", description="Absolute path
     except Exception as e:
         return f"Error: {str(e)}"
 
+
 @mcp.tool()
 def block_task(
-    name: str = Field(..., description="Task name"), 
+    name: str = Field(..., description="Task name"),
     reason: str = Field(..., description="Why is it blocked?"),
-    project_path: str = Field(".", description="Absolute path to the project directory")
+    project_path: str = Field(
+        ".", description="Absolute path to the project directory"
+    ),
 ) -> str:
     """Add a blocker to a task, preventing it from being worked on."""
     try:
@@ -157,38 +221,53 @@ def block_task(
     except Exception as e:
         return f"Error: {str(e)}"
 
+
 @mcp.tool()
 def generate_document(
-    template_name: str = Field(..., description="Name of the template file (e.g. prd_template.md)"),
-    data_json: str = Field(..., description="JSON string containing the data to populate the template"),
+    template_name: str = Field(
+        ..., description="Name of the template file (e.g. prd_template.md)"
+    ),
+    data_json: str = Field(
+        ..., description="JSON string containing the data to populate the template"
+    ),
     output_filename: str = Field(..., description="Name of the output file"),
-    target_dir: str = Field(".", description="Directory where the document will be saved"),
-    project_path: str = Field(".", description="Absolute path to the project directory"),
+    target_dir: str = Field(
+        ".", description="Directory where the document will be saved"
+    ),
+    project_path: str = Field(
+        ".", description="Absolute path to the project directory"
+    ),
 ) -> str:
     """Generate a document from a template using the provided data."""
     try:
         data = json.loads(data_json)
         if not isinstance(project_path, str):
             project_path = "."
-        
+
         project_root = os.path.abspath(project_path)
         abs_target = os.path.abspath(
-            target_dir if os.path.isabs(target_dir) else os.path.join(project_root, target_dir)
+            target_dir
+            if os.path.isabs(target_dir)
+            else os.path.join(project_root, target_dir)
         )
 
         if os.path.commonpath([project_root, abs_target]) != project_root:
-            return f"Error generating document: target_dir resolves outside of the project root."
+            return "Error generating document: target_dir resolves outside of the project root."
 
         output_path = os.path.abspath(os.path.join(abs_target, output_filename))
-        
+
         if os.path.commonpath([abs_target, output_path]) != abs_target:
-            return f"Error generating document: output_filename resolves outside of target_dir."
-            
+            return "Error generating document: output_filename resolves outside of target_dir."
+
         # Security: Prevent overwriting internal/sensitive folders
-        rel_output = os.path.relpath(output_path, project_root).replace('\\', '/')
-        if rel_output.startswith('.agents/') or rel_output.startswith('src/') or rel_output.startswith('.git/'):
-            return f"Error generating document: Cannot generate documents inside protected directories (.agents, src, .git)."
-            
+        rel_output = os.path.relpath(output_path, project_root).replace("\\", "/")
+        if (
+            rel_output.startswith(".agents/")
+            or rel_output.startswith("src/")
+            or rel_output.startswith(".git/")
+        ):
+            return "Error generating document: Cannot generate documents inside protected directories (.agents, src, .git)."
+
         generate_document_from_template(
             template_name,
             data,
@@ -199,38 +278,60 @@ def generate_document(
     except Exception as e:
         return f"Error generating document: {str(e)}"
 
+
 @mcp.tool()
 def check_duplicate_prd(
-    proposed_content: str = Field(..., description="The content of the proposed PRD to check for duplicates"),
-    project_path: str = Field(".", description="Absolute path to the project directory"),
-    similarity_threshold: float = Field(0.2, description="Cosine distance threshold (lower = more strict similarity, 0.2 means 80% similar)")
+    proposed_content: str = Field(
+        ..., description="The content of the proposed PRD to check for duplicates"
+    ),
+    project_path: str = Field(
+        ".", description="Absolute path to the project directory"
+    ),
+    similarity_threshold: float = Field(
+        0.2,
+        description="Cosine distance threshold (lower = more strict similarity, 0.2 means 80% similar)",
+    ),
 ) -> str:
     """Check if the proposed PRD content is semantically similar to any existing PRDs in specs/."""
     try:
         from .semantic_dedup import find_duplicate_prds
-        results = find_duplicate_prds(proposed_content, project_path, similarity_threshold)
+
+        results = find_duplicate_prds(
+            proposed_content, project_path, similarity_threshold
+        )
         if not results:
             return "No duplicates found."
-        
+
         output = "Potential duplicates found:\n"
         for res in results:
-            output += f"- {res['filepath']} (Similarity: {res['similarity_score']:.2f})\n"
+            output += (
+                f"- {res['filepath']} (Similarity: {res['similarity_score']:.2f})\n"
+            )
         return output
     except ImportError:
         return "Error: Semantic search dependencies not installed. Ensure sentence-transformers and sqlite-vec are available."
     except Exception as e:
         return f"Error checking for duplicates: {str(e)}"
 
+
 @mcp.tool()
-def validate_traceability(project_path: str = Field(".", description="Absolute path to the project directory")) -> str:
+def validate_traceability(
+    project_path: str = Field(".", description="Absolute path to the project directory")
+) -> str:
     """Validate that the specs/ directory aligns with the mathematical DAGs via GUID frontmatter."""
     try:
         from .core import TraceabilityValidator
+
         intention_path = os.path.join(project_path, "intention-dag.yaml")
         reality_path = os.path.join(project_path, "reality-dag.yaml")
         specs_dir = os.path.join(project_path, "specs")
         code_dir = os.path.join(project_path, "src")
-        validator = TraceabilityValidator(intention_path=intention_path, reality_path=reality_path, specs_dir=specs_dir, code_dir=code_dir)
+        validator = TraceabilityValidator(
+            intention_path=intention_path,
+            reality_path=reality_path,
+            specs_dir=specs_dir,
+            code_dir=code_dir,
+        )
         errors = validator.validate()
         if not errors:
             return "Traceability validation passed. No drift detected."
@@ -242,13 +343,21 @@ def validate_traceability(project_path: str = Field(".", description="Absolute p
 @mcp.tool()
 def set_intent(
     node_id: str = Field(..., description="Canonical Intention DAG node GUID"),
-    payload_json: str = Field(..., description="Complete JSON-encoded Intent IR v1 payload"),
-    expected_revision: int = Field(..., ge=0, description="Current revision, or zero for creation"),
-    project_path: str = Field(".", description="Absolute path to the project directory"),
+    payload_json: str = Field(
+        ..., description="Complete JSON-encoded Intent IR v1 payload"
+    ),
+    expected_revision: int = Field(
+        ..., ge=0, description="Current revision, or zero for creation"
+    ),
+    project_path: str = Field(
+        ".", description="Absolute path to the project directory"
+    ),
 ) -> str:
     """Create or revise one Intent IR payload with optimistic revision protection."""
     try:
-        intention_path = os.path.join(os.path.abspath(project_path), "intention-dag.yaml")
+        intention_path = os.path.join(
+            os.path.abspath(project_path), "intention-dag.yaml"
+        )
         intent = IntentIR.model_validate(json.loads(payload_json))
         revision = update_intent_file(
             intention_path,
@@ -266,14 +375,20 @@ def create_intent_node(
     node_id: str = Field(..., description="Canonical Intention DAG node GUID"),
     node_type: str = Field(..., description="Canonical DAG node type"),
     name: str = Field(..., description="Human-readable node name"),
-    payload_json: str = Field(..., description="Initial JSON-encoded Intent IR v1 payload"),
+    payload_json: str = Field(
+        ..., description="Initial JSON-encoded Intent IR v1 payload"
+    ),
     domain: str = Field(None, description="Optional architectural domain"),
     description: str = Field(None, description="Optional node description"),
-    project_path: str = Field(".", description="Absolute path to the project directory"),
+    project_path: str = Field(
+        ".", description="Absolute path to the project directory"
+    ),
 ) -> str:
     """Atomically create a canonical node with its initial Intent IR payload."""
     try:
-        intention_path = os.path.join(os.path.abspath(project_path), "intention-dag.yaml")
+        intention_path = os.path.join(
+            os.path.abspath(project_path), "intention-dag.yaml"
+        )
         node = Node(
             id=node_id,
             type=NodeType(node_type),
@@ -290,12 +405,16 @@ def create_intent_node(
 
 @mcp.tool()
 def validate_intent(
-    project_path: str = Field(".", description="Absolute path to the project directory"),
+    project_path: str = Field(
+        ".", description="Absolute path to the project directory"
+    ),
     require_all: bool = Field(True, description="Require Intent IR on every node"),
 ) -> str:
     """Validate Intent IR payloads and coverage in the canonical Intention DAG."""
     try:
-        intention_path = os.path.join(os.path.abspath(project_path), "intention-dag.yaml")
+        intention_path = os.path.join(
+            os.path.abspath(project_path), "intention-dag.yaml"
+        )
         manager = DAGManager.load(intention_path)
         manager.validate_intent_ir(require_all=require_all)
         return "Intent IR validation passed."
@@ -305,51 +424,82 @@ def validate_intent(
 
 @mcp.tool()
 def review_intent(
-    project_path: str = Field(".", description="Absolute path to the project directory"),
+    project_path: str = Field(
+        ".", description="Absolute path to the project directory"
+    ),
     node_id: str = Field(None, description="Optional node GUID to review"),
 ) -> str:
     """Render a human-readable review of canonical Intent IR payloads."""
     try:
-        intention_path = os.path.join(os.path.abspath(project_path), "intention-dag.yaml")
+        intention_path = os.path.join(
+            os.path.abspath(project_path), "intention-dag.yaml"
+        )
         return DAGManager.load(intention_path).render_intent_summary(node_id=node_id)
     except Exception as e:
         return f"Error reviewing Intent IR: {str(e)}"
 
+
 @mcp.tool()
 def promote_spec(
-    feature_name: str = Field(..., description="The name of the feature spec file (e.g. feature-123.md)"),
-    project_path: str = Field(".", description="Absolute path to the project directory")
+    feature_name: str = Field(
+        ..., description="The name of the feature spec file (e.g. feature-123.md)"
+    ),
+    project_path: str = Field(
+        ".", description="Absolute path to the project directory"
+    ),
 ) -> str:
     """Move a validated micro-spec from changes/ to the canonical specs/ directory."""
     try:
         import shutil
+
         changes_dir = os.path.join(project_path, "changes")
         specs_dir = os.path.join(project_path, "specs")
         os.makedirs(specs_dir, exist_ok=True)
-        
+
         src_path = os.path.join(changes_dir, feature_name)
         dst_path = os.path.join(specs_dir, feature_name)
-        
+
         if not os.path.exists(src_path):
             return f"Error: Spec '{feature_name}' not found in changes/ directory."
-            
+
         shutil.move(src_path, dst_path)
         return f"Successfully promoted spec '{feature_name}' to specs/."
     except Exception as e:
         return f"Error promoting spec: {str(e)}"
 
+
 @mcp.tool()
 def generate_reality(
-    project_path: str = Field(".", description="Absolute path to the project directory"),
-    output: str = Field("reality-dag.yaml", description="Output filename for the Reality DAG"),
-    system: str = Field("system_root", description="System root context for DAG generation")
+    project_path: str = Field(
+        ".", description="Absolute path to the project directory"
+    ),
+    output: str = Field(
+        "reality-dag.yaml", description="Output filename for the Reality DAG"
+    ),
+    system: str = Field(
+        "system_root", description="System root context for DAG generation"
+    ),
 ) -> str:
     """Scan the codebase and update the Reality DAG via dag-tool."""
     import subprocess
+
     try:
         result = subprocess.run(
-            ["uv", "run", "dag-tool", "generate-reality", "--dir", project_path, "--output", output, "--system", system],
-            cwd=project_path, capture_output=True, text=True
+            [
+                "uv",
+                "run",
+                "dag-tool",
+                "generate-reality",
+                "--dir",
+                project_path,
+                "--output",
+                output,
+                "--system",
+                system,
+            ],
+            cwd=project_path,
+            capture_output=True,
+            text=True,
         )
         if result.returncode == 0:
             return f"Reality DAG successfully generated at {output}.\n{result.stdout}"
@@ -362,5 +512,6 @@ def generate_reality(
 def main():
     mcp.run()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

@@ -1,13 +1,16 @@
 """Tests for the status tracking feature."""
-import json
+
 import os
 import sys
+
 import pytest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from aio_agentic_sdlc.cli import (
-    load_backlog, save_backlog, BACKLOG_FILE, VALID_STATUSES, _get_status,
+    _get_status,
+    load_backlog,
+    save_backlog,
 )
 
 
@@ -37,8 +40,12 @@ def _load():
     items = {}
     for name, node in nodes.items():
         item = node.copy()
-        item["requires"] = [e["to"] for e in edges if e["from"] == name and e["relation"] == "requires"]
-        parent_edges = [e["to"] for e in edges if e["from"] == name and e["relation"] == "parent"]
+        item["requires"] = [
+            e["to"] for e in edges if e["from"] == name and e["relation"] == "requires"
+        ]
+        parent_edges = [
+            e["to"] for e in edges if e["from"] == name and e["relation"] == "parent"
+        ]
         item["parent_id"] = parent_edges[0] if parent_edges else None
         items[name] = item
     return {"items": items}
@@ -63,18 +70,27 @@ def _save(items_dict):
 
 
 def _run_prioritize():
-    from aio_agentic_sdlc.cli import prioritize_cmd
     import argparse
+
+    from aio_agentic_sdlc.cli import prioritize_cmd
+
     prioritize_cmd(argparse.Namespace())
 
 
 # ── backward compatibility ───────────────────────────────────────────────────
 
+
 class TestBackwardCompat:
     def test_missing_status_defaults_to_new(self):
         """Items without a status field should be treated as 'New'."""
-        item = {"impact": 3, "effort": 3, "category": "Business Value",
-                "requires": [], "ai_driven": False, "scores": {}}
+        item = {
+            "impact": 3,
+            "effort": 3,
+            "category": "Business Value",
+            "requires": [],
+            "ai_driven": False,
+            "scores": {},
+        }
         assert _get_status(item) == "New"
 
     def test_explicit_status_is_respected(self):
@@ -84,12 +100,15 @@ class TestBackwardCompat:
 
 # ── completed items zero scoring ─────────────────────────────────────────────
 
+
 class TestCompletedScoring:
     def test_completed_item_gets_zero_scores(self):
-        _save({
-            "done": _make_item(5, 1, status="Completed"),
-            "todo": _make_item(3, 3, status="New"),
-        })
+        _save(
+            {
+                "done": _make_item(5, 1, status="Completed"),
+                "todo": _make_item(3, 3, status="New"),
+            }
+        )
         _run_prioritize()
         data = _load()
         assert data["items"]["done"]["scores"]["base"] == 0
@@ -98,10 +117,12 @@ class TestCompletedScoring:
         assert data["items"]["todo"]["scores"]["base"] > 0
 
     def test_completed_item_sinks_to_bottom(self):
-        _save({
-            "done": _make_item(5, 1, status="Completed"),
-            "todo": _make_item(1, 5, status="New"),
-        })
+        _save(
+            {
+                "done": _make_item(5, 1, status="Completed"),
+                "todo": _make_item(1, 5, status="New"),
+            }
+        )
         _run_prioritize()
         data = _load()
         keys = list(data["items"].keys())
@@ -110,18 +131,23 @@ class TestCompletedScoring:
 
 # ── status_cmd ───────────────────────────────────────────────────────────────
 
+
 class TestStatusCmd:
     def test_status_cmd_changes_status(self):
-        from aio_agentic_sdlc.cli import status_cmd
         import argparse
+
+        from aio_agentic_sdlc.cli import status_cmd
+
         _save({"alpha": _make_item(3, 3, status="New")})
         status_cmd(argparse.Namespace(name="alpha", new_status="In Progress"))
         data = _load()
         assert data["items"]["alpha"]["status"] == "In Progress"
 
     def test_status_cmd_missing_item(self):
-        from aio_agentic_sdlc.cli import status_cmd
         import argparse
+
+        from aio_agentic_sdlc.cli import status_cmd
+
         _save({})
         with pytest.raises(SystemExit):
             status_cmd(argparse.Namespace(name="nope", new_status="Completed"))
@@ -129,35 +155,69 @@ class TestStatusCmd:
 
 # ── add_cmd with status ──────────────────────────────────────────────────────
 
+
 class TestAddWithStatus:
     def test_add_default_status(self):
-        from aio_agentic_sdlc.cli import add_cmd
         import argparse
+
+        from aio_agentic_sdlc.cli import add_cmd
+
         _save({})
-        add_cmd(argparse.Namespace(
-            name="feat", impact=3, effort=3, category="Business",
-            description="Valid description", requires=None, ai_driven=False, status="New", blockers=None,
-        ))
+        add_cmd(
+            argparse.Namespace(
+                name="feat",
+                impact=3,
+                effort=3,
+                category="Business",
+                description="Valid description",
+                requires=None,
+                ai_driven=False,
+                status="New",
+                blockers=None,
+            )
+        )
         data = _load()
         assert data["items"]["feat"]["status"] == "New"
 
     def test_add_custom_status(self):
-        from aio_agentic_sdlc.cli import add_cmd
         import argparse
+
+        from aio_agentic_sdlc.cli import add_cmd
+
         _save({})
-        add_cmd(argparse.Namespace(
-            name="wip", impact=3, effort=3, category="Business",
-            description="Valid description", requires=None, ai_driven=False, status="In Progress", blockers=None,
-        ))
+        add_cmd(
+            argparse.Namespace(
+                name="wip",
+                impact=3,
+                effort=3,
+                category="Business",
+                description="Valid description",
+                requires=None,
+                ai_driven=False,
+                status="In Progress",
+                blockers=None,
+            )
+        )
         data = _load()
         assert data["items"]["wip"]["status"] == "In Progress"
 
     def test_add_missing_description_raises(self):
-        from aio_agentic_sdlc.cli import add_cmd
         import argparse
+
+        from aio_agentic_sdlc.cli import add_cmd
+
         _save({})
         with pytest.raises(ValueError, match="Description cannot be empty"):
-            add_cmd(argparse.Namespace(
-                name="wip", impact=3, effort=3, category="Business",
-                description="", requires=None, ai_driven=False, status="In Progress", blockers=None,
-            ))
+            add_cmd(
+                argparse.Namespace(
+                    name="wip",
+                    impact=3,
+                    effort=3,
+                    category="Business",
+                    description="",
+                    requires=None,
+                    ai_driven=False,
+                    status="In Progress",
+                    blockers=None,
+                )
+            )

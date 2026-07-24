@@ -1,9 +1,8 @@
 import json
 from pathlib import Path
+
 import tomllib
-
 import yaml
-
 
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN_ROOT = ROOT / "plugins" / "aio-agentic-sdlc"
@@ -14,9 +13,7 @@ def test_codex_plugin_manifest_and_marketplace_are_wired() -> None:
         (PLUGIN_ROOT / ".codex-plugin" / "plugin.json").read_text(encoding="utf-8")
     )
     marketplace = json.loads(
-        (ROOT / ".agents" / "plugins" / "marketplace.json").read_text(
-            encoding="utf-8"
-        )
+        (ROOT / ".agents" / "plugins" / "marketplace.json").read_text(encoding="utf-8")
     )
 
     assert manifest["name"] == PLUGIN_ROOT.name
@@ -74,9 +71,9 @@ def test_codex_skill_routes_intent_ir_through_protected_tools() -> None:
     intake = (skill_root / "references" / "roles" / "intake.md").read_text(
         encoding="utf-8"
     )
-    cartographer = (
-        skill_root / "references" / "roles" / "cartographer.md"
-    ).read_text(encoding="utf-8")
+    cartographer = (skill_root / "references" / "roles" / "cartographer.md").read_text(
+        encoding="utf-8"
+    )
 
     assert all(
         operation in tools

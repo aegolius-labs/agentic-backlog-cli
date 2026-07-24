@@ -6,6 +6,39 @@ on:
       - main
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   lint:
-    uses: Aegolius-Labs/.github/.github/workflows/super-linter.yml@main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Lint changed files
+        uses: super-linter/super-linter@v7.1.0
+        env:
+          DEFAULT_BRANCH: main
+          FILTER_REGEX_EXCLUDE: >-
+            (^|/)(backlog\.json|intention-dag\.yaml|reality-dag\.yaml)$
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LINTER_RULES_PATH: .
+          MARKDOWN_CONFIG_FILE: .markdownlint.json
+          PYTHON_RUFF_CONFIG_FILE: .ruff.toml
+          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_CHECKOV: true
+          VALIDATE_GITHUB_ACTIONS: true
+          VALIDATE_GITLEAKS: true
+          VALIDATE_JAVASCRIPT_ES: true
+          VALIDATE_JAVASCRIPT_PRETTIER: true
+          VALIDATE_JAVASCRIPT_STANDARD: true
+          VALIDATE_JSON: true
+          VALIDATE_JSON_PRETTIER: true
+          VALIDATE_MARKDOWN: true
+          VALIDATE_PYTHON_BLACK: true
+          VALIDATE_PYTHON_RUFF: true
+          VALIDATE_YAML: true
+          VALIDATE_YAML_PRETTIER: true

@@ -1,9 +1,11 @@
-import yaml
 import os
 import tempfile
-from typing import List, Dict, Any, Set
-from pydantic import ValidationError
-from aio_agentic_sdlc.dag_models import Metadata, Node, Edge, NodeType, EdgeType
+from typing import Dict, List
+
+import yaml
+
+from aio_agentic_sdlc.dag_models import Edge, EdgeType, Metadata, Node
+
 
 class DAGManager:
     def __init__(self, metadata: Metadata, nodes: List[Node], edges: List[Edge]):
@@ -15,18 +17,21 @@ class DAGManager:
     def load(cls, filepath: str) -> "DAGManager":
         with open(filepath, "r", encoding="utf-8") as f:
             data = yaml.safe_load(f)
-            
+
         metadata = Metadata(**data.get("metadata", {}))
         nodes = [Node(**n) for n in data.get("nodes", [])]
         edges = [Edge(**e) for e in data.get("edges", [])]
-        
+
         return cls(metadata, nodes, edges)
 
     def save(self, filepath: str):
         data = {
-            "metadata": self.metadata.model_dump(mode='json', exclude_none=True),
-            "nodes": [n.model_dump(mode='json', exclude_none=True) for n in self.nodes.values()],
-            "edges": [e.model_dump(mode='json', exclude_none=True) for e in self.edges]
+            "metadata": self.metadata.model_dump(mode="json", exclude_none=True),
+            "nodes": [
+                n.model_dump(mode="json", exclude_none=True)
+                for n in self.nodes.values()
+            ],
+            "edges": [e.model_dump(mode="json", exclude_none=True) for e in self.edges],
         }
         target = os.path.abspath(filepath)
         target_dir = os.path.dirname(target) or "."
@@ -86,7 +91,9 @@ class DAGManager:
         """Validate Intent IR coverage in addition to the base DAG constraints."""
         self.validate()
         if require_all:
-            missing = [node_id for node_id, node in self.nodes.items() if node.intent is None]
+            missing = [
+                node_id for node_id, node in self.nodes.items() if node.intent is None
+            ]
             if missing:
                 raise ValueError(
                     "Intent IR is missing for node(s): " + ", ".join(sorted(missing))
@@ -135,8 +142,14 @@ class DAGManager:
 
             lines.append("Ambiguities:")
             for ambiguity in intent.ambiguities:
-                resolution = f"; resolution: {ambiguity.resolution}" if ambiguity.resolution else ""
-                lines.append(f"- [{ambiguity.status.value}] {ambiguity.question}{resolution}")
+                resolution = (
+                    f"; resolution: {ambiguity.resolution}"
+                    if ambiguity.resolution
+                    else ""
+                )
+                lines.append(
+                    f"- [{ambiguity.status.value}] {ambiguity.question}{resolution}"
+                )
             if not intent.ambiguities:
                 lines.append("- None")
 
@@ -157,7 +170,7 @@ class DAGManager:
     def update_node(self, node_id: str, **kwargs):
         if node_id not in self.nodes:
             raise ValueError(f"Node {node_id} does not exist.")
-        
+
         node = self.nodes[node_id]
         update_data = {k: v for k, v in kwargs.items() if v is not None}
         updated_node = Node.model_validate({**node.model_dump(), **update_data})
@@ -166,11 +179,13 @@ class DAGManager:
     def remove_node(self, node_id: str):
         if node_id not in self.nodes:
             raise ValueError(f"Node {node_id} does not exist.")
-        
+
         del self.nodes[node_id]
-        
+
         # Cascade remove edges
-        self.edges = [e for e in self.edges if e.source != node_id and e.target != node_id]
+        self.edges = [
+            e for e in self.edges if e.source != node_id and e.target != node_id
+        ]
 
     def get_node(self, node_id: str) -> Node:
         if node_id not in self.nodes:
@@ -196,9 +211,9 @@ class DAGManager:
             raise ValueError(f"Source node {edge.source} does not exist.")
         if edge.target not in self.nodes:
             raise ValueError(f"Target node {edge.target} does not exist.")
-        
+
         self.edges.append(edge)
-        
+
         try:
             self.validate()
         except ValueError as e:
@@ -209,13 +224,16 @@ class DAGManager:
     def remove_edge(self, source: str, target: str, edge_type: EdgeType):
         initial_len = len(self.edges)
         self.edges = [
-            e for e in self.edges 
+            e
+            for e in self.edges
             if not (e.source == source and e.target == target and e.type == edge_type)
         ]
         if len(self.edges) == initial_len:
             raise ValueError(f"Edge {source} -> {target} ({edge_type}) does not exist.")
 
-    def get_edges(self, source: str = None, target: str = None, edge_type: EdgeType = None) -> List[Edge]:
+    def get_edges(
+        self, source: str = None, target: str = None, edge_type: EdgeType = None
+    ) -> List[Edge]:
         result = []
         for edge in self.edges:
             if source and edge.source != source:

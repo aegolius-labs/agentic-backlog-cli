@@ -1,20 +1,22 @@
-import os
 import yaml
+
 from aio_agentic_sdlc.cli import migrate_ids_cmd
+
 
 class DummyArgs:
     pass
+
 
 def test_migrate_ids_maintains_cross_file_consistency(tmpdir, monkeypatch):
     monkeypatch.chdir(tmpdir)
 
     intention_data = {
         "nodes": [{"id": "shared-node-1", "type": "module", "name": "Shared"}],
-        "edges": []
+        "edges": [],
     }
     reality_data = {
         "nodes": [{"id": "shared-node-1", "type": "module", "name": "Shared"}],
-        "edges": []
+        "edges": [],
     }
 
     with open("intention-dag.yaml", "w") as f:
