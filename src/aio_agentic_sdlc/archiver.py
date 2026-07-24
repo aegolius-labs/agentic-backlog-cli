@@ -1,6 +1,6 @@
-import os
-import shutil
 import datetime
+import os
+
 
 class PRDArchiver:
     def __init__(self, archive_dir: str = "archive"):
@@ -18,7 +18,9 @@ class PRDArchiver:
         if not os.path.lexists(self.archive_dir):
             os.makedirs(self.archive_dir)
         elif not os.path.isdir(self.archive_dir):
-            raise NotADirectoryError(f"Archive destination exists but is not a directory: {self.archive_dir}")
+            raise NotADirectoryError(
+                f"Archive destination exists but is not a directory: {self.archive_dir}"
+            )
 
         filename = os.path.basename(file_path)
         dest_path = os.path.join(self.archive_dir, filename)

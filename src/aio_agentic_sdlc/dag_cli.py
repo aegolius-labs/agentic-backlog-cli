@@ -1,20 +1,29 @@
-import click
 import json
 import sys
+
+import click
+
 from aio_agentic_sdlc.dag_manager import DAGManager
-from aio_agentic_sdlc.dag_models import Node, Edge, NodeType, EdgeType
+from aio_agentic_sdlc.dag_models import Edge, EdgeType, Node, NodeType
+from aio_agentic_sdlc.diffing_engine import DiffingEngine
 from aio_agentic_sdlc.intent_ir import IntentIR
 from aio_agentic_sdlc.intent_store import create_intent_node_file, update_intent_file
-from aio_agentic_sdlc.diffing_engine import DiffingEngine
 from aio_agentic_sdlc.reality_dag_generator import RealityDAGGenerator
+
 
 @click.group()
 def cli():
     """CLI tool for managing DAG state files safely."""
     pass
 
+
 @cli.command()
-@click.option('--file', required=True, type=click.Path(exists=True), help='Path to the DAG yaml file.')
+@click.option(
+    "--file",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the DAG yaml file.",
+)
 def validate(file):
     """Validates the structure and constraints of the DAG file."""
     try:
@@ -22,16 +31,21 @@ def validate(file):
         manager.validate()
         click.echo("DAG is valid.")
     except Exception as e:
-        click.secho(f"Error validating DAG: {str(e)}", err=True, fg='red')
+        click.secho(f"Error validating DAG: {str(e)}", err=True, fg="red")
         sys.exit(1)
 
 
 @cli.command("validate-intent")
-@click.option('--file', required=True, type=click.Path(exists=True), help='Path to the Intention DAG yaml file.')
 @click.option(
-    '--require-all/--allow-partial',
+    "--file",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the Intention DAG yaml file.",
+)
+@click.option(
+    "--require-all/--allow-partial",
     default=True,
-    help='Require every node to contain Intent IR or allow legacy nodes.',
+    help="Require every node to contain Intent IR or allow legacy nodes.",
 )
 def validate_intent(file, require_all):
     """Validate the Intent IR payloads and coverage of an Intention DAG."""
@@ -40,20 +54,25 @@ def validate_intent(file, require_all):
         manager.validate_intent_ir(require_all=require_all)
         click.echo("Intent IR is valid.")
     except Exception as e:
-        click.secho(f"Error validating Intent IR: {str(e)}", err=True, fg='red')
+        click.secho(f"Error validating Intent IR: {str(e)}", err=True, fg="red")
         sys.exit(1)
 
 
 @cli.command("intent-summary")
-@click.option('--file', required=True, type=click.Path(exists=True), help='Path to the Intention DAG yaml file.')
-@click.option('--node-id', help='Limit the review to one node ID.')
+@click.option(
+    "--file",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the Intention DAG yaml file.",
+)
+@click.option("--node-id", help="Limit the review to one node ID.")
 def intent_summary(file, node_id):
     """Render a human-readable Intent IR review without raw YAML."""
     try:
         manager = DAGManager.load(file)
         click.echo(manager.render_intent_summary(node_id=node_id))
     except Exception as e:
-        click.secho(f"Error rendering Intent IR: {str(e)}", err=True, fg='red')
+        click.secho(f"Error rendering Intent IR: {str(e)}", err=True, fg="red")
         sys.exit(1)
 
 
@@ -64,19 +83,28 @@ def intent():
 
 
 @intent.command("create-node")
-@click.option('--file', required=True, type=click.Path(exists=True), help='Path to the Intention DAG yaml file.')
-@click.option('--node-id', required=True, help='Canonical node GUID.')
-@click.option('--type', 'node_type', required=True, type=click.Choice([t.value for t in NodeType]))
-@click.option('--name', required=True, help='Node name.')
-@click.option('--domain', help='Node domain.')
-@click.option('--description', help='Node description.')
 @click.option(
-    '--payload-file',
+    "--file",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the Intention DAG yaml file.",
+)
+@click.option("--node-id", required=True, help="Canonical node GUID.")
+@click.option(
+    "--type", "node_type", required=True, type=click.Choice([t.value for t in NodeType])
+)
+@click.option("--name", required=True, help="Node name.")
+@click.option("--domain", help="Node domain.")
+@click.option("--description", help="Node description.")
+@click.option(
+    "--payload-file",
     required=True,
     type=click.Path(exists=True, dir_okay=False),
-    help='JSON file containing the initial Intent IR v1 payload.',
+    help="JSON file containing the initial Intent IR v1 payload.",
 )
-def intent_create_node(file, node_id, node_type, name, domain, description, payload_file):
+def intent_create_node(
+    file, node_id, node_type, name, domain, description, payload_file
+):
     """Atomically create one canonical node with its initial Intent IR."""
     try:
         with open(payload_file, "r", encoding="utf-8") as payload:
@@ -90,28 +118,33 @@ def intent_create_node(file, node_id, node_type, name, domain, description, payl
             intent=intent_ir,
         )
         revision = create_intent_node_file(file, node)
-        click.echo(
-            f"Node '{node_id}' created with Intent IR revision {revision}."
-        )
+        click.echo(f"Node '{node_id}' created with Intent IR revision {revision}.")
     except Exception as e:
-        click.secho(f"Error creating intent node: {str(e)}", err=True, fg='red')
+        click.secho(f"Error creating intent node: {str(e)}", err=True, fg="red")
         sys.exit(1)
 
 
 @intent.command("set")
-@click.option('--file', required=True, type=click.Path(exists=True), help='Path to the Intention DAG yaml file.')
-@click.option('--node-id', required=True, help='Node ID receiving the Intent IR payload.')
 @click.option(
-    '--payload-file',
+    "--file",
     required=True,
-    type=click.Path(exists=True, dir_okay=False),
-    help='JSON file containing one complete Intent IR payload.',
+    type=click.Path(exists=True),
+    help="Path to the Intention DAG yaml file.",
 )
 @click.option(
-    '--expected-revision',
+    "--node-id", required=True, help="Node ID receiving the Intent IR payload."
+)
+@click.option(
+    "--payload-file",
+    required=True,
+    type=click.Path(exists=True, dir_okay=False),
+    help="JSON file containing one complete Intent IR payload.",
+)
+@click.option(
+    "--expected-revision",
     required=True,
     type=click.IntRange(min=0),
-    help='Current revision, or zero when creating the first Intent IR payload.',
+    help="Current revision, or zero when creating the first Intent IR payload.",
 )
 def intent_set(file, node_id, payload_file, expected_revision):
     """Create or revise Intent IR using optimistic revision protection."""
@@ -126,12 +159,23 @@ def intent_set(file, node_id, payload_file, expected_revision):
         )
         click.echo(f"Intent IR for node '{node_id}' saved at revision {revision}.")
     except Exception as e:
-        click.secho(f"Error setting Intent IR: {str(e)}", err=True, fg='red')
+        click.secho(f"Error setting Intent IR: {str(e)}", err=True, fg="red")
         sys.exit(1)
 
+
 @cli.command()
-@click.option('--intention', required=True, type=click.Path(exists=True), help='Path to the Intention DAG yaml file.')
-@click.option('--reality', required=True, type=click.Path(exists=True), help='Path to the Reality DAG yaml file.')
+@click.option(
+    "--intention",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the Intention DAG yaml file.",
+)
+@click.option(
+    "--reality",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the Reality DAG yaml file.",
+)
 def diff(intention, reality):
     """Calculates the diff between Intention DAG and Reality DAG."""
     try:
@@ -139,16 +183,27 @@ def diff(intention, reality):
         reality_manager = DAGManager.load(reality)
         engine = DiffingEngine(intent_manager, reality_manager)
         diff_result = engine.calculate_diff()
-        
+
         click.echo(json.dumps(diff_result, indent=2))
     except Exception as e:
-        click.secho(f"Error computing diff: {str(e)}", err=True, fg='red')
+        click.secho(f"Error computing diff: {str(e)}", err=True, fg="red")
         sys.exit(1)
 
+
 @cli.command("generate-reality")
-@click.option('--dir', required=True, type=click.Path(exists=True), help='Root directory to analyze.')
-@click.option('--system', default="System", help='Name of the root system node.')
-@click.option('--output', required=True, type=click.Path(), help='Path to save the generated Reality DAG yaml file.')
+@click.option(
+    "--dir",
+    required=True,
+    type=click.Path(exists=True),
+    help="Root directory to analyze.",
+)
+@click.option("--system", default="System", help="Name of the root system node.")
+@click.option(
+    "--output",
+    required=True,
+    type=click.Path(),
+    help="Path to save the generated Reality DAG yaml file.",
+)
 def generate_reality(dir, system, output):
     """Generates a Reality DAG by statically analyzing source code in the given directory."""
     try:
@@ -157,39 +212,63 @@ def generate_reality(dir, system, output):
         reality_dag.save(output)
         click.echo(f"Reality DAG generated and saved to {output}.")
     except Exception as e:
-        click.secho(f"Error generating reality DAG: {str(e)}", err=True, fg='red')
+        click.secho(f"Error generating reality DAG: {str(e)}", err=True, fg="red")
         sys.exit(1)
+
 
 @cli.group()
 def node():
     """Node manipulation commands."""
     pass
 
+
 @node.command("add")
-@click.option('--file', required=True, type=click.Path(exists=True), help='Path to the DAG yaml file.')
-@click.option('--id', required=True, help='Node ID')
-@click.option('--type', required=True, type=click.Choice([t.value for t in NodeType]), help='Node Type')
-@click.option('--name', required=True, help='Node Name')
-@click.option('--domain', help='Node Domain')
-@click.option('--description', help='Node Description')
+@click.option(
+    "--file",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the DAG yaml file.",
+)
+@click.option("--id", required=True, help="Node ID")
+@click.option(
+    "--type",
+    required=True,
+    type=click.Choice([t.value for t in NodeType]),
+    help="Node Type",
+)
+@click.option("--name", required=True, help="Node Name")
+@click.option("--domain", help="Node Domain")
+@click.option("--description", help="Node Description")
 def node_add(file, id, type, name, domain, description):
     """Add a new node."""
     try:
         manager = DAGManager.load(file)
-        node_obj = Node(id=id, type=NodeType(type), name=name, domain=domain, description=description)
+        node_obj = Node(
+            id=id,
+            type=NodeType(type),
+            name=name,
+            domain=domain,
+            description=description,
+        )
         manager.add_node(node_obj)
         manager.save(file)
         click.echo(f"Node '{id}' added successfully.")
     except Exception as e:
-        click.secho(f"Error adding node: {str(e)}", err=True, fg='red')
+        click.secho(f"Error adding node: {str(e)}", err=True, fg="red")
         sys.exit(1)
 
+
 @node.command("update")
-@click.option('--file', required=True, type=click.Path(exists=True), help='Path to the DAG yaml file.')
-@click.option('--id', required=True, help='Node ID')
-@click.option('--name', help='Node Name')
-@click.option('--domain', help='Node Domain')
-@click.option('--description', help='Node Description')
+@click.option(
+    "--file",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the DAG yaml file.",
+)
+@click.option("--id", required=True, help="Node ID")
+@click.option("--name", help="Node Name")
+@click.option("--domain", help="Node Domain")
+@click.option("--description", help="Node Description")
 def node_update(file, id, name, domain, description):
     """Update an existing node."""
     try:
@@ -198,12 +277,18 @@ def node_update(file, id, name, domain, description):
         manager.save(file)
         click.echo(f"Node '{id}' updated successfully.")
     except Exception as e:
-        click.secho(f"Error updating node: {str(e)}", err=True, fg='red')
+        click.secho(f"Error updating node: {str(e)}", err=True, fg="red")
         sys.exit(1)
 
+
 @node.command("remove")
-@click.option('--file', required=True, type=click.Path(exists=True), help='Path to the DAG yaml file.')
-@click.option('--id', required=True, help='Node ID')
+@click.option(
+    "--file",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the DAG yaml file.",
+)
+@click.option("--id", required=True, help="Node ID")
 def node_remove(file, id):
     """Remove a node."""
     try:
@@ -212,28 +297,46 @@ def node_remove(file, id):
         manager.save(file)
         click.echo(f"Node '{id}' removed successfully.")
     except Exception as e:
-        click.secho(f"Error removing node: {str(e)}", err=True, fg='red')
+        click.secho(f"Error removing node: {str(e)}", err=True, fg="red")
         sys.exit(1)
 
+
 @node.command("list")
-@click.option('--file', required=True, type=click.Path(exists=True), help='Path to the DAG yaml file.')
-@click.option('--domain', help='Filter by Domain')
-@click.option('--type', type=click.Choice([t.value for t in NodeType]), help='Filter by Type')
-@click.option('--output', type=click.Choice(['json', 'text']), default='text', help='Output format')
+@click.option(
+    "--file",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the DAG yaml file.",
+)
+@click.option("--domain", help="Filter by Domain")
+@click.option(
+    "--type", type=click.Choice([t.value for t in NodeType]), help="Filter by Type"
+)
+@click.option(
+    "--output",
+    type=click.Choice(["json", "text"]),
+    default="text",
+    help="Output format",
+)
 def node_list(file, domain, type, output):
     """List nodes."""
     try:
         manager = DAGManager.load(file)
         node_type = NodeType(type) if type else None
         nodes = manager.find_nodes(domain=domain, type=node_type)
-        
-        if output == 'json':
-            click.echo(json.dumps([n.model_dump(mode='json', exclude_none=True) for n in nodes], indent=2))
+
+        if output == "json":
+            click.echo(
+                json.dumps(
+                    [n.model_dump(mode="json", exclude_none=True) for n in nodes],
+                    indent=2,
+                )
+            )
         else:
             for n in nodes:
                 click.echo(f"{n.id} ({n.type.value}) - {n.name}")
     except Exception as e:
-        click.secho(f"Error listing nodes: {str(e)}", err=True, fg='red')
+        click.secho(f"Error listing nodes: {str(e)}", err=True, fg="red")
         sys.exit(1)
 
 
@@ -242,29 +345,53 @@ def edge():
     """Edge manipulation commands."""
     pass
 
+
 @edge.command("add")
-@click.option('--file', required=True, type=click.Path(exists=True), help='Path to the DAG yaml file.')
-@click.option('--source', required=True, help='Source Node ID')
-@click.option('--target', required=True, help='Target Node ID')
-@click.option('--type', required=True, type=click.Choice([t.value for t in EdgeType]), help='Edge Type')
-@click.option('--description', help='Edge Description')
+@click.option(
+    "--file",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the DAG yaml file.",
+)
+@click.option("--source", required=True, help="Source Node ID")
+@click.option("--target", required=True, help="Target Node ID")
+@click.option(
+    "--type",
+    required=True,
+    type=click.Choice([t.value for t in EdgeType]),
+    help="Edge Type",
+)
+@click.option("--description", help="Edge Description")
 def edge_add(file, source, target, type, description):
     """Add an edge."""
     try:
         manager = DAGManager.load(file)
-        edge_obj = Edge(source=source, target=target, type=EdgeType(type), description=description)
+        edge_obj = Edge(
+            source=source, target=target, type=EdgeType(type), description=description
+        )
         manager.add_edge(edge_obj)
         manager.save(file)
         click.echo(f"Edge {source} -> {target} ({type}) added successfully.")
     except Exception as e:
-        click.secho(f"Error adding edge: {str(e)}", err=True, fg='red')
+        click.secho(f"Error adding edge: {str(e)}", err=True, fg="red")
         sys.exit(1)
 
+
 @edge.command("remove")
-@click.option('--file', required=True, type=click.Path(exists=True), help='Path to the DAG yaml file.')
-@click.option('--source', required=True, help='Source Node ID')
-@click.option('--target', required=True, help='Target Node ID')
-@click.option('--type', required=True, type=click.Choice([t.value for t in EdgeType]), help='Edge Type')
+@click.option(
+    "--file",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the DAG yaml file.",
+)
+@click.option("--source", required=True, help="Source Node ID")
+@click.option("--target", required=True, help="Target Node ID")
+@click.option(
+    "--type",
+    required=True,
+    type=click.Choice([t.value for t in EdgeType]),
+    help="Edge Type",
+)
 def edge_remove(file, source, target, type):
     """Remove an edge."""
     try:
@@ -273,8 +400,9 @@ def edge_remove(file, source, target, type):
         manager.save(file)
         click.echo(f"Edge {source} -> {target} ({type}) removed successfully.")
     except Exception as e:
-        click.secho(f"Error removing edge: {str(e)}", err=True, fg='red')
+        click.secho(f"Error removing edge: {str(e)}", err=True, fg="red")
         sys.exit(1)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     cli()

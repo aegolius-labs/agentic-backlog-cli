@@ -1,63 +1,78 @@
-import os
-import json
-import time
 import datetime
 import glob
 import heapq
+import json
+import os
+import time
+
+import yaml
 
 from .config import load_config
 from .state import BACKLOG_FILE
 from .state import load_backlog as _load_backlog
 from .state import save_backlog as _save_backlog
 
-VALID_STATUSES = ('New', 'In Progress', 'Completed', 'Blocked')
+VALID_STATUSES = ("New", "In Progress", "Completed", "Blocked")
+
 
 def _get_status(item):
-    return item.get('status', 'New')
+    return item.get("status", "New")
+
 
 def _get_blockers(item):
-    return item.get('blockers', [])
+    return item.get("blockers", [])
+
 
 def validate_hierarchy(item_type, parent_id, data, project_path):
-    if not item_type and not parent_id: return
+    if not item_type and not parent_id:
+        return
     config = load_config(project_path)
     hierarchy = config.get("hierarchy")
     if not hierarchy:
         hierarchy = {"1": ["Epic"], "2": ["Feature"], "3": ["Task", "Bug"]}
-        
+
     level = None
     if item_type:
-        for l, types in hierarchy.items():
+        for level_key, types in hierarchy.items():
             if item_type in types:
-                level = int(l)
+                level = int(level_key)
                 break
         if level is None:
-            raise ValueError(f"Invalid item_type '{item_type}'. Valid types: {hierarchy}")
-            
-    if parent_id and parent_id in data.get('nodes', {}):
-        parent_type = data['nodes'][parent_id].get('item_type', 'Task')
+            raise ValueError(
+                f"Invalid item_type '{item_type}'. Valid types: {hierarchy}"
+            )
+
+    if parent_id and parent_id in data.get("nodes", {}):
+        parent_type = data["nodes"][parent_id].get("item_type", "Task")
         parent_level = None
-        for l, types in hierarchy.items():
+        for level_key, types in hierarchy.items():
             if parent_type in types:
-                parent_level = int(l)
+                parent_level = int(level_key)
                 break
         if parent_level is None:
             parent_level = max([int(x) for x in hierarchy.keys()])
-            
+
         validation_mode = config.get("core", {}).get("validation_mode", "flex")
         if level is not None:
             if validation_mode == "strict":
                 if level != parent_level + 1:
-                    raise ValueError(f"Strict Mode Violation: Child '{item_type}' (Level {level}) must be exactly Parent '{parent_type}' (Level {parent_level}) + 1.")
+                    raise ValueError(
+                        f"Strict Mode Violation: Child '{item_type}' (Level {level}) must be exactly Parent '{parent_type}' (Level {parent_level}) + 1."
+                    )
             else:
                 if level <= parent_level:
-                    raise ValueError(f"Flex Mode Violation: Child '{item_type}' (Level {level}) must be > Parent '{parent_type}' (Level {parent_level}).")
+                    raise ValueError(
+                        f"Flex Mode Violation: Child '{item_type}' (Level {level}) must be > Parent '{parent_type}' (Level {parent_level})."
+                    )
+
 
 def load_backlog(project_path="."):
     return _load_backlog(project_path)
 
+
 def save_backlog(data, project_path=".", *, operation="backlog.save"):
     return _save_backlog(data, project_path, operation=operation)
+
 
 def _create_backup(project_path="."):
     file_path = os.path.join(project_path, BACKLOG_FILE)
@@ -67,9 +82,9 @@ def _create_backup(project_path="."):
     if not data.get("nodes"):
         return
 
-    ts = datetime.datetime.now().strftime('%Y_%m_%d_%H%M%S')
+    ts = datetime.datetime.now().strftime("%Y_%m_%d_%H%M%S")
     backup_file = os.path.join(project_path, f"{ts}_backlog.json")
-    with open(backup_file, 'w', encoding='utf-8') as f:
+    with open(backup_file, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
 
     now = time.time()
@@ -79,47 +94,66 @@ def _create_backup(project_path="."):
             if now - mtime > 7 * 86400:
                 os.remove(f)
 
-    gitignore = os.path.join(project_path, '.gitignore')
-    pattern = '*_backlog.json\n'
+    gitignore = os.path.join(project_path, ".gitignore")
+    pattern = "*_backlog.json\n"
     if os.path.exists(gitignore):
-        with open(gitignore, 'r', encoding='utf-8') as f:
+        with open(gitignore, "r", encoding="utf-8") as f:
             lines = f.readlines()
         if not any(pattern.strip() == line.strip() for line in lines):
-            with open(gitignore, 'a', encoding='utf-8') as f:
+            with open(gitignore, "a", encoding="utf-8") as f:
                 f.write(f"\n# Auto-backlog-management backups\n{pattern}")
     else:
-        with open(gitignore, 'w', encoding='utf-8') as f:
+        with open(gitignore, "w", encoding="utf-8") as f:
             f.write(f"# Auto-backlog-management backups\n{pattern}")
 
+
 def get_edges(data, from_node=None, to_node=None, relation=None):
-    return [e for e in data.get("edges", []) if 
-            (from_node is None or e["from"] == from_node) and 
-            (to_node is None or e["to"] == to_node) and 
-            (relation is None or e["relation"] == relation)]
+    return [
+        e
+        for e in data.get("edges", [])
+        if (from_node is None or e["from"] == from_node)
+        and (to_node is None or e["to"] == to_node)
+        and (relation is None or e["relation"] == relation)
+    ]
+
 
 def get_requires(data, node):
     return [e["to"] for e in get_edges(data, from_node=node, relation="requires")]
 
+
 def set_requires(data, node, reqs):
-    data["edges"] = [e for e in data.get("edges", []) if not (e["from"] == node and e["relation"] == "requires")]
+    data["edges"] = [
+        e
+        for e in data.get("edges", [])
+        if not (e["from"] == node and e["relation"] == "requires")
+    ]
     for r in reqs:
         data["edges"].append({"from": node, "to": r, "relation": "requires"})
+
 
 def get_parent(data, node):
     edges = get_edges(data, from_node=node, relation="parent")
     return edges[0]["to"] if edges else None
 
+
 def set_parent(data, node, parent_id):
-    data["edges"] = [e for e in data.get("edges", []) if not (e["from"] == node and e["relation"] == "parent")]
+    data["edges"] = [
+        e
+        for e in data.get("edges", [])
+        if not (e["from"] == node and e["relation"] == "parent")
+    ]
     if parent_id:
         data["edges"].append({"from": node, "to": parent_id, "relation": "parent"})
+
 
 def ensure_dependencies(data, requires):
     warnings = []
     for req in requires:
-        if req not in data.get('nodes', {}):
-            warnings.append(f"Missing dependency '{req}' automatically created as AI-driven. Update its impact/effort soon!")
-            data['nodes'][req] = {
+        if req not in data.get("nodes", {}):
+            warnings.append(
+                f"Missing dependency '{req}' automatically created as AI-driven. Update its impact/effort soon!"
+            )
+            data["nodes"][req] = {
                 "item_type": "Task",
                 "impact": 1,
                 "effort": 1,
@@ -127,9 +161,10 @@ def ensure_dependencies(data, requires):
                 "ai_driven": True,
                 "status": "New",
                 "blockers": [],
-                "scores": {"base": 5, "final": 5}
+                "scores": {"base": 5, "final": 5},
             }
     return warnings
+
 
 def _compute_sorted_items(nodes, edges):
     visited = set()
@@ -143,56 +178,73 @@ def _compute_sorted_items(nodes, edges):
 
     def visit(n):
         if n in temp_mark:
-            raise ValueError(f"Circular dependency detected involving [{n}]. Analyze items to clarify what genuinely depends on what.")
+            raise ValueError(
+                f"Circular dependency detected involving [{n}]. Analyze items to clarify what genuinely depends on what."
+            )
         if n not in visited:
             temp_mark.add(n)
             for dep in requires_map.get(n, []):
-                if dep in nodes: visit(dep)
+                if dep in nodes:
+                    visit(dep)
             temp_mark.remove(n)
             visited.add(n)
             order.append(n)
 
     for node in nodes:
-        if node not in visited: visit(node)
+        if node not in visited:
+            visit(node)
 
     for name, item in nodes.items():
-        if _get_status(item) == 'Completed':
-            if 'scores' not in item: item['scores'] = {}
-            item['scores']['base'] = 0
+        if _get_status(item) == "Completed":
+            if "scores" not in item:
+                item["scores"] = {}
+            item["scores"]["base"] = 0
         else:
-            base = item.get('impact', 1) + (5 - item.get('effort', 1))
-            if 'scores' not in item: item['scores'] = {}
-            item['scores']['base'] = base
+            base = item.get("impact", 1) + (5 - item.get("effort", 1))
+            if "scores" not in item:
+                item["scores"] = {}
+            item["scores"]["base"] = base
 
     final_scores = {}
     for node in reversed(order):
-        if _get_status(nodes[node]) == 'Completed':
+        if _get_status(nodes[node]) == "Completed":
             final_scores[node] = 0
-            nodes[node]['scores']['final'] = 0
+            nodes[node]["scores"]["final"] = 0
         else:
-            base = nodes[node]['scores'].get('base', 0)
+            base = nodes[node]["scores"].get("base", 0)
             dependents = [n for n in order if node in requires_map.get(n, [])]
             boost = 0.5 * sum(final_scores.get(d, 0) for d in dependents)
             final_scores[node] = base + boost
-            nodes[node]['scores']['final'] = final_scores[node]
+            nodes[node]["scores"]["final"] = final_scores[node]
 
     def get_cat_weight(cat):
         c = (cat or "").lower()
-        if 'security' in c: return 4
-        if 'reliability' in c: return 3
-        if 'business' in c: return 2
+        if "security" in c:
+            return 4
+        if "reliability" in c:
+            return 3
+        if "business" in c:
+            return 2
         return 1
 
     in_degree = {n: len(requires_map.get(n, [])) for n in nodes}
     adj = {n: [] for n in nodes}
     for n in nodes:
         for req in requires_map.get(n, []):
-            if req in adj: adj[req].append(n)
+            if req in adj:
+                adj[req].append(n)
 
     pq = []
     for n in nodes:
         if in_degree[n] == 0:
-            heapq.heappush(pq, (-nodes[n]['scores'].get('final', 0), -get_cat_weight(nodes[n].get('category', '')), n))
+            heapq.heappush(
+                pq,
+                (
+                    -nodes[n]["scores"].get("final", 0),
+                    -get_cat_weight(nodes[n].get("category", "")),
+                    n,
+                ),
+            )
 
     final_ordered_keys = []
     while pq:
@@ -202,40 +254,50 @@ def _compute_sorted_items(nodes, edges):
             if dep in in_degree:
                 in_degree[dep] -= 1
                 if in_degree[dep] == 0:
-                    heapq.heappush(pq, (-nodes[dep]['scores'].get('final', 0), -get_cat_weight(nodes[dep].get('category', '')), dep))
+                    heapq.heappush(
+                        pq,
+                        (
+                            -nodes[dep]["scores"].get("final", 0),
+                            -get_cat_weight(nodes[dep].get("category", "")),
+                            dep,
+                        ),
+                    )
 
     return final_ordered_keys
 
+
 def prioritize_items(project_path="."):
     data = load_backlog(project_path)
-    if not data.get('nodes'):
+    if not data.get("nodes"):
         return False
-        
+
     _create_backup(project_path)
-    nodes = data['nodes']
-    edges = data.get('edges', [])
+    nodes = data["nodes"]
+    edges = data.get("edges", [])
     final_ordered_keys = _compute_sorted_items(nodes, edges)
 
     new_nodes = {k: nodes[k] for k in final_ordered_keys}
-    data['nodes'] = new_nodes
-    
+    data["nodes"] = new_nodes
+
     for name, item in new_nodes.items():
-        if _get_blockers(item) and _get_status(item) != 'Completed':
-            item['status'] = 'Blocked'
-        elif _get_status(item) == 'Blocked' and not _get_blockers(item):
-            item['status'] = 'New'
+        if _get_blockers(item) and _get_status(item) != "Completed":
+            item["status"] = "Blocked"
+        elif _get_status(item) == "Blocked" and not _get_blockers(item):
+            item["status"] = "New"
 
     save_backlog(data, project_path, operation="backlog.prioritize")
     return True
 
+
 def get_next_item(project_path="."):
     import copy
+
     data = load_backlog(project_path)
-    if not data.get('nodes'):
+    if not data.get("nodes"):
         return None, "Backlog is empty."
 
-    nodes = copy.deepcopy(data['nodes'])
-    edges = copy.deepcopy(data.get('edges', []))
+    nodes = copy.deepcopy(data["nodes"])
+    edges = copy.deepcopy(data.get("edges", []))
     try:
         ordered_keys = _compute_sorted_items(nodes, edges)
     except ValueError as e:
@@ -245,12 +307,15 @@ def get_next_item(project_path="."):
     target_key = None
     for key in ordered_keys:
         item = nodes[key]
-        if _get_status(item) != 'Completed' and not _get_blockers(item):
+        if _get_status(item) != "Completed" and not _get_blockers(item):
             target_key = key
             break
 
     if target_key is None:
-        return None, "No workable items remain. All items are either completed or blocked."
+        return (
+            None,
+            "No workable items remain. All items are either completed or blocked.",
+        )
 
     target_item = nodes[target_key]
     target_data = {
@@ -269,29 +334,45 @@ def get_next_item(project_path="."):
     warning = None
     if top_key and top_key != target_key:
         top_item = nodes[top_key]
-        if _get_status(top_item) not in ['Completed', 'Done']:
+        if _get_status(top_item) not in ["Completed", "Done"]:
             top_blockers = _get_blockers(top_item)
             warning = f"Top item '{top_key}' has the highest priority but is blocked by: {top_blockers}"
 
     return target_data, warning
 
-def add_item(name, impact, effort, category, description=None, requires=None, ai_driven=False, status='New', blockers=None, project_path=".", item_type="Task", parent_id=None):
+
+def add_item(
+    name,
+    impact,
+    effort,
+    category,
+    description=None,
+    requires=None,
+    ai_driven=False,
+    status="New",
+    blockers=None,
+    project_path=".",
+    item_type="Task",
+    parent_id=None,
+):
     if not description or not str(description).strip():
-        raise ValueError("Description cannot be empty. Please provide a detailed description of the task.")
+        raise ValueError(
+            "Description cannot be empty. Please provide a detailed description of the task."
+        )
 
     data = load_backlog(project_path)
-    if name in data.get('nodes', {}):
+    if name in data.get("nodes", {}):
         raise ValueError(f"Item '{name}' already exists.")
-        
+
     validate_hierarchy(item_type, parent_id, data, project_path)
-        
+
     _create_backup(project_path)
-    
-    requires_list = [r.strip() for r in requires.split(',')] if requires else []
+
+    requires_list = [r.strip() for r in requires.split(",")] if requires else []
     warnings = ensure_dependencies(data, requires_list)
-    blockers_list = [b.strip() for b in blockers.split(',')] if blockers else []
-    
-    data['nodes'][name] = {
+    blockers_list = [b.strip() for b in blockers.split(",")] if blockers else []
+
+    data["nodes"][name] = {
         "item_type": item_type,
         "impact": impact,
         "effort": effort,
@@ -300,105 +381,138 @@ def add_item(name, impact, effort, category, description=None, requires=None, ai
         "ai_driven": ai_driven,
         "status": status,
         "blockers": blockers_list,
-        "scores": {}
+        "scores": {},
     }
     set_requires(data, name, requires_list)
     set_parent(data, name, parent_id)
     save_backlog(data, project_path, operation="backlog.add")
     return warnings
 
-def update_item(name, impact=None, effort=None, category=None, description=None, requires=None, ai_driven=None, status=None, blockers=None, project_path=".", item_type=None, parent_id=None):
+
+def update_item(
+    name,
+    impact=None,
+    effort=None,
+    category=None,
+    description=None,
+    requires=None,
+    ai_driven=None,
+    status=None,
+    blockers=None,
+    project_path=".",
+    item_type=None,
+    parent_id=None,
+):
     if description is not None and not str(description).strip():
-        raise ValueError("Description cannot be empty. Please provide a detailed description of the task.")
+        raise ValueError(
+            "Description cannot be empty. Please provide a detailed description of the task."
+        )
 
     data = load_backlog(project_path)
-    if name not in data.get('nodes', {}):
+    if name not in data.get("nodes", {}):
         raise ValueError(f"Item '{name}' not found.")
-    
+
     _create_backup(project_path)
-    item = data['nodes'][name]
+    item = data["nodes"][name]
     warnings = []
-    
-    if item_type is not None: item['item_type'] = item_type
-    if impact is not None: item['impact'] = impact
-    if effort is not None: item['effort'] = effort
-    if category is not None: item['category'] = category
+
+    if item_type is not None:
+        item["item_type"] = item_type
+    if impact is not None:
+        item["impact"] = impact
+    if effort is not None:
+        item["effort"] = effort
+    if category is not None:
+        item["category"] = category
     if requires is not None:
-        requires_list = [r.strip() for r in requires.split(',')] if requires else []
+        requires_list = [r.strip() for r in requires.split(",")] if requires else []
         warnings = ensure_dependencies(data, requires_list)
         set_requires(data, name, requires_list)
-    if ai_driven is not None: item['ai_driven'] = ai_driven
-    if status is not None: item['status'] = status
-    if description is not None: item['description'] = description
+    if ai_driven is not None:
+        item["ai_driven"] = ai_driven
+    if status is not None:
+        item["status"] = status
+    if description is not None:
+        item["description"] = description
     if blockers is not None:
-        blockers_list = [b.strip() for b in blockers.split(',')] if blockers else []
-        item['blockers'] = blockers_list
+        blockers_list = [b.strip() for b in blockers.split(",")] if blockers else []
+        item["blockers"] = blockers_list
     if parent_id is not None:
         set_parent(data, name, parent_id)
-        
+
     save_backlog(data, project_path, operation="backlog.update")
     return warnings
 
+
 def set_status(name, new_status, project_path="."):
     data = load_backlog(project_path)
-    if name not in data.get('nodes', {}):
+    if name not in data.get("nodes", {}):
         raise ValueError(f"Item '{name}' not found.")
     _create_backup(project_path)
-    data['nodes'][name]['status'] = new_status
+    data["nodes"][name]["status"] = new_status
     save_backlog(data, project_path, operation="backlog.set-status")
+
 
 def add_blocker(name, reason, project_path="."):
     data = load_backlog(project_path)
-    if name not in data.get('nodes', {}):
+    if name not in data.get("nodes", {}):
         raise ValueError(f"Item '{name}' not found.")
     _create_backup(project_path)
-    item = data['nodes'][name]
+    item = data["nodes"][name]
     blockers = _get_blockers(item)
     if reason not in blockers:
         blockers.append(reason)
-    item['blockers'] = blockers
-    if _get_status(item) != 'Completed':
-        item['status'] = 'Blocked'
+    item["blockers"] = blockers
+    if _get_status(item) != "Completed":
+        item["status"] = "Blocked"
     save_backlog(data, project_path, operation="backlog.add-blocker")
+
 
 def remove_blocker(name, reason, project_path="."):
     data = load_backlog(project_path)
-    if name not in data.get('nodes', {}):
+    if name not in data.get("nodes", {}):
         raise ValueError(f"Item '{name}' not found.")
     _create_backup(project_path)
-    item = data['nodes'][name]
+    item = data["nodes"][name]
     blockers = _get_blockers(item)
     if reason in blockers:
         blockers.remove(reason)
-    item['blockers'] = blockers
-    if not blockers and _get_status(item) == 'Blocked':
-        item['status'] = 'New'
+    item["blockers"] = blockers
+    if not blockers and _get_status(item) == "Blocked":
+        item["status"] = "New"
     save_backlog(data, project_path, operation="backlog.remove-blocker")
+
 
 def remove_item(name, project_path="."):
     data = load_backlog(project_path)
-    if name not in data.get('nodes', {}):
+    if name not in data.get("nodes", {}):
         raise ValueError(f"Item '{name}' not found.")
-        
+
     _create_backup(project_path)
-    
+
     # Remove from edges
-    data['edges'] = [e for e in data.get('edges', []) if e['from'] != name and e['to'] != name]
+    data["edges"] = [
+        e for e in data.get("edges", []) if e["from"] != name and e["to"] != name
+    ]
     # Remove from nodes
-    del data['nodes'][name]
-    
+    del data["nodes"][name]
+
     # Also remove from blockers if it was explicitly a blocker string
-    for n, item in data['nodes'].items():
-        if 'blockers' in item and name in item['blockers']:
-            item['blockers'].remove(name)
-            
+    for n, item in data["nodes"].items():
+        if "blockers" in item and name in item["blockers"]:
+            item["blockers"].remove(name)
+
     save_backlog(data, project_path, operation="backlog.remove")
 
-import os
-import yaml
 
 class TraceabilityValidator:
-    def __init__(self, intention_path="intention-dag.yaml", reality_path="reality-dag.yaml", specs_dir="specs", code_dir="src"):
+    def __init__(
+        self,
+        intention_path="intention-dag.yaml",
+        reality_path="reality-dag.yaml",
+        specs_dir="specs",
+        code_dir="src",
+    ):
         self.intention_path = intention_path
         self.reality_path = reality_path
         self.specs_dir = specs_dir
@@ -408,17 +522,21 @@ class TraceabilityValidator:
         errors = []
         intention_ids = self._get_dag_ids(self.intention_path)
         reality_ids = self._get_dag_ids(self.reality_path)
-        
+
         # 1. Intention vs Reality
         if os.path.exists(self.reality_path):
             for i_id in intention_ids:
                 if i_id not in reality_ids:
-                    errors.append(f"Traceability Error: Intention Node {i_id} is missing in Reality DAG.")
-                    
+                    errors.append(
+                        f"Traceability Error: Intention Node {i_id} is missing in Reality DAG."
+                    )
+
             for r_id in reality_ids:
                 if r_id not in intention_ids:
-                    errors.append(f"Traceability Error: Reality Node {r_id} is missing in Intention DAG.")
-                    
+                    errors.append(
+                        f"Traceability Error: Reality Node {r_id} is missing in Intention DAG."
+                    )
+
         # 2. Specs linkage
         if os.path.exists(self.specs_dir):
             for filename in os.listdir(self.specs_dir):
@@ -428,7 +546,9 @@ class TraceabilityValidator:
                         content = f.read()
                         found = any(i_id in content for i_id in intention_ids)
                         if not found and intention_ids:
-                            errors.append(f"Traceability Error: Spec {filename} does not reference any known Node ID.")
+                            errors.append(
+                                f"Traceability Error: Spec {filename} does not reference any known Node ID."
+                            )
 
         return errors
 
@@ -438,5 +558,6 @@ class TraceabilityValidator:
         with open(path, "r", encoding="utf-8") as f:
             data = yaml.safe_load(f) or {}
             nodes = data.get("nodes", [])
-            return {str(n.get("id")) for n in nodes if isinstance(n, dict) and "id" in n}
-
+            return {
+                str(n.get("id")) for n in nodes if isinstance(n, dict) and "id" in n
+            }

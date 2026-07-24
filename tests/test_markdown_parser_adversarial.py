@@ -1,6 +1,8 @@
 import os
 import tempfile
+
 from aio_agentic_sdlc.reality_dag_generator import RealityDAGGenerator
+
 
 def test_markdown_parser_realistic_agent_file():
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -21,6 +23,12 @@ tools:
         generator = RealityDAGGenerator(root_dir=tmpdir, system_name="TestSystem")
         dag = generator.generate()
 
-        agent_nodes = [n for n in dag.nodes.values() if getattr(n, 'type', None) and getattr(n.type, 'name', None) == 'AGENT']
-        
-        assert len(agent_nodes) == 1, "Agent was not extracted because 'type: agent' is missing in frontmatter"
+        agent_nodes = [
+            n
+            for n in dag.nodes.values()
+            if getattr(n, "type", None) and getattr(n.type, "name", None) == "AGENT"
+        ]
+
+        assert (
+            len(agent_nodes) == 1
+        ), "Agent was not extracted because 'type: agent' is missing in frontmatter"

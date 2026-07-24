@@ -1,13 +1,16 @@
 """Tests for the blocker awareness feature."""
-import json
+
 import os
 import sys
+
 import pytest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from aio_agentic_sdlc.cli import (
-    load_backlog, save_backlog, _get_blockers, _get_status,
+    _get_blockers,
+    load_backlog,
+    save_backlog,
 )
 
 
@@ -38,8 +41,12 @@ def _load():
     items = {}
     for name, node in nodes.items():
         item = node.copy()
-        item["requires"] = [e["to"] for e in edges if e["from"] == name and e["relation"] == "requires"]
-        parent_edges = [e["to"] for e in edges if e["from"] == name and e["relation"] == "parent"]
+        item["requires"] = [
+            e["to"] for e in edges if e["from"] == name and e["relation"] == "requires"
+        ]
+        parent_edges = [
+            e["to"] for e in edges if e["from"] == name and e["relation"] == "parent"
+        ]
         item["parent_id"] = parent_edges[0] if parent_edges else None
         items[name] = item
     return {"items": items}
@@ -64,48 +71,67 @@ def _save(items_dict):
 
 
 def _run_prioritize():
-    from aio_agentic_sdlc.cli import prioritize_cmd
     import argparse
+
+    from aio_agentic_sdlc.cli import prioritize_cmd
+
     prioritize_cmd(argparse.Namespace())
 
 
 # ── backward compatibility ───────────────────────────────────────────────────
 
+
 class TestBlockerBackwardCompat:
     def test_missing_blockers_defaults_to_empty(self):
-        item = {"impact": 3, "effort": 3, "category": "X", "requires": [],
-                "ai_driven": False, "scores": {}}
+        item = {
+            "impact": 3,
+            "effort": 3,
+            "category": "X",
+            "requires": [],
+            "ai_driven": False,
+            "scores": {},
+        }
         assert _get_blockers(item) == []
 
 
 # ── blockers do NOT change scores ────────────────────────────────────────────
 
+
 class TestBlockerScoring:
     def test_blocked_item_retains_score(self):
         """Blockers flag items as unworkable but do NOT change math."""
-        _save({
-            "alpha": _make_item(5, 1, status="New", blockers=["waiting on vendor"]),
-            "beta": _make_item(5, 1, status="New"),
-        })
+        _save(
+            {
+                "alpha": _make_item(5, 1, status="New", blockers=["waiting on vendor"]),
+                "beta": _make_item(5, 1, status="New"),
+            }
+        )
         _run_prioritize()
         data = _load()
         # Both have identical impact/effort, so both should have the same scores
-        assert data["items"]["alpha"]["scores"]["base"] == data["items"]["beta"]["scores"]["base"]
+        assert (
+            data["items"]["alpha"]["scores"]["base"]
+            == data["items"]["beta"]["scores"]["base"]
+        )
 
     def test_blocked_item_auto_status(self):
         """During prioritize, items with blockers auto-set to Blocked."""
-        _save({
-            "alpha": _make_item(5, 1, status="New", blockers=["reason"]),
-        })
+        _save(
+            {
+                "alpha": _make_item(5, 1, status="New", blockers=["reason"]),
+            }
+        )
         _run_prioritize()
         data = _load()
         assert data["items"]["alpha"]["status"] == "Blocked"
 
     def test_unblocked_item_reverts_status(self):
         """During prioritize, Blocked items with no blockers revert to New."""
-        _save({
-            "alpha": _make_item(5, 1, status="Blocked", blockers=[]),
-        })
+        _save(
+            {
+                "alpha": _make_item(5, 1, status="Blocked", blockers=[]),
+            }
+        )
         _run_prioritize()
         data = _load()
         assert data["items"]["alpha"]["status"] == "New"
@@ -113,10 +139,13 @@ class TestBlockerScoring:
 
 # ── block_cmd ────────────────────────────────────────────────────────────────
 
+
 class TestBlockCmd:
     def test_block_adds_blocker_and_sets_status(self):
-        from aio_agentic_sdlc.cli import block_cmd
         import argparse
+
+        from aio_agentic_sdlc.cli import block_cmd
+
         _save({"feat": _make_item(3, 3)})
         block_cmd(argparse.Namespace(name="feat", reason="API key pending"))
         data = _load()
@@ -124,16 +153,20 @@ class TestBlockCmd:
         assert data["items"]["feat"]["status"] == "Blocked"
 
     def test_block_no_duplicate(self):
-        from aio_agentic_sdlc.cli import block_cmd
         import argparse
+
+        from aio_agentic_sdlc.cli import block_cmd
+
         _save({"feat": _make_item(3, 3, blockers=["reason"])})
         block_cmd(argparse.Namespace(name="feat", reason="reason"))
         data = _load()
         assert data["items"]["feat"]["blockers"].count("reason") == 1
 
     def test_block_missing_item(self):
-        from aio_agentic_sdlc.cli import block_cmd
         import argparse
+
+        from aio_agentic_sdlc.cli import block_cmd
+
         _save({})
         with pytest.raises(SystemExit):
             block_cmd(argparse.Namespace(name="nope", reason="x"))
@@ -141,11 +174,20 @@ class TestBlockCmd:
 
 # ── unblock_cmd ──────────────────────────────────────────────────────────────
 
+
 class TestUnblockCmd:
     def test_unblock_removes_blocker(self):
-        from aio_agentic_sdlc.cli import unblock_cmd
         import argparse
-        _save({"feat": _make_item(3, 3, status="Blocked", blockers=["reason1", "reason2"])})
+
+        from aio_agentic_sdlc.cli import unblock_cmd
+
+        _save(
+            {
+                "feat": _make_item(
+                    3, 3, status="Blocked", blockers=["reason1", "reason2"]
+                )
+            }
+        )
         unblock_cmd(argparse.Namespace(name="feat", reason="reason1"))
         data = _load()
         assert "reason1" not in data["items"]["feat"]["blockers"]
@@ -154,8 +196,10 @@ class TestUnblockCmd:
         assert data["items"]["feat"]["status"] == "Blocked"
 
     def test_unblock_last_reverts_status(self):
-        from aio_agentic_sdlc.cli import unblock_cmd
         import argparse
+
+        from aio_agentic_sdlc.cli import unblock_cmd
+
         _save({"feat": _make_item(3, 3, status="Blocked", blockers=["only-blocker"])})
         unblock_cmd(argparse.Namespace(name="feat", reason="only-blocker"))
         data = _load()
@@ -163,8 +207,10 @@ class TestUnblockCmd:
         assert data["items"]["feat"]["status"] == "New"
 
     def test_unblock_missing_item(self):
-        from aio_agentic_sdlc.cli import unblock_cmd
         import argparse
+
+        from aio_agentic_sdlc.cli import unblock_cmd
+
         _save({})
         with pytest.raises(SystemExit):
             unblock_cmd(argparse.Namespace(name="nope", reason="x"))
