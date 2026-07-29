@@ -19,6 +19,11 @@ class TestDetectFrameworks:
         (tmp_path / "pyproject.toml").write_text("[tool.uv]")
         assert "uv" in detect_frameworks(str(tmp_path))
 
+    def test_detect_python_uv_lock(self, tmp_path):
+        (tmp_path / "pyproject.toml").write_text("")
+        (tmp_path / "uv.lock").write_text("")
+        assert detect_frameworks(str(tmp_path)) == ["python", "uv"]
+
     def test_detect_node_npm(self, tmp_path):
         (tmp_path / "package.json").write_text("{}")
         frameworks = detect_frameworks(str(tmp_path))

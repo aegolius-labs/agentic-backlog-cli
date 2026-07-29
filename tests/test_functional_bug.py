@@ -1,10 +1,10 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 
 @patch("os.path.exists")
 @patch("os.path.isdir")
 @patch("glob.glob")
-@patch("asyncio.run")
+@patch("aio_agentic_sdlc.cli._run_architect_subagent", new_callable=AsyncMock)
 @patch("aio_agentic_sdlc.dag_manager.DAGManager")
 @patch("aio_agentic_sdlc.diffing_engine.DiffingEngine")
 @patch("aio_agentic_sdlc.archiver.PRDArchiver")
@@ -14,7 +14,7 @@ def test_cli_unconditional_archival_edge_case(
     mock_archiver,
     mock_diff_engine,
     mock_dag_manager,
-    mock_asyncio_run,
+    mock_architect_subagent,
     mock_glob,
     mock_isdir,
     mock_exists,
@@ -31,6 +31,9 @@ def test_cli_unconditional_archival_edge_case(
     mock_diff_instance.calculate_diff.return_value = {}
     mock_diff_engine.return_value = mock_diff_instance
     plan_cmd(MagicMock())
+    mock_architect_subagent.assert_awaited_once_with(
+        ["inbox/test_prd.md", "inbox/innocent_file.md"]
+    )
     archive_calls = [
         call[0][0] for call in mock_archiver.return_value.archive.call_args_list
     ]

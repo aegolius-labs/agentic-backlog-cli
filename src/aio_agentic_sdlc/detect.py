@@ -17,17 +17,15 @@ def detect_frameworks(cwd="."):
             frameworks.append("npm")
 
     # Python
-    if os.path.exists(os.path.join(cwd, "pyproject.toml")) or os.path.exists(
-        os.path.join(cwd, "requirements.txt")
-    ):
+    pyproject_path = os.path.join(cwd, "pyproject.toml")
+    requirements_path = os.path.join(cwd, "requirements.txt")
+    if os.path.exists(pyproject_path) or os.path.exists(requirements_path):
         frameworks.append("python")
-        if (
-            os.path.exists(os.path.join(cwd, "uv.lock"))
-            or "uv"
-            in open(os.path.join(cwd, "pyproject.toml"), encoding="utf-8").read()
-            if os.path.exists(os.path.join(cwd, "pyproject.toml"))
-            else False
-        ):
+        uses_uv = os.path.exists(os.path.join(cwd, "uv.lock"))
+        if not uses_uv and os.path.exists(pyproject_path):
+            with open(pyproject_path, encoding="utf-8") as pyproject_file:
+                uses_uv = "uv" in pyproject_file.read()
+        if uses_uv:
             frameworks.append("uv")
 
     # Rust

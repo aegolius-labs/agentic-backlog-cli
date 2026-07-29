@@ -51,3 +51,7 @@ source = "vcs"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+filterwarnings = [
+  "error:coroutine .* was never awaited:RuntimeWarning",
+  "error::pytest.PytestUnraisableExceptionWarning",
+]
