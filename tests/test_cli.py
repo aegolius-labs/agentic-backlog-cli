@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from aio_agentic_sdlc.cli import main
 
@@ -16,7 +16,7 @@ def test_cli_plan(capsys):
 @patch("os.path.exists")
 @patch("os.path.isdir")
 @patch("glob.glob")
-@patch("asyncio.run")
+@patch("aio_agentic_sdlc.cli._run_architect_subagent", new_callable=AsyncMock)
 @patch("aio_agentic_sdlc.dag_manager.DAGManager")
 @patch("aio_agentic_sdlc.diffing_engine.DiffingEngine")
 @patch("aio_agentic_sdlc.archiver.PRDArchiver")
@@ -26,7 +26,7 @@ def test_plan_cmd_with_inbox_files(
     mock_archiver,
     mock_diff_engine,
     mock_dag_manager,
-    mock_asyncio_run,
+    mock_architect_subagent,
     mock_glob,
     mock_isdir,
     mock_exists,
@@ -57,7 +57,9 @@ def test_plan_cmd_with_inbox_files(
 
     plan_cmd(MagicMock())
 
-    mock_asyncio_run.assert_called_once()
+    mock_architect_subagent.assert_awaited_once_with(
+        ["inbox/prd1.md", "inbox/prd2.md", "inbox/prd3.md"]
+    )
     # Should archive prd1.md, try prd3.md (fails), skip prd2.md
     mock_archiver.return_value.archive.assert_any_call("inbox/prd1.md")
     mock_archiver.return_value.archive.assert_any_call("inbox/prd3.md")
