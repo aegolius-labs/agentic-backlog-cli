@@ -147,7 +147,9 @@ class ReconciliationEngine:
         candidates = [
             self.reality.nodes[node_id] for node_id in candidate_ids[:max_candidates]
         ]
-        candidate_is_contested = candidate_claims[candidate_key] > 1
+        candidate_is_contested = (
+            total_candidates > 0 and candidate_claims[candidate_key] > 1
+        )
         total_contested_candidates = total_candidates if candidate_is_contested else 0
         if total_candidates == 1 and not candidate_is_contested:
             classification = "candidate"

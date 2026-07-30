@@ -168,6 +168,30 @@ def test_one_reality_candidate_cannot_be_proposed_for_multiple_intents():
     assert report["summary"]["ambiguous"] == 2
 
 
+def test_duplicate_intent_names_without_reality_do_not_invent_shared_candidates():
+    intention = _dag(
+        [
+            _node(
+                "00000000-0000-0000-0000-000000000001",
+                NodeType.COMPONENT,
+                "Worker",
+            ),
+            _node(
+                "00000000-0000-0000-0000-000000000002",
+                NodeType.COMPONENT,
+                "worker",
+            ),
+        ]
+    )
+
+    report = ReconciliationEngine(intention, _dag([])).analyze(max_items=10)
+
+    assert report["summary"]["unmapped"] == 2
+    assert all(item["classification"] == "unmapped" for item in report["items"])
+    assert all(item["reality_candidates"] == [] for item in report["items"])
+    assert all(item["evidence"] == [] for item in report["items"])
+
+
 def test_reconciliation_preserves_unicode_identity_and_rejects_empty_keys():
     japanese_intent_id = "00000000-0000-0000-0000-000000000001"
     punctuation_intent_id = "00000000-0000-0000-0000-000000000002"
