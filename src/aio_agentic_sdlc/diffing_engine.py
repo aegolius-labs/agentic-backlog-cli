@@ -1,7 +1,31 @@
-from typing import Any, Dict, List
+from dataclasses import dataclass
+from typing import Any, Dict, List, Literal
 
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.dag_models import Edge, EdgeType
+from aio_agentic_sdlc.reconciliation import ReconciliationEngine
+
+
+@dataclass(frozen=True)
+class DiffPolicy:
+    """Select safe reconciliation planning or explicit legacy structural behavior."""
+
+    mode: Literal["safe", "legacy_structural"] = "safe"
+    max_tasks: int = 100
+
+    def __post_init__(self):
+        if isinstance(self.max_tasks, bool) or not isinstance(self.max_tasks, int):
+            raise TypeError("max_tasks must be an integer")
+        if self.max_tasks < 1:
+            raise ValueError("max_tasks must be at least 1")
+
+    @classmethod
+    def safe(cls, *, max_tasks: int = 100) -> "DiffPolicy":
+        return cls(mode="safe", max_tasks=max_tasks)
+
+    @classmethod
+    def legacy_structural(cls) -> "DiffPolicy":
+        return cls(mode="legacy_structural")
 
 
 class DiffingEngine:
@@ -10,9 +34,187 @@ class DiffingEngine:
     generating a backlog of tasks required to reconcile Reality with Intention.
     """
 
-    def __init__(self, intention: DAGManager, reality: DAGManager):
+    def __init__(
+        self,
+        intention: DAGManager,
+        reality: DAGManager,
+        *,
+        policy: DiffPolicy | None = None,
+    ):
         self.intention = intention
         self.reality = reality
+        self.policy = policy or DiffPolicy.safe()
+
+    def calculate_diff(self) -> Dict[str, Any]:
+        """Calculate a bounded safe plan unless legacy behavior is explicit."""
+
+        if self.policy.mode == "legacy_structural":
+            return self._calculate_legacy_structural()
+        return self._calculate_safe()
+
+    @staticmethod
+    def _base_task(description: str) -> Dict[str, Any]:
+        return {
+            "item_type": "Task",
+            "impact": 3,
+            "effort": 2,
+            "category": "Reconciliation",
+            "description": description,
+            "status": "New",
+            "blockers": [],
+            "scores": {},
+        }
+
+    def _confirmed_drift_task(self, record: Dict[str, Any]):
+        intent_node = self.intention.nodes[record["intent"]["id"]]
+        reality_node = self.reality.nodes[intent_node.id]
+        drift = []
+        if (
+            reality_node.domain is not None
+            and intent_node.domain != reality_node.domain
+        ):
+            drift.append(
+                f"Domain drift: intention '{intent_node.domain}', "
+                f"reality '{reality_node.domain}'"
+            )
+        for key, value in (intent_node.attributes or {}).items():
+            reality_attributes = reality_node.attributes or {}
+            if key not in reality_attributes:
+                continue
+            reality_value = reality_attributes[key]
+            if reality_value != value:
+                drift.append(
+                    f"Attribute '{key}' drift: intention '{value}', "
+                    f"reality '{reality_value}'"
+                )
+        if not drift:
+            return None
+
+        name = (
+            f"Update confirmed {intent_node.type.value.capitalize()} "
+            f"'{intent_node.name}' [{intent_node.id[:8]}]"
+        )
+        task = self._base_task(
+            f"Node ID: {intent_node.id}\nConfirmed by canonical GUID.\n"
+            + "\n".join(drift)
+        )
+        task.update(
+            {
+                "category": "Maintenance",
+                "impact": 2,
+                "action": "update_confirmed",
+                "evidence": {"canonical_guid": intent_node.id},
+            }
+        )
+        return name, task
+
+    def _review_task(self, record: Dict[str, Any]):
+        intent = record["intent"]
+        node_label = f"{intent['type'].capitalize()} '{intent['name']}'"
+        short_id = intent["id"][:8]
+        candidates = [node["id"] for node in record["reality_candidates"]]
+
+        if record["classification"] == "candidate":
+            name = f"Review mapping for {node_label} [{short_id}]"
+            action = "review_mapping"
+            description = (
+                f"Canonical intent {intent['id']} has one deterministic structural "
+                "candidate. Confirm or reject the mapping; do not create or delete "
+                "code from this evidence alone."
+            )
+        elif record["classification"] == "ambiguous":
+            name = f"Resolve ambiguous mapping for {node_label} [{short_id}]"
+            action = "resolve_ambiguous_mapping"
+            description = (
+                f"Canonical intent {intent['id']} matches multiple observed nodes. "
+                "Select no mapping or exactly one mapping using additional evidence."
+            )
+        else:
+            name = f"Investigate implementation for {node_label} [{short_id}]"
+            action = "investigate_intent"
+            description = (
+                f"Canonical intent {intent['id']} has no deterministic structural "
+                "match. Establish implementation evidence before proposing creation."
+            )
+
+        task = self._base_task(description)
+        task.update(
+            {
+                "action": action,
+                "canonical_intent_id": intent["id"],
+                "evidence": {
+                    "classification": record["classification"],
+                    "candidate_reality_ids": candidates,
+                    "signals": record["evidence"],
+                },
+            }
+        )
+        return name, task
+
+    def _calculate_safe(self) -> Dict[str, Any]:
+        report = ReconciliationEngine(self.intention, self.reality).analyze(
+            max_items=max(1, len(self.intention.nodes))
+        )
+        tasks = []
+        for record in report["items"]:
+            if record["subject_kind"] != "intent":
+                continue
+            if record["classification"] == "confirmed":
+                drift_task = self._confirmed_drift_task(record)
+                if drift_task:
+                    tasks.append(drift_task)
+            else:
+                tasks.append(self._review_task(record))
+
+        confirmed_ids = {
+            record["intent"]["id"]
+            for record in report["items"]
+            if record["subject_kind"] == "intent"
+            and record["classification"] == "confirmed"
+        }
+        reality_edges = {
+            (edge.source, edge.target, edge.type) for edge in self.reality.edges
+        }
+        for edge in self.intention.edges:
+            edge_key = (edge.source, edge.target, edge.type)
+            if (
+                edge.source in confirmed_ids
+                and edge.target in confirmed_ids
+                and edge_key not in reality_edges
+            ):
+                name = (
+                    f"Connect confirmed nodes '{edge.source}' to '{edge.target}' "
+                    f"({edge.type.value})"
+                )
+                task = self._base_task(
+                    f"Both endpoints are confirmed by canonical GUID; the "
+                    f"{edge.type.value} edge is absent from Reality."
+                )
+                task.update(
+                    {
+                        "action": "connect_confirmed",
+                        "evidence": {
+                            "confirmed_endpoint_ids": [edge.source, edge.target]
+                        },
+                    }
+                )
+                tasks.append((name, task))
+
+        total_tasks = len(tasks)
+        returned = tasks[: self.policy.max_tasks]
+        nodes = {name: task for name, task in returned}
+        return {
+            "nodes": nodes,
+            "edges": [],
+            "meta": {
+                "mode": "safe",
+                "max_tasks": self.policy.max_tasks,
+                "total_tasks": total_tasks,
+                "returned_tasks": len(returned),
+                "truncated": len(returned) < total_tasks,
+                "reconciliation": report["summary"],
+            },
+        }
 
     def _is_implementation_detail(self, node_id: str) -> bool:
         visited = set()
@@ -39,7 +241,7 @@ class DiffingEngine:
 
         return check_ancestors(node_id)
 
-    def calculate_diff(self) -> Dict[str, Any]:
+    def _calculate_legacy_structural(self) -> Dict[str, Any]:
         """
         Calculates the diff between Intention DAG and Reality DAG.
         Returns a dictionary representing Backlog items.

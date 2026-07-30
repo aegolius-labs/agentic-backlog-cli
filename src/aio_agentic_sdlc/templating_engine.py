@@ -48,6 +48,7 @@ def generate_document(
         loader=jinja2.FileSystemLoader(str(resolved_templates_dir)),
         autoescape=jinja2.select_autoescape(["html", "xml"]),
         undefined=jinja2.StrictUndefined,
+        keep_trailing_newline=True,
     )
 
     try:

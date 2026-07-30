@@ -15,7 +15,9 @@ framework tools for documents and DAG state.
 ## 3. Reality reconciliation
 
 Follow [roles/cartographer.md](roles/cartographer.md). Generate the Reality DAG, validate GUID
-traceability, classify drift, and route the repair:
+traceability, run evidence-gated identity reconciliation, classify drift, and route the repair.
+Only identical canonical GUIDs are confirmed. Exact structural matches remain approval-required
+candidates, and unmatched Reality observations are unclassified rather than deletion candidates:
 
 - Reality drift: accepted intent is not implemented; route to the implementer.
 - Intention drift: code exists without accepted intent; route to the architect for validation.

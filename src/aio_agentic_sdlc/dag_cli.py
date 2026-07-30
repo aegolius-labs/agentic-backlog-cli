@@ -5,10 +5,14 @@ import click
 
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.dag_models import Edge, EdgeType, Node, NodeType
-from aio_agentic_sdlc.diffing_engine import DiffingEngine
+from aio_agentic_sdlc.diffing_engine import DiffingEngine, DiffPolicy
 from aio_agentic_sdlc.intent_ir import IntentIR
 from aio_agentic_sdlc.intent_store import create_intent_node_file, update_intent_file
 from aio_agentic_sdlc.reality_dag_generator import RealityDAGGenerator
+from aio_agentic_sdlc.reconciliation import (
+    ReconciliationEngine,
+    write_reconciliation_report,
+)
 
 
 @click.group()
@@ -176,17 +180,80 @@ def intent_set(file, node_id, payload_file, expected_revision):
     type=click.Path(exists=True),
     help="Path to the Reality DAG yaml file.",
 )
-def diff(intention, reality):
+@click.option(
+    "--mode",
+    type=click.Choice(["safe", "legacy-structural"]),
+    default="safe",
+    show_default=True,
+    help="Use evidence-gated planning or explicitly request legacy structural output.",
+)
+@click.option(
+    "--max-tasks",
+    type=click.IntRange(min=1),
+    default=100,
+    show_default=True,
+    help="Maximum tasks returned by safe planning.",
+)
+def diff(intention, reality, mode, max_tasks):
     """Calculates the diff between Intention DAG and Reality DAG."""
     try:
         intent_manager = DAGManager.load(intention)
         reality_manager = DAGManager.load(reality)
-        engine = DiffingEngine(intent_manager, reality_manager)
+        policy = (
+            DiffPolicy.safe(max_tasks=max_tasks)
+            if mode == "safe"
+            else DiffPolicy.legacy_structural()
+        )
+        engine = DiffingEngine(intent_manager, reality_manager, policy=policy)
         diff_result = engine.calculate_diff()
 
         click.echo(json.dumps(diff_result, indent=2))
     except Exception as e:
         click.secho(f"Error computing diff: {str(e)}", err=True, fg="red")
+        sys.exit(1)
+
+
+@cli.command("reconcile")
+@click.option(
+    "--intention",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the canonical Intention DAG yaml file.",
+)
+@click.option(
+    "--reality",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the generated Reality DAG yaml file.",
+)
+@click.option(
+    "--max-items",
+    type=click.IntRange(min=1),
+    default=100,
+    show_default=True,
+    help="Maximum evidence records returned without hiding complete totals.",
+)
+@click.option(
+    "--output",
+    type=click.Path(dir_okay=False),
+    help="Atomically write the JSON report instead of printing it.",
+)
+def reconcile(intention, reality, max_items, output):
+    """Render a bounded, read-only reconciliation evidence report."""
+
+    try:
+        intent_manager = DAGManager.load(intention)
+        reality_manager = DAGManager.load(reality)
+        report = ReconciliationEngine(intent_manager, reality_manager).analyze(
+            max_items=max_items
+        )
+        if output:
+            write_reconciliation_report(report, output)
+            click.echo(f"Reconciliation report saved to {output}.")
+        else:
+            click.echo(json.dumps(report, indent=2))
+    except Exception as e:
+        click.secho(f"Error reconciling DAGs: {str(e)}", err=True, fg="red")
         sys.exit(1)
 
 

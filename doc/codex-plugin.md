@@ -66,6 +66,7 @@ prompts include:
 - “Run this change through the agentic SDLC pipeline.”
 - “Show me the highest-priority unblocked task.”
 - “Generate the Reality DAG and report traceability drift.”
+- “Reconcile the Intention and Reality DAGs without proposing destructive cleanup.”
 
 For MCP calls, pass the absolute target repository as `project_path`. This is especially important
 when the plugin is installed because Codex runs the server from a cached plugin package, not from

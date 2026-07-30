@@ -19,6 +19,7 @@ from .dag_manager import DAGManager
 from .dag_models import Node, NodeType
 from .intent_ir import IntentIR
 from .intent_store import create_intent_node_file, update_intent_file
+from .reconciliation import ReconciliationEngine
 from .templating_engine import generate_document as generate_document_from_template
 
 # Create the MCP server instance
@@ -338,6 +339,29 @@ def validate_traceability(
         return "Traceability Drift Detected:\n" + "\n".join(errors)
     except Exception as e:
         return f"Error validating traceability: {str(e)}"
+
+
+@mcp.tool()
+def reconcile_dags(
+    project_path: str = Field(
+        ".", description="Absolute path to the project directory"
+    ),
+    max_items: int = Field(
+        100,
+        ge=1,
+        description="Maximum evidence records returned; totals remain complete",
+    ),
+) -> str:
+    """Classify Intention/Reality identity evidence without mutating project state."""
+
+    try:
+        project_root = os.path.abspath(project_path)
+        intention = DAGManager.load(os.path.join(project_root, "intention-dag.yaml"))
+        reality = DAGManager.load(os.path.join(project_root, "reality-dag.yaml"))
+        report = ReconciliationEngine(intention, reality).analyze(max_items=max_items)
+        return json.dumps(report, indent=2)
+    except Exception as e:
+        return f"Error reconciling DAGs: {str(e)}"
 
 
 @mcp.tool()

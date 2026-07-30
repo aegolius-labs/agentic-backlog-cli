@@ -47,3 +47,22 @@ def test_template_not_found(tmp_path):
             generate_document("missing.md", {}, "out.md")
     finally:
         os.chdir(old_cwd)
+
+
+def test_generate_document_preserves_template_trailing_newline(tmp_path):
+    templates_dir = tmp_path / "templates"
+    templates_dir.mkdir()
+    (templates_dir / "report.md").write_text(
+        "# {{ title }}\n",
+        encoding="utf-8",
+    )
+
+    rendered = generate_document(
+        "report.md",
+        {"title": "Evidence"},
+        str(tmp_path / "report.md"),
+        templates_dir=str(templates_dir),
+    )
+
+    assert rendered == "# Evidence\n"
+    assert (tmp_path / "report.md").read_bytes().endswith(b"\n")

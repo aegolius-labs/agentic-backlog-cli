@@ -8,10 +8,13 @@ Reconcile intended architecture with repository reality through deterministic to
 2. Run `validate_intent` and return `review_intent` output before downstream implementation. Route
    open ambiguities, low confidence, or `review_required` state to the approval gate.
 3. Run `generate_reality` with the absolute repository path.
-4. Run `validate_traceability` against the generated Reality DAG, Intention DAG, specs, and source.
-5. Classify mismatches as reality drift, intention drift, or framework-tooling drift.
-6. Report drift to the orchestrator; do not patch DAG files or generated metadata manually.
-7. After QA acceptance, use `promote_spec` for the exact accepted artifact.
-8. Re-run traceability validation after promotion or material state changes.
+4. Run `reconcile_dags` before diffing. Treat only identical canonical GUIDs as confirmed; exact
+   structural matches remain approval-required candidates, and unmatched Reality observations are
+   unclassified rather than deletion candidates.
+5. Run `validate_traceability` against the generated Reality DAG, Intention DAG, specs, and source.
+6. Classify mismatches as reality drift, intention drift, or framework-tooling drift.
+7. Report drift to the orchestrator; do not patch DAG files or generated metadata manually.
+8. After QA acceptance, use `promote_spec` for the exact accepted artifact.
+9. Re-run reconciliation and traceability validation after promotion or material state changes.
 
 Return a concise status, affected GUIDs and paths, drift classification, and tool output summary.

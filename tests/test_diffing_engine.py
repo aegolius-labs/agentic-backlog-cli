@@ -1,6 +1,6 @@
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.dag_models import Edge, EdgeType, Metadata, Node, NodeType
-from aio_agentic_sdlc.diffing_engine import DiffingEngine
+from aio_agentic_sdlc.diffing_engine import DiffingEngine, DiffPolicy
 
 
 def create_sample_dag(name="Sample", nodes=None, edges=None):
@@ -12,6 +12,16 @@ def create_sample_dag(name="Sample", nodes=None, edges=None):
     return DAGManager(meta, nodes, edges)
 
 
+def create_legacy_engine(intent, reality):
+    """Exercise the compatibility algorithm explicitly; safe mode is tested separately."""
+
+    return DiffingEngine(
+        intent,
+        reality,
+        policy=DiffPolicy.legacy_structural(),
+    )
+
+
 def test_missing_node():
     node_intent = Node(
         id="23608194-7147-430e-8491-f404366227c8",
@@ -21,7 +31,7 @@ def test_missing_node():
     intent = create_sample_dag(nodes=[node_intent])
     reality = create_sample_dag()
 
-    engine = DiffingEngine(intent, reality)
+    engine = create_legacy_engine(intent, reality)
     diff = engine.calculate_diff()
 
     nodes = diff["nodes"]
@@ -40,7 +50,7 @@ def test_extraneous_node():
     intent = create_sample_dag()
     reality = create_sample_dag(nodes=[node_real])
 
-    engine = DiffingEngine(intent, reality)
+    engine = create_legacy_engine(intent, reality)
     diff = engine.calculate_diff()
 
     nodes = diff["nodes"]
@@ -69,7 +79,7 @@ def test_drift_node():
     intent = create_sample_dag(nodes=[node_intent])
     reality = create_sample_dag(nodes=[node_real])
 
-    engine = DiffingEngine(intent, reality)
+    engine = create_legacy_engine(intent, reality)
     diff = engine.calculate_diff()
 
     nodes = diff["nodes"]
@@ -96,7 +106,7 @@ def test_missing_edge():
     intent = create_sample_dag(nodes=[n1, n2], edges=[edge])
     reality = create_sample_dag(nodes=[n1, n2], edges=[])
 
-    engine = DiffingEngine(intent, reality)
+    engine = create_legacy_engine(intent, reality)
     diff = engine.calculate_diff()
 
     nodes = diff["nodes"]
@@ -129,7 +139,7 @@ def test_missing_edge_with_missing_nodes():
     intent = create_sample_dag(nodes=[n1, n2], edges=[edge])
     reality = create_sample_dag()  # empty reality
 
-    engine = DiffingEngine(intent, reality)
+    engine = create_legacy_engine(intent, reality)
     diff = engine.calculate_diff()
 
     nodes = diff["nodes"]
@@ -167,7 +177,7 @@ def test_extraneous_edge():
     intent = create_sample_dag(nodes=[n1, n2], edges=[])
     reality = create_sample_dag(nodes=[n1, n2], edges=[edge])
 
-    engine = DiffingEngine(intent, reality)
+    engine = create_legacy_engine(intent, reality)
     diff = engine.calculate_diff()
 
     nodes = diff["nodes"]
@@ -192,7 +202,7 @@ def test_unmapped_node_with_no_parents():
     intent = create_sample_dag(nodes=[node_a])
     reality = create_sample_dag(nodes=[node_a, node_b])
 
-    engine = DiffingEngine(intent, reality)
+    engine = create_legacy_engine(intent, reality)
     diff = engine.calculate_diff()
 
     nodes = diff["nodes"]
@@ -218,7 +228,7 @@ def test_unmapped_node_with_unmapped_parent():
     intent = create_sample_dag(nodes=[node_a])
     reality = create_sample_dag(nodes=[node_b, node_c], edges=[edge])
 
-    engine = DiffingEngine(intent, reality)
+    engine = create_legacy_engine(intent, reality)
     diff = engine.calculate_diff()
 
     nodes = diff["nodes"]
@@ -242,7 +252,7 @@ def test_unmapped_node_with_mapped_parent():
     intent = create_sample_dag(nodes=[node_a])
     reality = create_sample_dag(nodes=[node_a, node_b], edges=[edge])
 
-    engine = DiffingEngine(intent, reality)
+    engine = create_legacy_engine(intent, reality)
     diff = engine.calculate_diff()
 
     nodes = diff["nodes"]
@@ -273,7 +283,7 @@ def test_unmapped_node_with_mapped_grandparent():
     intent = create_sample_dag(nodes=[node_a])
     reality = create_sample_dag(nodes=[node_a, node_b, node_c], edges=[edge1, edge2])
 
-    engine = DiffingEngine(intent, reality)
+    engine = create_legacy_engine(intent, reality)
     diff = engine.calculate_diff()
 
     nodes = diff["nodes"]
@@ -313,7 +323,7 @@ def test_circular_dependency_resiliency():
         nodes=[node_b, node_c, node_d], edges=[edge1, edge2, edge3]
     )
 
-    engine = DiffingEngine(intent, reality)
+    engine = create_legacy_engine(intent, reality)
     diff = engine.calculate_diff()
 
     nodes = diff["nodes"]

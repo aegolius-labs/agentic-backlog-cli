@@ -23,6 +23,10 @@ graph TD
         CLI --> IntentReview[Intent IR validation and review]
         IntentReview --> Intent[(intention-dag.yaml)]
         CLI --> Reality[(reality-dag.yaml)]
+        Intent --> Reconcile[Evidence-gated reconciliation]
+        Reality --> Reconcile
+        Reconcile --> SafePlan[Bounded review plan]
+        SafePlan --> ReadJSON
         CLI --> ReadJSON[load_backlog]
         ReadJSON --> FileDB[(backlog.json)]
         CLI --> Lock[Cross-process state lock]
@@ -67,6 +71,33 @@ Intent IR creation and revision are serialized by a lock under `.aio-sdlc/`. Cal
 current node revision; stale writers fail instead of overwriting newer interpretation. Revisions
 must preserve the complete existing history and append exactly one next entry. DAG replacement is
 atomic, so a failed final replace leaves the prior canonical file intact.
+
+### Evidence-gated reconciliation
+
+Raw GUID inequality is not proof that implementation is missing or unwanted. Before backlog
+planning, `ReconciliationEngine` classifies each Intention node as:
+
+- `confirmed`: the Reality DAG contains the same canonical GUID;
+- `candidate`: exactly one Reality node has the same normalized name and node type;
+- `ambiguous`: more than one node satisfies that deterministic structural signal; or
+- `unmapped`: no deterministic structural candidate exists.
+
+Candidates always require approval. The engine does not use semantic similarity to approve
+mappings and does not mutate either DAG. Reality nodes without a confirmed GUID are reported as
+`unclassified_reality`; they are not deletion evidence.
+
+Safe diffing is the default. It produces bounded mapping-review or implementation-investigation
+work and includes complete totals plus truncation metadata. It only reports drift for confirmed
+identities when Reality contains an observed value that contradicts intent. Missing observations
+are not contradictions. The former structural create/remove/disconnect algorithm remains available
+only through the explicit `legacy-structural` compatibility mode.
+
+```powershell
+uv run dag-tool reconcile --intention intention-dag.yaml --reality reality-dag.yaml
+uv run dag-tool diff --intention intention-dag.yaml --reality reality-dag.yaml
+uv run dag-tool diff --intention intention-dag.yaml --reality reality-dag.yaml `
+  --mode legacy-structural
+```
 
 ### 3. State Loading
 

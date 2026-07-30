@@ -15,6 +15,7 @@ Tool names may be namespaced by the Codex host. Match them by the operation name
 | Check PRD overlap | `check_duplicate_prd` | Use the Python API if MCP is unavailable |
 | Validate GUID links | `validate_traceability` | Use the Python API if MCP is unavailable |
 | Generate Reality DAG | `generate_reality` | `uv run dag-tool generate-reality ...` |
+| Reconcile DAG identity evidence | `reconcile_dags` | `uv run dag-tool reconcile ...` |
 | Create intent node | `create_intent_node` | `uv run dag-tool intent create-node ...` |
 | Revise Intent IR | `set_intent` | `uv run dag-tool intent set ...` |
 | Validate Intent IR | `validate_intent` | `uv run dag-tool validate-intent --file ...` |
