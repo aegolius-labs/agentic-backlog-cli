@@ -103,7 +103,7 @@ def test_mcp_reconcile_dags_returns_the_same_evidence_report(tmp_path):
     DAGManager(metadata, [node], []).save(str(tmp_path / "intention-dag.yaml"))
     DAGManager(metadata, [node], []).save(str(tmp_path / "reality-dag.yaml"))
 
-    result = json.loads(reconcile_dags(project_path=str(tmp_path), max_items=10))
+    result = json.loads(reconcile_dags(project_path=str(tmp_path)))
 
     assert result["schema_version"] == 1
     assert result["summary"]["confirmed"] == 1

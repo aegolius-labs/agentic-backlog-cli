@@ -2,67 +2,20 @@
   "schema_version": 1,
   "summary": {
     "intention_nodes": 56,
-    "reality_nodes": 3573,
-    "confirmed": 1,
-    "candidate": 6,
-    "ambiguous": 0,
-    "unmapped": 49,
-    "unclassified_reality": 3572
+    "reality_nodes": 3508,
+    "confirmed": 0,
+    "candidate": 4,
+    "ambiguous": 2,
+    "unmapped": 50,
+    "unclassified_reality": 3508
   },
   "limit": {
     "max_items": 10,
-    "total_items": 3628,
+    "total_items": 3564,
     "returned_items": 10,
     "truncated": true
   },
   "items": [
-    {
-      "subject_kind": "intent",
-      "classification": "confirmed",
-      "intent": {
-        "id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
-        "type": "component",
-        "name": "Evidence-Gated Reconciliation Baseline"
-      },
-      "reality_candidates": [
-        {
-          "id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
-          "type": "module",
-          "name": "reconciliation.py"
-        }
-      ],
-      "evidence": [
-        {
-          "kind": "canonical_guid",
-          "value": "9015c8a3-fd14-5598-916d-d03fcf41e415"
-        }
-      ],
-      "requires_approval": false
-    },
-    {
-      "subject_kind": "intent",
-      "classification": "candidate",
-      "intent": {
-        "id": "0fea8fea-9a23-404b-a16b-a9c9c3990e1b",
-        "type": "component",
-        "name": "Reality DAG Generator"
-      },
-      "reality_candidates": [
-        {
-          "id": "5f9d3dc7-cd7e-5402-86cd-356a4b6846fb",
-          "type": "component",
-          "name": "RealityDAGGenerator"
-        }
-      ],
-      "evidence": [
-        {
-          "kind": "normalized_name_and_type",
-          "normalized_name": "realitydaggenerator",
-          "node_type": "component"
-        }
-      ],
-      "requires_approval": true
-    },
     {
       "subject_kind": "intent",
       "classification": "candidate",
@@ -78,6 +31,12 @@
           "name": "PRDArchiver"
         }
       ],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 1,
+        "returned_candidates": 1,
+        "truncated": false
+      },
       "evidence": [
         {
           "kind": "normalized_name_and_type",
@@ -102,34 +61,16 @@
           "name": "TraceabilityValidator"
         }
       ],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 1,
+        "returned_candidates": 1,
+        "truncated": false
+      },
       "evidence": [
         {
           "kind": "normalized_name_and_type",
           "normalized_name": "traceabilityvalidator",
-          "node_type": "component"
-        }
-      ],
-      "requires_approval": true
-    },
-    {
-      "subject_kind": "intent",
-      "classification": "candidate",
-      "intent": {
-        "id": "9865715b-99a5-4dcb-ba92-90b03cc3cf1c",
-        "type": "component",
-        "name": "Tree-Sitter Parser"
-      },
-      "reality_candidates": [
-        {
-          "id": "68d91d09-7a15-5e5c-8387-68ac2ec30139",
-          "type": "component",
-          "name": "TreeSitterParser"
-        }
-      ],
-      "evidence": [
-        {
-          "kind": "normalized_name_and_type",
-          "normalized_name": "treesitterparser",
           "node_type": "component"
         }
       ],
@@ -150,6 +91,12 @@
           "name": "ParserFactory"
         }
       ],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 1,
+        "returned_candidates": 1,
+        "truncated": false
+      },
       "evidence": [
         {
           "kind": "normalized_name_and_type",
@@ -174,10 +121,86 @@
           "name": "DiffingEngine"
         }
       ],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 1,
+        "returned_candidates": 1,
+        "truncated": false
+      },
       "evidence": [
         {
           "kind": "normalized_name_and_type",
           "normalized_name": "diffingengine",
+          "node_type": "component"
+        }
+      ],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "ambiguous",
+      "intent": {
+        "id": "0fea8fea-9a23-404b-a16b-a9c9c3990e1b",
+        "type": "component",
+        "name": "Reality DAG Generator"
+      },
+      "reality_candidates": [
+        {
+          "id": "5f9d3dc7-cd7e-5402-86cd-356a4b6846fb",
+          "type": "component",
+          "name": "RealityDAGGenerator"
+        },
+        {
+          "id": "6cb3bf65-5eae-563d-9a9b-bf8bed4bea12",
+          "type": "component",
+          "name": "RealityDAGGenerator"
+        }
+      ],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 2,
+        "returned_candidates": 2,
+        "truncated": false
+      },
+      "evidence": [
+        {
+          "kind": "normalized_name_and_type",
+          "normalized_name": "realitydaggenerator",
+          "node_type": "component"
+        }
+      ],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "ambiguous",
+      "intent": {
+        "id": "9865715b-99a5-4dcb-ba92-90b03cc3cf1c",
+        "type": "component",
+        "name": "Tree-Sitter Parser"
+      },
+      "reality_candidates": [
+        {
+          "id": "68d91d09-7a15-5e5c-8387-68ac2ec30139",
+          "type": "component",
+          "name": "TreeSitterParser"
+        },
+        {
+          "id": "d65a3132-e5c9-5048-8b20-ea0dd00fe24c",
+          "type": "component",
+          "name": "TreeSitterParser"
+        }
+      ],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 2,
+        "returned_candidates": 2,
+        "truncated": false
+      },
+      "evidence": [
+        {
+          "kind": "normalized_name_and_type",
+          "normalized_name": "treesitterparser",
           "node_type": "component"
         }
       ],
@@ -192,6 +215,12 @@
         "name": "SDLC Architect Agent"
       },
       "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
       "evidence": [],
       "requires_approval": true
     },
@@ -204,6 +233,12 @@
         "name": "TUI Dashboard"
       },
       "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
       "evidence": [],
       "requires_approval": true
     },
@@ -216,6 +251,30 @@
         "name": "Daemon Watcher"
       },
       "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "1525a991-0ffa-4f82-b5a1-b23602346ca4",
+        "type": "endpoint",
+        "name": "Health Check Endpoint"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
       "evidence": [],
       "requires_approval": true
     }

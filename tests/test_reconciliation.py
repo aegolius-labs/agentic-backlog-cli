@@ -1,13 +1,15 @@
 import copy
 
+import pytest
+
 from aio_agentic_sdlc.dag_manager import DAGManager
-from aio_agentic_sdlc.dag_models import Metadata, Node, NodeType
+from aio_agentic_sdlc.dag_models import Edge, EdgeType, Metadata, Node, NodeType
 from aio_agentic_sdlc.diffing_engine import DiffingEngine, DiffPolicy
 from aio_agentic_sdlc.reconciliation import ReconciliationEngine
 
 
-def _dag(nodes):
-    return DAGManager(Metadata(name="Test", version="1.0"), nodes, [])
+def _dag(nodes, edges=None):
+    return DAGManager(Metadata(name="Test", version="1.0"), nodes, edges or [])
 
 
 def _node(node_id, node_type, name):
@@ -166,6 +168,122 @@ def test_one_reality_candidate_cannot_be_proposed_for_multiple_intents():
     assert report["summary"]["ambiguous"] == 2
 
 
+def test_reconciliation_preserves_unicode_identity_and_rejects_empty_keys():
+    japanese_intent_id = "00000000-0000-0000-0000-000000000001"
+    punctuation_intent_id = "00000000-0000-0000-0000-000000000002"
+    intention = _dag(
+        [
+            _node(japanese_intent_id, NodeType.COMPONENT, "東京"),
+            _node(punctuation_intent_id, NodeType.COMPONENT, "---"),
+        ]
+    )
+    reality = _dag(
+        [
+            _node(
+                "00000000-0000-0000-0000-000000000101",
+                NodeType.COMPONENT,
+                "北京",
+            ),
+            _node(
+                "00000000-0000-0000-0000-000000000102",
+                NodeType.COMPONENT,
+                "...",
+            ),
+        ]
+    )
+
+    report = ReconciliationEngine(intention, reality).analyze(max_items=10)
+
+    by_intent = {
+        item["intent"]["id"]: item
+        for item in report["items"]
+        if item["subject_kind"] == "intent"
+    }
+    assert by_intent[japanese_intent_id]["classification"] == "unmapped"
+    assert by_intent[punctuation_intent_id]["classification"] == "unmapped"
+    assert all(not item["reality_candidates"] for item in by_intent.values())
+    assert report["summary"]["candidate"] == 0
+    assert report["summary"]["ambiguous"] == 0
+
+
+def test_reconciliation_bounds_nested_ambiguous_evidence_with_complete_totals():
+    intent_id = "00000000-0000-0000-0000-000000000001"
+    intention = _dag([_node(intent_id, NodeType.COMPONENT, "Worker")])
+    reality = _dag(
+        [
+            _node(
+                f"00000000-0000-0000-0000-{index:012d}",
+                NodeType.COMPONENT,
+                "Worker",
+            )
+            for index in range(100, 200)
+        ]
+    )
+
+    report = ReconciliationEngine(intention, reality).analyze(
+        max_items=1,
+        max_candidates=3,
+    )
+
+    item = report["items"][0]
+    assert item["classification"] == "ambiguous"
+    assert len(item["reality_candidates"]) == 3
+    assert item["candidate_limit"] == {
+        "max_candidates": 3,
+        "total_candidates": 100,
+        "returned_candidates": 3,
+        "truncated": True,
+    }
+
+    diff = DiffingEngine(
+        intention,
+        reality,
+        policy=DiffPolicy.safe(max_tasks=1, max_candidates=2),
+    ).calculate_diff()
+    task = next(iter(diff["nodes"].values()))
+    assert len(task["evidence"]["candidate_reality_ids"]) == 2
+    assert task["evidence"]["candidate_limit"]["total_candidates"] == 100
+    assert task["evidence"]["candidate_limit"]["truncated"] is True
+
+
+def test_reconciliation_confirms_mixed_case_text_forms_of_the_same_guid():
+    intent_id = "ABCDEFAB-CDEF-ABCD-EFAB-CDEFABCDEFAB"
+    reality_id = intent_id.lower()
+    intention = _dag([_node(intent_id, NodeType.COMPONENT, "Intent name")])
+    reality = _dag([_node(reality_id, NodeType.COMPONENT, "Reality name")])
+
+    report = ReconciliationEngine(intention, reality).analyze(max_items=10)
+
+    assert report["summary"]["confirmed"] == 1
+    assert report["summary"]["candidate"] == 0
+    item = report["items"][0]
+    assert item["classification"] == "confirmed"
+    assert item["intent"]["id"] == intent_id
+    assert item["reality_candidates"][0]["id"] == reality_id
+    assert item["evidence"] == [
+        {
+            "kind": "canonical_guid",
+            "value": reality_id,
+            "intent_source_id": intent_id,
+            "reality_source_id": reality_id,
+        }
+    ]
+
+
+def test_reconciliation_rejects_duplicate_text_forms_of_one_canonical_guid():
+    lower_id = "abcdefab-cdef-abcd-efab-cdefabcdefab"
+    upper_id = lower_id.upper()
+    intention = _dag(
+        [
+            _node(lower_id, NodeType.COMPONENT, "First"),
+            _node(upper_id, NodeType.COMPONENT, "Duplicate"),
+        ]
+    )
+
+    with pytest.raises(ValueError, match="duplicate canonical GUID"):
+        ReconciliationEngine(intention, _dag([])).analyze(max_items=10)
+
+
 def test_safe_diff_requests_review_and_never_infers_creation_or_deletion():
     intent_id = "00000000-0000-0000-0000-000000000001"
     reality_id = "00000000-0000-0000-0000-000000000101"
@@ -184,7 +302,8 @@ def test_safe_diff_requests_review_and_never_infers_creation_or_deletion():
     diff = DiffingEngine(intention, reality).calculate_diff()
 
     assert list(diff["nodes"]) == [
-        "Review mapping for Component 'Diffing Engine' [00000000]"
+        "Review mapping for Component 'Diffing Engine' "
+        "[00000000-0000-0000-0000-000000000001]"
     ]
     task = next(iter(diff["nodes"].values()))
     assert task["category"] == "Reconciliation"
@@ -218,6 +337,7 @@ def test_safe_diff_caps_review_work_and_preserves_complete_counts():
     assert diff["meta"] == {
         "mode": "safe",
         "max_tasks": 2,
+        "max_candidates": 20,
         "total_tasks": 4,
         "returned_tasks": 2,
         "truncated": True,
@@ -231,6 +351,99 @@ def test_safe_diff_caps_review_work_and_preserves_complete_counts():
             "unclassified_reality": 0,
         },
     }
+
+
+def test_safe_diff_task_keys_cannot_drop_intents_with_shared_id_prefixes():
+    first_id = "12345678-0000-0000-0000-000000000001"
+    second_id = "12345678-0000-0000-0000-000000000002"
+    intention = _dag(
+        [
+            _node(first_id, NodeType.COMPONENT, "Same name"),
+            _node(second_id, NodeType.COMPONENT, "Same name"),
+        ]
+    )
+
+    diff = DiffingEngine(intention, _dag([])).calculate_diff()
+
+    assert len(diff["nodes"]) == 2
+    assert diff["meta"]["total_tasks"] == 2
+    assert diff["meta"]["returned_tasks"] == len(diff["nodes"])
+    assert diff["meta"]["truncated"] is False
+    assert all(node_id in "\n".join(diff["nodes"]) for node_id in (first_id, second_id))
+
+
+def test_safe_diff_canonicalizes_equivalent_mixed_case_edges():
+    first_intent_id = "ABCDEFAB-CDEF-ABCD-EFAB-CDEFABCDEF01"
+    second_intent_id = "ABCDEFAB-CDEF-ABCD-EFAB-CDEFABCDEF02"
+    first_reality_id = first_intent_id.lower()
+    second_reality_id = second_intent_id.lower()
+    intention = _dag(
+        [
+            _node(first_intent_id, NodeType.COMPONENT, "First"),
+            _node(second_intent_id, NodeType.COMPONENT, "Second"),
+        ],
+        [Edge(source=first_intent_id, target=second_intent_id, type=EdgeType.CALLS)],
+    )
+    reality = _dag(
+        [
+            _node(first_reality_id, NodeType.COMPONENT, "First observed"),
+            _node(second_reality_id, NodeType.COMPONENT, "Second observed"),
+        ],
+        [Edge(source=first_reality_id, target=second_reality_id, type=EdgeType.CALLS)],
+    )
+
+    diff = DiffingEngine(intention, reality).calculate_diff()
+
+    assert diff["nodes"] == {}
+    assert diff["meta"]["reconciliation"]["confirmed"] == 2
+
+
+def test_safe_diff_deduplicates_identical_logical_edges():
+    first_id = "00000000-0000-0000-0000-000000000001"
+    second_id = "00000000-0000-0000-0000-000000000002"
+    nodes = [
+        _node(first_id, NodeType.COMPONENT, "First"),
+        _node(second_id, NodeType.COMPONENT, "Second"),
+    ]
+    duplicate_edge = Edge(source=first_id, target=second_id, type=EdgeType.CALLS)
+    intention = _dag(nodes, [duplicate_edge, duplicate_edge.model_copy()])
+    reality = _dag(nodes)
+
+    diff = DiffingEngine(intention, reality).calculate_diff()
+
+    assert len(diff["nodes"]) == 1
+    assert diff["meta"]["total_tasks"] == 1
+    assert diff["meta"]["returned_tasks"] == 1
+
+
+def test_safe_diff_bounds_edges_in_canonical_order_not_input_order():
+    node_ids = [
+        "00000000-0000-0000-0000-000000000001",
+        "00000000-0000-0000-0000-000000000002",
+        "00000000-0000-0000-0000-000000000003",
+    ]
+    nodes = [
+        _node(node_id, NodeType.COMPONENT, f"Node {index}")
+        for index, node_id in enumerate(node_ids)
+    ]
+    first_edge = Edge(source=node_ids[0], target=node_ids[1], type=EdgeType.CALLS)
+    second_edge = Edge(source=node_ids[0], target=node_ids[2], type=EdgeType.CALLS)
+    reality = _dag(nodes)
+
+    first = DiffingEngine(
+        _dag(nodes, [first_edge, second_edge]),
+        reality,
+        policy=DiffPolicy.safe(max_tasks=1),
+    ).calculate_diff()
+    second = DiffingEngine(
+        _dag(nodes, [second_edge, first_edge]),
+        reality,
+        policy=DiffPolicy.safe(max_tasks=1),
+    ).calculate_diff()
+
+    assert first == second
+    assert first["meta"]["total_tasks"] == 2
+    assert first["meta"]["truncated"] is True
 
 
 def test_safe_diff_prioritizes_actionable_candidates_before_unmapped_intent():
@@ -284,6 +497,26 @@ def test_safe_diff_does_not_treat_missing_observations_as_drift():
         ]
     )
     reality = _dag([_node(node_id, NodeType.COMPONENT, "Mapped")])
+
+    diff = DiffingEngine(intention, reality).calculate_diff()
+
+    assert diff["nodes"] == {}
+    assert diff["meta"]["reconciliation"]["confirmed"] == 1
+
+
+def test_safe_diff_does_not_treat_unspecified_intent_domain_as_drift():
+    node_id = "00000000-0000-0000-0000-000000000001"
+    intention = _dag([_node(node_id, NodeType.COMPONENT, "Mapped")])
+    reality = _dag(
+        [
+            Node(
+                id=node_id,
+                type=NodeType.COMPONENT,
+                name="Mapped",
+                domain="observed",
+            )
+        ]
+    )
 
     diff = DiffingEngine(intention, reality).calculate_diff()
 

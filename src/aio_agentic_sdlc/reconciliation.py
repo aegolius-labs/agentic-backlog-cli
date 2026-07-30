@@ -5,18 +5,26 @@ from __future__ import annotations
 
 import json
 import os
-import re
 import tempfile
 import unicodedata
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
+from uuid import UUID
 
 from aio_agentic_sdlc.dag_manager import DAGManager
-from aio_agentic_sdlc.dag_models import Node
+from aio_agentic_sdlc.dag_models import Node, NodeType
 
 REPORT_SCHEMA_VERSION = 1
 DEFAULT_MAX_ITEMS = 100
+DEFAULT_MAX_CANDIDATES = 20
+PROTECTED_STATE_FILENAMES = {
+    "intention-dag.yaml",
+    "reality-dag.yaml",
+    "backlog.json",
+    "state-audit.jsonl",
+    "state.lock",
+}
 CLASSIFICATION_PRIORITY = {
     "confirmed": 0,
     "candidate": 1,
@@ -29,17 +37,50 @@ def normalize_node_name(value: str) -> str:
     """Return a conservative comparison key without inferring semantics."""
 
     normalized = unicodedata.normalize("NFKC", value).casefold()
-    return re.sub(r"[^a-z0-9]+", "", normalized)
+    return "".join(character for character in normalized if character.isalnum())
 
 
 def _node_summary(node: Node) -> dict[str, str]:
     return {"id": node.id, "type": node.type.value, "name": node.name}
 
 
-def write_reconciliation_report(report: dict[str, Any], output: str | Path) -> None:
+def _canonical_guid_index(
+    nodes: dict[str, Node],
+    *,
+    dag_name: str,
+) -> dict[str, str]:
+    index: dict[str, str] = {}
+    for source_id in nodes:
+        canonical_id = str(UUID(source_id))
+        if canonical_id in index:
+            raise ValueError(
+                f"{dag_name} contains duplicate canonical GUID {canonical_id}: "
+                f"{index[canonical_id]} and {source_id}"
+            )
+        index[canonical_id] = source_id
+    return index
+
+
+def write_reconciliation_report(
+    report: dict[str, Any],
+    output: str | Path,
+    *,
+    protected_paths: tuple[str | Path, ...] = (),
+) -> None:
     """Atomically persist one derived reconciliation report."""
 
     target = Path(output).resolve()
+    target_identity = os.path.normcase(str(target))
+    protected_identities = {
+        os.path.normcase(str(Path(path).resolve())) for path in protected_paths
+    }
+    if (
+        target.name.casefold() in PROTECTED_STATE_FILENAMES
+        or target_identity in protected_identities
+    ):
+        raise ValueError(
+            f"Refusing to overwrite protected framework state with a report: {target}"
+        )
     target.parent.mkdir(parents=True, exist_ok=True)
     descriptor, temporary = tempfile.mkstemp(
         dir=target.parent,
@@ -68,36 +109,49 @@ class ReconciliationEngine:
     def _intent_record(
         self,
         intent_node: Node,
-        confirmed_reality_ids: set[str],
-        candidate_claims: Counter[str],
+        confirmed_reality_by_canonical_id: dict[str, str],
+        candidate_index: dict[tuple[NodeType, str], list[str]],
+        candidate_claims: Counter[tuple[NodeType, str]],
+        max_candidates: int,
     ) -> dict[str, Any]:
-        if intent_node.id in self.reality.nodes:
-            reality_node = self.reality.nodes[intent_node.id]
+        canonical_intent_id = str(UUID(intent_node.id))
+        if canonical_intent_id in confirmed_reality_by_canonical_id:
+            reality_source_id = confirmed_reality_by_canonical_id[canonical_intent_id]
+            reality_node = self.reality.nodes[reality_source_id]
+            canonical_evidence = {
+                "kind": "canonical_guid",
+                "value": canonical_intent_id,
+            }
+            if intent_node.id != reality_source_id:
+                canonical_evidence.update(
+                    {
+                        "intent_source_id": intent_node.id,
+                        "reality_source_id": reality_source_id,
+                    }
+                )
             return {
                 "subject_kind": "intent",
                 "classification": "confirmed",
                 "intent": _node_summary(intent_node),
                 "reality_candidates": [_node_summary(reality_node)],
-                "evidence": [{"kind": "canonical_guid", "value": intent_node.id}],
+                "evidence": [canonical_evidence],
                 "requires_approval": False,
             }
 
         normalized_name = normalize_node_name(intent_node.name)
-        candidates = [
-            node
-            for node_id, node in self.reality.nodes.items()
-            if node_id not in confirmed_reality_ids
-            and node.type == intent_node.type
-            and normalize_node_name(node.name) == normalized_name
-        ]
-        candidates.sort(key=lambda node: node.id)
-
-        candidate_is_contested = any(
-            candidate_claims[node.id] > 1 for node in candidates
+        candidate_key = (intent_node.type, normalized_name)
+        candidate_ids = (
+            candidate_index.get(candidate_key, []) if normalized_name else []
         )
-        if len(candidates) == 1 and not candidate_is_contested:
+        total_candidates = len(candidate_ids)
+        candidates = [
+            self.reality.nodes[node_id] for node_id in candidate_ids[:max_candidates]
+        ]
+        candidate_is_contested = candidate_claims[candidate_key] > 1
+        total_contested_candidates = total_candidates if candidate_is_contested else 0
+        if total_candidates == 1 and not candidate_is_contested:
             classification = "candidate"
-        elif candidates:
+        elif total_candidates:
             classification = "ambiguous"
         else:
             classification = "unmapped"
@@ -115,9 +169,7 @@ class ReconciliationEngine:
             evidence.append(
                 {
                     "kind": "candidate_shared_by_multiple_intents",
-                    "reality_ids": [
-                        node.id for node in candidates if candidate_claims[node.id] > 1
-                    ],
+                    "total_shared_candidates": total_contested_candidates,
                 }
             )
 
@@ -126,91 +178,174 @@ class ReconciliationEngine:
             "classification": classification,
             "intent": _node_summary(intent_node),
             "reality_candidates": [_node_summary(node) for node in candidates],
+            "candidate_limit": {
+                "max_candidates": max_candidates,
+                "total_candidates": total_candidates,
+                "returned_candidates": len(candidates),
+                "truncated": len(candidates) < total_candidates,
+            },
             "evidence": evidence,
             "requires_approval": True,
         }
 
-    def analyze(self, *, max_items: int = DEFAULT_MAX_ITEMS) -> dict[str, Any]:
-        """Return a bounded report while retaining complete classification totals."""
+    @staticmethod
+    def _validate_limit(value: int, *, name: str) -> None:
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise TypeError(f"{name} must be an integer")
+        if value < 1:
+            raise ValueError(f"{name} must be at least 1")
 
-        if isinstance(max_items, bool) or not isinstance(max_items, int):
-            raise TypeError("max_items must be an integer")
-        if max_items < 1:
-            raise ValueError("max_items must be at least 1")
-
-        confirmed_reality_ids = set(self.intention.nodes).intersection(
-            self.reality.nodes
+    def _classification_context(self) -> dict[str, Any]:
+        intention_by_canonical_id = _canonical_guid_index(
+            self.intention.nodes,
+            dag_name="Intention DAG",
         )
-        candidate_claims: Counter[str] = Counter()
+        reality_by_canonical_id = _canonical_guid_index(
+            self.reality.nodes,
+            dag_name="Reality DAG",
+        )
+        confirmed_canonical_ids = set(intention_by_canonical_id).intersection(
+            reality_by_canonical_id
+        )
+        confirmed_reality_by_canonical_id = {
+            canonical_id: reality_by_canonical_id[canonical_id]
+            for canonical_id in confirmed_canonical_ids
+        }
+        confirmed_reality_ids = set(confirmed_reality_by_canonical_id.values())
+
+        candidate_index: dict[tuple[NodeType, str], list[str]] = defaultdict(list)
+        for node_id in sorted(self.reality.nodes):
+            if node_id in confirmed_reality_ids:
+                continue
+            node = self.reality.nodes[node_id]
+            normalized_name = normalize_node_name(node.name)
+            if normalized_name:
+                candidate_index[(node.type, normalized_name)].append(node_id)
+
+        candidate_claims: Counter[tuple[NodeType, str]] = Counter()
         for intent_node in self.intention.nodes.values():
-            if intent_node.id in confirmed_reality_ids:
+            if str(UUID(intent_node.id)) in confirmed_canonical_ids:
                 continue
             normalized_name = normalize_node_name(intent_node.name)
-            candidate_claims.update(
-                node_id
-                for node_id, node in self.reality.nodes.items()
-                if node_id not in confirmed_reality_ids
-                and node.type == intent_node.type
-                and normalize_node_name(node.name) == normalized_name
-            )
-        intent_records = [
-            self._intent_record(
+            if normalized_name:
+                candidate_claims[(intent_node.type, normalized_name)] += 1
+
+        return {
+            "confirmed_canonical_ids": confirmed_canonical_ids,
+            "confirmed_reality_by_canonical_id": confirmed_reality_by_canonical_id,
+            "candidate_index": candidate_index,
+            "candidate_claims": candidate_claims,
+        }
+
+    def _iter_intent_records(
+        self,
+        context: dict[str, Any],
+        *,
+        max_candidates: int,
+    ):
+        for node_id in sorted(self.intention.nodes):
+            yield self._intent_record(
                 self.intention.nodes[node_id],
-                confirmed_reality_ids,
-                candidate_claims,
+                context["confirmed_reality_by_canonical_id"],
+                context["candidate_index"],
+                context["candidate_claims"],
+                max_candidates,
             )
-            for node_id in sorted(self.intention.nodes)
-        ]
-        intent_records.sort(
-            key=lambda record: (
-                CLASSIFICATION_PRIORITY[record["classification"]],
-                record["intent"]["id"],
-            )
+
+    def iter_intent_records(
+        self,
+        *,
+        max_candidates: int = DEFAULT_MAX_CANDIDATES,
+    ):
+        """Yield deterministic, bounded intent records without retaining them all."""
+
+        self._validate_limit(max_candidates, name="max_candidates")
+        context = self._classification_context()
+        yield from self._iter_intent_records(
+            context,
+            max_candidates=max_candidates,
         )
-        unclassified_reality = [
-            self.reality.nodes[node_id]
-            for node_id in sorted(self.reality.nodes)
-            if node_id not in confirmed_reality_ids
-        ]
-        reality_records = [
-            {
-                "subject_kind": "reality",
-                "classification": "unclassified_reality",
-                "reality": _node_summary(node),
-                "evidence": [],
-                "requires_approval": True,
-            }
-            for node in unclassified_reality
-        ]
+
+    def analyze(
+        self,
+        *,
+        max_items: int = DEFAULT_MAX_ITEMS,
+        max_candidates: int = DEFAULT_MAX_CANDIDATES,
+    ) -> dict[str, Any]:
+        """Return a bounded report while retaining complete classification totals."""
+
+        self._validate_limit(max_items, name="max_items")
+        self._validate_limit(max_candidates, name="max_candidates")
+        context = self._classification_context()
+        classification_counts = {
+            classification: 0 for classification in CLASSIFICATION_PRIORITY
+        }
+        retained_by_classification: dict[str, list[dict[str, Any]]] = {
+            classification: [] for classification in CLASSIFICATION_PRIORITY
+        }
+        for record in self._iter_intent_records(
+            context,
+            max_candidates=max_candidates,
+        ):
+            classification = record["classification"]
+            classification_counts[classification] += 1
+            if len(retained_by_classification[classification]) < max_items:
+                retained_by_classification[classification].append(record)
+
+        intent_records: list[dict[str, Any]] = []
+        for classification in sorted(
+            CLASSIFICATION_PRIORITY,
+            key=CLASSIFICATION_PRIORITY.get,
+        ):
+            remaining = max_items - len(intent_records)
+            if remaining == 0:
+                break
+            intent_records.extend(
+                retained_by_classification[classification][:remaining]
+            )
+
+        confirmed_canonical_ids = context["confirmed_canonical_ids"]
+        confirmed_reality_ids = set(
+            context["confirmed_reality_by_canonical_id"].values()
+        )
+        unclassified_reality_count = len(self.reality.nodes) - len(
+            confirmed_canonical_ids
+        )
+        remaining = max_items - len(intent_records)
+        reality_records = []
+        if remaining:
+            for node_id in sorted(self.reality.nodes):
+                if node_id in confirmed_reality_ids:
+                    continue
+                reality_records.append(
+                    {
+                        "subject_kind": "reality",
+                        "classification": "unclassified_reality",
+                        "reality": _node_summary(self.reality.nodes[node_id]),
+                        "evidence": [],
+                        "requires_approval": True,
+                    }
+                )
+                if len(reality_records) == remaining:
+                    break
 
         summary = {
             "intention_nodes": len(self.intention.nodes),
             "reality_nodes": len(self.reality.nodes),
-            "confirmed": sum(
-                record["classification"] == "confirmed" for record in intent_records
-            ),
-            "candidate": sum(
-                record["classification"] == "candidate" for record in intent_records
-            ),
-            "ambiguous": sum(
-                record["classification"] == "ambiguous" for record in intent_records
-            ),
-            "unmapped": sum(
-                record["classification"] == "unmapped" for record in intent_records
-            ),
-            "unclassified_reality": len(unclassified_reality),
+            **classification_counts,
+            "unclassified_reality": unclassified_reality_count,
         }
         all_items = intent_records + reality_records
-        returned_items = all_items[:max_items]
+        total_items = len(self.intention.nodes) + unclassified_reality_count
 
         return {
             "schema_version": REPORT_SCHEMA_VERSION,
             "summary": summary,
             "limit": {
                 "max_items": max_items,
-                "total_items": len(all_items),
-                "returned_items": len(returned_items),
-                "truncated": len(returned_items) < len(all_items),
+                "total_items": total_items,
+                "returned_items": len(all_items),
+                "truncated": len(all_items) < total_items,
             },
-            "items": returned_items,
+            "items": all_items,
         }

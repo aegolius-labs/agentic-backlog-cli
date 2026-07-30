@@ -248,6 +248,67 @@ def test_cli_reconcile_can_write_a_reproducible_report_artifact(
     assert report["limit"]["truncated"] is True
 
 
+@pytest.mark.parametrize("protected_target", ["intention", "reality"])
+def test_cli_reconcile_refuses_to_overwrite_input_dags(
+    sample_dag_file, tmp_path, protected_target
+):
+    intention_file = tmp_path / "dag.yaml"
+    reality_file = tmp_path / "reality.yaml"
+    DAGManager.load(sample_dag_file).save(str(reality_file))
+    before_intention = intention_file.read_bytes()
+    before_reality = reality_file.read_bytes()
+    output = intention_file if protected_target == "intention" else reality_file
+
+    result = CliRunner().invoke(
+        cli,
+        [
+            "reconcile",
+            "--intention",
+            str(intention_file),
+            "--reality",
+            str(reality_file),
+            "--output",
+            str(output),
+        ],
+    )
+
+    assert result.exit_code == 1
+    assert "protected framework state" in result.output
+    assert intention_file.read_bytes() == before_intention
+    assert reality_file.read_bytes() == before_reality
+
+
+@pytest.mark.parametrize(
+    "state_filename",
+    ["backlog.json", "state-audit.jsonl", "state.lock"],
+)
+def test_cli_reconcile_refuses_to_overwrite_versioned_state(
+    sample_dag_file, tmp_path, state_filename
+):
+    reality_file = tmp_path / "reality.yaml"
+    state_file = tmp_path / state_filename
+    DAGManager.load(sample_dag_file).save(str(reality_file))
+    state_file.write_text('{"schema_version": 2}\n', encoding="utf-8")
+    before_state = state_file.read_bytes()
+
+    result = CliRunner().invoke(
+        cli,
+        [
+            "reconcile",
+            "--intention",
+            sample_dag_file,
+            "--reality",
+            str(reality_file),
+            "--output",
+            str(state_file),
+        ],
+    )
+
+    assert result.exit_code == 1
+    assert "protected framework state" in result.output
+    assert state_file.read_bytes() == before_state
+
+
 def test_cli_diff_is_safe_by_default_and_legacy_is_explicit(sample_dag_file, tmp_path):
     reality_file = tmp_path / "empty-reality.yaml"
     DAGManager(Metadata(name="Reality", version="1.0"), [], []).save(str(reality_file))

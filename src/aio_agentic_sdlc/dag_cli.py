@@ -194,13 +194,23 @@ def intent_set(file, node_id, payload_file, expected_revision):
     show_default=True,
     help="Maximum tasks returned by safe planning.",
 )
-def diff(intention, reality, mode, max_tasks):
+@click.option(
+    "--max-candidates",
+    type=click.IntRange(min=1),
+    default=20,
+    show_default=True,
+    help="Maximum candidate identities retained in each safe task.",
+)
+def diff(intention, reality, mode, max_tasks, max_candidates):
     """Calculates the diff between Intention DAG and Reality DAG."""
     try:
         intent_manager = DAGManager.load(intention)
         reality_manager = DAGManager.load(reality)
         policy = (
-            DiffPolicy.safe(max_tasks=max_tasks)
+            DiffPolicy.safe(
+                max_tasks=max_tasks,
+                max_candidates=max_candidates,
+            )
             if mode == "safe"
             else DiffPolicy.legacy_structural()
         )
@@ -234,21 +244,33 @@ def diff(intention, reality, mode, max_tasks):
     help="Maximum evidence records returned without hiding complete totals.",
 )
 @click.option(
+    "--max-candidates",
+    type=click.IntRange(min=1),
+    default=20,
+    show_default=True,
+    help="Maximum candidate identities retained in each evidence record.",
+)
+@click.option(
     "--output",
     type=click.Path(dir_okay=False),
     help="Atomically write the JSON report instead of printing it.",
 )
-def reconcile(intention, reality, max_items, output):
+def reconcile(intention, reality, max_items, max_candidates, output):
     """Render a bounded, read-only reconciliation evidence report."""
 
     try:
         intent_manager = DAGManager.load(intention)
         reality_manager = DAGManager.load(reality)
         report = ReconciliationEngine(intent_manager, reality_manager).analyze(
-            max_items=max_items
+            max_items=max_items,
+            max_candidates=max_candidates,
         )
         if output:
-            write_reconciliation_report(report, output)
+            write_reconciliation_report(
+                report,
+                output,
+                protected_paths=(intention, reality),
+            )
             click.echo(f"Reconciliation report saved to {output}.")
         else:
             click.echo(json.dumps(report, indent=2))

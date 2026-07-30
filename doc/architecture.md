@@ -77,7 +77,7 @@ atomic, so a failed final replace leaves the prior canonical file intact.
 Raw GUID inequality is not proof that implementation is missing or unwanted. Before backlog
 planning, `ReconciliationEngine` classifies each Intention node as:
 
-- `confirmed`: the Reality DAG contains the same canonical GUID;
+- `confirmed`: the Reality DAG contains the same canonical GUID value after canonicalization;
 - `candidate`: exactly one Reality node has the same normalized name and node type;
 - `ambiguous`: more than one node satisfies that deterministic structural signal; or
 - `unmapped`: no deterministic structural candidate exists.
@@ -87,14 +87,21 @@ mappings and does not mutate either DAG. Reality nodes without a confirmed GUID 
 `unclassified_reality`; they are not deletion evidence.
 
 Safe diffing is the default. It produces bounded mapping-review or implementation-investigation
-work and includes complete totals plus truncation metadata. It only reports drift for confirmed
+work and includes complete totals plus truncation metadata for both top-level work and nested
+candidate identities. Candidate matching uses a deterministic normalized-name/type index, and
+Unicode alphanumerics are preserved. It only reports drift for confirmed
 identities when Reality contains an observed value that contradicts intent. Missing observations
 are not contradictions. The former structural create/remove/disconnect algorithm remains available
 only through the explicit `legacy-structural` compatibility mode.
 
+Report writers reject canonical DAG, backlog, transaction-journal, and lock paths. Safe edge work
+canonicalizes endpoint GUIDs, deduplicates logical edges, and sorts them before applying limits.
+
 ```powershell
-uv run dag-tool reconcile --intention intention-dag.yaml --reality reality-dag.yaml
-uv run dag-tool diff --intention intention-dag.yaml --reality reality-dag.yaml
+uv run dag-tool reconcile --intention intention-dag.yaml --reality reality-dag.yaml `
+  --max-items 100 --max-candidates 20
+uv run dag-tool diff --intention intention-dag.yaml --reality reality-dag.yaml `
+  --max-tasks 100 --max-candidates 20
 uv run dag-tool diff --intention intention-dag.yaml --reality reality-dag.yaml `
   --mode legacy-structural
 ```

@@ -1,5 +1,6 @@
 import json
 import os
+from typing import Annotated
 
 from mcp.server.fastmcp import FastMCP
 from pydantic import Field
@@ -343,14 +344,23 @@ def validate_traceability(
 
 @mcp.tool()
 def reconcile_dags(
-    project_path: str = Field(
-        ".", description="Absolute path to the project directory"
-    ),
-    max_items: int = Field(
-        100,
-        ge=1,
-        description="Maximum evidence records returned; totals remain complete",
-    ),
+    project_path: Annotated[
+        str, Field(description="Absolute path to the project directory")
+    ] = ".",
+    max_items: Annotated[
+        int,
+        Field(
+            ge=1,
+            description="Maximum evidence records returned; totals remain complete",
+        ),
+    ] = 100,
+    max_candidates: Annotated[
+        int,
+        Field(
+            ge=1,
+            description="Maximum candidate identities retained per evidence record",
+        ),
+    ] = 20,
 ) -> str:
     """Classify Intention/Reality identity evidence without mutating project state."""
 
@@ -358,7 +368,10 @@ def reconcile_dags(
         project_root = os.path.abspath(project_path)
         intention = DAGManager.load(os.path.join(project_root, "intention-dag.yaml"))
         reality = DAGManager.load(os.path.join(project_root, "reality-dag.yaml"))
-        report = ReconciliationEngine(intention, reality).analyze(max_items=max_items)
+        report = ReconciliationEngine(intention, reality).analyze(
+            max_items=max_items,
+            max_candidates=max_candidates,
+        )
         return json.dumps(report, indent=2)
     except Exception as e:
         return f"Error reconciling DAGs: {str(e)}"

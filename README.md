@@ -103,13 +103,18 @@ Reconcile identity evidence before creating an execution backlog:
 uv run dag-tool reconcile \
   --intention intention-dag.yaml \
   --reality reality-dag.yaml \
-  --max-items 100
+  --max-items 100 \
+  --max-candidates 20
 uv run dag-tool diff \
   --intention intention-dag.yaml \
   --reality reality-dag.yaml \
-  --max-tasks 100
+  --max-tasks 100 \
+  --max-candidates 20
 ```
 
 Both commands are read-only. Safe diffing is the default: it asks for mapping review or additional
 implementation evidence rather than interpreting a missing GUID as permission to create or delete
 code. The historical structural algorithm requires the explicit `--mode legacy-structural` option.
+Both top-level records and nested candidate identities are bounded while complete totals and
+truncation metadata remain visible. Report output refuses to overwrite DAG, backlog, audit, or lock
+state.
