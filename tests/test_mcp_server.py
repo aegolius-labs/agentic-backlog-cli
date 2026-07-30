@@ -2,7 +2,9 @@ import json
 import os
 from pathlib import Path
 
-from aio_agentic_sdlc.mcp_server import generate_document
+from aio_agentic_sdlc.dag_manager import DAGManager
+from aio_agentic_sdlc.dag_models import Metadata, Node, NodeType
+from aio_agentic_sdlc.mcp_server import generate_document, reconcile_dags
 
 
 def test_mcp_generate_document(tmp_path):
@@ -89,3 +91,25 @@ def test_mcp_generate_document_uses_explicit_project_path(tmp_path):
     assert (project / "specs" / "generated.md").read_text(encoding="utf-8") == (
         "Project: Codex"
     )
+
+
+def test_mcp_reconcile_dags_returns_the_same_evidence_report(tmp_path):
+    node = Node(
+        id="00000000-0000-0000-0000-000000000001",
+        type=NodeType.COMPONENT,
+        name="Mapped component",
+    )
+    metadata = Metadata(name="Test", version="1.0")
+    DAGManager(metadata, [node], []).save(str(tmp_path / "intention-dag.yaml"))
+    DAGManager(metadata, [node], []).save(str(tmp_path / "reality-dag.yaml"))
+
+    result = json.loads(reconcile_dags(project_path=str(tmp_path)))
+
+    assert result["schema_version"] == 1
+    assert result["summary"]["confirmed"] == 1
+    assert result["items"][0]["evidence"] == [
+        {
+            "kind": "canonical_guid",
+            "value": "00000000-0000-0000-0000-000000000001",
+        }
+    ]

@@ -609,6 +609,68 @@ nodes:
     generator_version: aio-agentic-sdlc/0.23.0-dev
     approval:
       state: review_required
+- id: 9015c8a3-fd14-5598-916d-d03fcf41e415
+  type: component
+  name: Evidence-Gated Reconciliation Baseline
+  domain: verification
+  description: Deterministic, non-destructive bridge from canonical intent to observed
+    repository reality.
+  intent:
+    schema_version: 1
+    provenance:
+    - source_type: human_statement
+      reference: codex:task:get-back-on-track:2026-07-30
+      statement: Tackle the missing intent-to-reality bridge and proceed without further
+        input unless a material product choice is required.
+    - source_type: document
+      reference: specs/bootstrapping-legacy-reingestion/prd.md
+      statement: Bootstrap an existing project safely while preserving canonical GUID
+        traceability and avoiding destructive modification.
+    assumptions:
+    - Intention DAG node GUIDs remain canonical and Reality observations cannot silently
+      redefine them.
+    - Deterministic structural evidence may propose a mapping but cannot approve it.
+    - Unmatched Reality nodes are unclassified implementation observations, not deletion
+      candidates.
+    ambiguities: []
+    confidence: 0.96
+    acceptance_criteria:
+    - id: RECONCILE-AC1
+      statement: A deterministic reconciliation report distinguishes confirmed GUID
+        matches, unique structural candidates, ambiguous candidates, and unmapped
+        intent without mutating canonical state.
+      required_evidence:
+      - test:reconciliation-classification
+      - cli:dag-tool-reconcile
+      - mcp:reconcile-dags
+    - id: RECONCILE-AC2
+      statement: Default diff and backlog planning never propose create, delete, or
+        disconnect operations solely because an Intention and Reality GUID do not
+        match.
+      required_evidence:
+      - test:evidence-gated-diff
+      - test:unmatched-reality-is-not-deletion
+    - id: RECONCILE-AC3
+      statement: Planning remains bounded and emits reviewable reconciliation work
+        with explicit evidence and truncation metadata instead of an unbounded destructive
+        backlog.
+      required_evidence:
+      - test:bounded-reconciliation-plan
+      - report:self-dogfood-reconciliation
+    revision_history:
+    - revision: 1
+      recorded_at: '2026-07-30T21:19:57Z'
+      actor: sdlc_intake
+      generator_version: aio-agentic-sdlc/0.24.1-dev
+      summary: Compiled the approved evidence-gated reconciliation recovery slice.
+    responsible_agent: sdlc_cartographer
+    generator_version: aio-agentic-sdlc/0.24.1-dev
+    approval:
+      state: approved
+      approved_by: Felix
+      approved_at: '2026-07-30T21:19:57Z'
+      rationale: The repository owner explicitly authorized this recovery milestone
+        and delegated implementation judgment.
 edges:
 - source: 4d76717e-55cd-4768-b05e-06a3cce1128b
   target: 54b91d55-08fe-48df-be35-445be7cd1e46
@@ -927,3 +989,15 @@ edges:
   target: 15302505-8828-525a-bebb-f72621f467a1
   type: depends_on
   description: Product hardening follows proof of ontology portability.
+- source: 9015c8a3-fd14-5598-916d-d03fcf41e415
+  target: 7bcd1683-2a10-5cbc-ab91-440ea920eaf1
+  type: depends_on
+  description: Reconciliation evidence uses the auditable Intent IR contract.
+- source: 6b1b3459-38a0-5cd5-8ff4-1453f17c3d76
+  target: 9015c8a3-fd14-5598-916d-d03fcf41e415
+  type: depends_on
+  description: Evidence levels build on deterministic reconciliation classifications.
+- source: d64fbc3a-bdde-5672-8645-4aaa75464e46
+  target: 9015c8a3-fd14-5598-916d-d03fcf41e415
+  type: depends_on
+  description: Translation benchmarks require a safe reconciliation oracle.

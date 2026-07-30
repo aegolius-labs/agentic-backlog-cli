@@ -13,6 +13,7 @@ The `aio-agentic-sdlc` framework includes several built-in features that ensure 
 - **MCP Server Integration**: Downstream subagents securely interact with the system via integrated MCP servers, most notably the Agentic Backlog server.
 - **Versioned Local State**: The execution backlog uses explicit schema and revision numbers, atomic replacement, stale-writer protection, and a local transaction audit log.
 - **Auditable Intent IR**: Intention nodes can preserve source provenance, assumptions, ambiguities, confidence, evidence-bound acceptance criteria, revision history, and approval state in a strict versioned schema.
+- **Evidence-Gated Reconciliation**: GUID matches are confirmed deterministically, structural matches remain review candidates, and unmatched Reality observations never become deletion work by default.
 - **SDLC Scribe Agent**: An automated Scribe agent executes before the DevOps agent steps to ensure user-facing documentation (like this README) stays perfectly aligned with the codebase's true reality.
 
 ## Licensing Note
@@ -95,3 +96,25 @@ uv run dag-tool intent-summary --file intention-dag.yaml
 
 Use `--allow-partial` during migration while legacy nodes do not yet contain Intent IR. Strict
 validation remains the default.
+
+Reconcile identity evidence before creating an execution backlog:
+
+```bash
+uv run dag-tool reconcile \
+  --intention intention-dag.yaml \
+  --reality reality-dag.yaml \
+  --max-items 100 \
+  --max-candidates 20
+uv run dag-tool diff \
+  --intention intention-dag.yaml \
+  --reality reality-dag.yaml \
+  --max-tasks 100 \
+  --max-candidates 20
+```
+
+Both commands are read-only. Safe diffing is the default: it asks for mapping review or additional
+implementation evidence rather than interpreting a missing GUID as permission to create or delete
+code. The historical structural algorithm requires the explicit `--mode legacy-structural` option.
+Both top-level records and nested candidate identities are bounded while complete totals and
+truncation metadata remain visible. Report output refuses to overwrite DAG, backlog, audit, or lock
+state.
