@@ -99,7 +99,58 @@ def test_cli_exposes_explicit_local_state_migration(tmp_path, monkeypatch, capsy
         "from_version": 0,
         "to_version": CURRENT_BACKLOG_SCHEMA_VERSION,
         "changed": True,
+        "workspace": {
+            "changed": False,
+            "migrated": [],
+            "discarded_legacy_locks": [],
+            "remaining_legacy_paths": [],
+        },
     }
+
+
+def test_cli_migrates_legacy_layout_before_schema_migration(
+    tmp_path, monkeypatch, capsys
+):
+    (tmp_path / "backlog.json").write_text(
+        json.dumps({"nodes": {"Preserved": {}}, "edges": []}), encoding="utf-8"
+    )
+    (tmp_path / ".aio-agentic-sdlc.json").write_text(
+        json.dumps(
+            {
+                "core": {"mode": "github", "validation_mode": "strict"},
+                "github": {"repo": "retired/remote"},
+                "hierarchy": {"1": ["Task"]},
+            }
+        ),
+        encoding="utf-8",
+    )
+    legacy_state = tmp_path / ".aio-sdlc"
+    legacy_state.mkdir()
+    (legacy_state / "state-audit.jsonl").write_text(
+        '{"operation":"legacy.event"}\n', encoding="utf-8"
+    )
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(sys, "argv", ["aio-sdlc", "migrate-state"])
+
+    main()
+
+    result = json.loads(capsys.readouterr().out)
+    assert result["workspace"]["changed"] is True
+    assert {item["source"] for item in result["workspace"]["migrated"]} == {
+        ".aio-agentic-sdlc.json",
+        ".aio-sdlc/state-audit.jsonl",
+        "backlog.json",
+    }
+    assert result["changed"] is True
+    assert (
+        "Preserved"
+        in json.loads((tmp_path / BACKLOG_FILE).read_text(encoding="utf-8"))["nodes"]
+    )
+    config = json.loads(
+        (tmp_path / ".aio-agentic-sdlc/config.json").read_text(encoding="utf-8")
+    )
+    assert config["core"] == {"mode": "local", "validation_mode": "strict"}
+    assert "github" not in config
 
 
 def test_legacy_generated_backlog_is_archived_and_retired_idempotently(tmp_path):

@@ -57,6 +57,6 @@ Verify the integrity of the system before completion.
 
 Finalize the scope of work.
 
-* **Documentation**: Ensure all changes are documented in `doc/`. Update the Global Memory File with any lessons learned.
+* **Documentation**: Ensure durable behavior and architectural decisions are documented in `doc/`.
 * **State Reconciliation**: If using `aio-agentic-sdlc` or external trackers (Jira/AzDO), update the status of the task to `DONE` or `IN_REVIEW`.
 * **Commit & PR**: Write Conventional Commits and open a Pull Request against `main`.

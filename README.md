@@ -66,6 +66,30 @@ agb migrate-state --retire-legacy
 
 *(Note: `aio-agentic-sdlc` can also be used if you prefer the full name)*
 
+### Migrating an Existing Checkout
+
+Before using a project created with the former root-level layout, run:
+
+```bash
+aio-sdlc migrate-state
+```
+
+The command moves recognized framework state into `.aio-agentic-sdlc/`: root
+`backlog.json`, `.aio-agentic-sdlc.json`, `intention-dag.yaml`,
+`reality-dag.yaml`, and the former `.aio-sdlc` audit/legacy state. The retired
+GitHub configuration is removed while hierarchy and validation settings are
+preserved with local mode enforced. Each moved file is recorded with hashes in
+the canonical audit log before backlog schema migration continues.
+
+Migration fails without choosing a winner when both old and new paths exist,
+when a source is a symlink, or when its content is not a valid framework
+artifact. Normal state commands also fail with a migration instruction instead
+of silently starting an empty backlog. Generic host directories such as
+`specs/`, `changes/`, `archive/`, `inbox/`, and `research-spikes/` are never
+claimed automatically. The migrator bridges the former and current state locks,
+discards known obsolete lock files after release, removes `.aio-sdlc/` when it
+is empty, and reports rather than deletes any unknown entries that remain.
+
 ### Zero-Install Execution (via uvx)
 
 If you prefer not to install the CLI globally, you can execute commands entirely on-the-fly directly from GitHub:

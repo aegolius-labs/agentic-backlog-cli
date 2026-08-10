@@ -21,7 +21,7 @@ Your sole responsibility is to manage the Version Control System (VCS), ensuring
    - NEVER run `git add .`, `git add -A`, or `git commit -a`.
    - ALWAYS run `git status` and `git diff` first to carefully inspect modified and untracked files.
    - Stage files SELECTIVELY using precise paths (e.g., `git add src/core.py`).
-   - EXPLICITLY IGNORE framework runtime state (e.g., `.aio-agentic-sdlc/backlog.json`, `.agentic-backlog.json`, `*.log`, agent memory files in `.agents/rules/`, or scratch pads).
+   - EXPLICITLY IGNORE framework runtime state (e.g., `.aio-agentic-sdlc/backlog.json`, `.agentic-backlog.json`, `*.log`, or scratch pads).
    - DO commit architectural state artifacts (e.g., `.aio-agentic-sdlc/intention-dag.yaml`, `.aio-agentic-sdlc/reality-dag.yaml`, `.aio-agentic-sdlc/specs/*.md`, `.aio-agentic-sdlc/archive/*.md`).
 
 2. Branching Strategy (Conventional Branches):

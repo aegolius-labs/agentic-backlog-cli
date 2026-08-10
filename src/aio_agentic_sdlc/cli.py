@@ -29,6 +29,7 @@ from .workspace import (
     INTENTION_DAG_FILE,
     REALITY_DAG_FILE,
     ensure_workspace,
+    migrate_legacy_workspace,
 )
 
 STATUS_BADGES = {
@@ -53,7 +54,7 @@ def _inject_agent_skills():
         )
         return
 
-    skill_dir = os.path.join(".agent", "skills", "aio-agentic-sdlc")
+    skill_dir = os.path.join(".agents", "skills", "aio-agentic-sdlc")
     os.makedirs(skill_dir, exist_ok=True)
 
     skill_file = os.path.join(skill_dir, "SKILL.md")
@@ -127,6 +128,9 @@ def _inject_platform_rules(platforms_str):
 
 
 def init_cmd(args):
+    migration = migrate_legacy_workspace(".")
+    if migration["changed"]:
+        print("Migrated legacy framework paths into .aio-agentic-sdlc/.")
     print("\n--- Agentic-Backlog Initialization ---")
     print("1. Simple Hierarchy: Epic -> Feature -> Task/Bug")
     print(
@@ -488,7 +492,9 @@ def apply_cmd(args):
 def migrate_state_cmd(args):
     from .state import migrate_backlog, retire_legacy_backlog
 
+    workspace_result = migrate_legacy_workspace(".")
     result = migrate_backlog(".")
+    result["workspace"] = workspace_result
     if args.retire_legacy:
         result["legacy"] = retire_legacy_backlog(".")
     print(json.dumps(result, indent=2))

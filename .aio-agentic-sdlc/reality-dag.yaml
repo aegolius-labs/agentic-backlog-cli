@@ -858,6 +858,18 @@ nodes:
   type: module
   name: workspace.py
   description: Module src.aio_agentic_sdlc.workspace
+- id: 0b472f99-e8b6-5cf8-9a44-c0238dd3cdd0
+  type: component
+  name: WorkspaceMigrationError
+  description: Raised when legacy framework state cannot be migrated safely.
+- id: 488d725f-5f60-5a3f-a9ca-0cdd54c24682
+  type: component
+  name: WorkspaceMigrationRequired
+  description: Raised when a command would silently ignore a legacy workspace.
+- id: 4ac67159-aa34-5ebf-b95e-74ce9c2185bd
+  type: component
+  name: WorkspaceMigrationConflict
+  description: Raised when both legacy and canonical paths contain state.
 - id: c1d46915-cf2c-5755-b1aa-c136a6f6bc3a
   type: component
   name: workspace_path
@@ -866,6 +878,22 @@ nodes:
   type: component
   name: ensure_workspace
   description: Create the canonical framework workspace and operational directories.
+- id: 7ac2310a-050b-5ea8-b231-7672e93de8fc
+  type: component
+  name: workspace_file_path
+  description: Return a canonical workspace file path after rejecting link redirection.
+- id: 6661fc18-c1f5-50bc-82a8-3a1e538e6b09
+  type: component
+  name: workspace_migration_lock
+  description: Return the cross-process lock that gates layout checks and migration.
+- id: e913faf0-2611-55f3-a209-ac71af115bf0
+  type: component
+  name: require_current_workspace
+  description: Fail before normal commands can ignore state in a legacy layout.
+- id: 6086dfc0-7bba-5abd-a6a8-954c0dce042c
+  type: component
+  name: migrate_legacy_workspace
+  description: Move known legacy artifacts into the canonical workspace, or fail closed.
 - id: bf62376c-c574-5242-91e9-5048f4183d45
   type: module
   name: __init__.py
@@ -1980,6 +2008,10 @@ nodes:
   type: component
   name: test_cli_exposes_explicit_local_state_migration
   description: Function test_cli_exposes_explicit_local_state_migration
+- id: bddfa6eb-251d-515a-8234-0ba5822c4b7e
+  type: component
+  name: test_cli_migrates_legacy_layout_before_schema_migration
+  description: Function test_cli_migrates_legacy_layout_before_schema_migration
 - id: 88080ea6-ef86-5bc7-bf28-a2ad29a5f0e0
   type: component
   name: test_legacy_generated_backlog_is_archived_and_retired_idempotently
@@ -2116,6 +2148,42 @@ nodes:
   type: component
   name: test_no_short_name_state_directory_is_created
   description: Function test_no_short_name_state_directory_is_created
+- id: 81a2f741-32a9-5721-b56f-585601497116
+  type: component
+  name: test_legacy_workspace_migration_preserves_state_and_audits_provenance
+  description: Function test_legacy_workspace_migration_preserves_state_and_audits_provenance
+- id: 3ec5db6e-7f34-5799-9b7f-1d39794ef776
+  type: component
+  name: test_normal_commands_fail_before_legacy_state_can_be_hidden
+  description: Function test_normal_commands_fail_before_legacy_state_can_be_hidden
+- id: 2498a92b-a337-55ec-8f64-fb06ebbc3763
+  type: component
+  name: test_workspace_migration_refuses_dual_layout_conflicts_without_changes
+  description: Function test_workspace_migration_refuses_dual_layout_conflicts_without_changes
+- id: 70929657-e455-5ce0-8f2b-62b9985e1c79
+  type: component
+  name: test_host_repository_spec_directory_is_never_claimed_as_framework_state
+  description: Function test_host_repository_spec_directory_is_never_claimed_as_framework_state
+- id: bf0ae804-3350-52eb-b12b-98bb855ecede
+  type: component
+  name: test_non_aio_root_backlog_is_rejected_without_mutation
+  description: Function test_non_aio_root_backlog_is_rejected_without_mutation
+- id: 3c6d1325-f7d0-5cce-9861-12233d812dd9
+  type: component
+  name: test_migration_repairs_a_truncated_legacy_audit_tail
+  description: Function test_migration_repairs_a_truncated_legacy_audit_tail
+- id: 1238936c-83b3-543c-a460-05c30b8447ba
+  type: component
+  name: test_normal_state_operations_wait_for_the_workspace_migration_lock
+  description: Function test_normal_state_operations_wait_for_the_workspace_migration_lock
+- id: e6abc03a-084f-56d3-9050-bd188b29021d
+  type: component
+  name: test_state_and_config_reject_a_symlinked_canonical_parent
+  description: Function test_state_and_config_reject_a_symlinked_canonical_parent
+- id: 7ce1f513-eaf2-5d48-a97f-f53b044fd685
+  type: component
+  name: test_writable_workspace_files_reject_leaf_symlinks
+  description: Function test_writable_workspace_files_reject_leaf_symlinks
 edges:
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 01972ce1-dba9-54a3-9f75-771d02ad2cec
@@ -2727,10 +2795,31 @@ edges:
   target: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
   type: contains
 - source: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
+  target: 0b472f99-e8b6-5cf8-9a44-c0238dd3cdd0
+  type: contains
+- source: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
+  target: 488d725f-5f60-5a3f-a9ca-0cdd54c24682
+  type: contains
+- source: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
+  target: 4ac67159-aa34-5ebf-b95e-74ce9c2185bd
+  type: contains
+- source: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
   target: c1d46915-cf2c-5755-b1aa-c136a6f6bc3a
   type: contains
 - source: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
   target: b91f06f9-2899-5a9a-81db-70a2499d4c28
+  type: contains
+- source: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
+  target: 7ac2310a-050b-5ea8-b231-7672e93de8fc
+  type: contains
+- source: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
+  target: 6661fc18-c1f5-50bc-82a8-3a1e538e6b09
+  type: contains
+- source: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
+  target: e913faf0-2611-55f3-a209-ac71af115bf0
+  type: contains
+- source: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
+  target: 6086dfc0-7bba-5abd-a6a8-954c0dce042c
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: bf62376c-c574-5242-91e9-5048f4183d45
@@ -3570,6 +3659,9 @@ edges:
   target: 5690c596-77f7-5f8c-939f-8ef0c35806f8
   type: contains
 - source: 7bb11dbc-3295-5af9-a19e-70455169489f
+  target: bddfa6eb-251d-515a-8234-0ba5822c4b7e
+  type: contains
+- source: 7bb11dbc-3295-5af9-a19e-70455169489f
   target: 88080ea6-ef86-5bc7-bf28-a2ad29a5f0e0
   type: contains
 - source: 7bb11dbc-3295-5af9-a19e-70455169489f
@@ -3670,4 +3762,31 @@ edges:
   type: contains
 - source: 62747999-702e-56a2-9281-584a13bf6426
   target: 34f0e30e-d4b3-573a-98c8-9e9de25e58e6
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: 81a2f741-32a9-5721-b56f-585601497116
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: 3ec5db6e-7f34-5799-9b7f-1d39794ef776
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: 2498a92b-a337-55ec-8f64-fb06ebbc3763
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: 70929657-e455-5ce0-8f2b-62b9985e1c79
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: bf0ae804-3350-52eb-b12b-98bb855ecede
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: 3c6d1325-f7d0-5cce-9861-12233d812dd9
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: 1238936c-83b3-543c-a460-05c30b8447ba
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: e6abc03a-084f-56d3-9050-bd188b29021d
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: 7ce1f513-eaf2-5d48-a97f-f53b044fd685
   type: contains

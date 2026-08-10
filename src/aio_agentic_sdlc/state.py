@@ -13,7 +13,15 @@ from typing import Any
 
 from filelock import FileLock
 
-from .workspace import AUDIT_FILE, BACKLOG_FILE, LEGACY_DIR, STATE_LOCK_FILE
+from .workspace import (
+    AUDIT_FILE,
+    BACKLOG_FILE,
+    LEGACY_DIR,
+    STATE_LOCK_FILE,
+    require_current_workspace,
+    workspace_file_path,
+    workspace_migration_lock,
+)
 
 LOCK_FILE = STATE_LOCK_FILE
 CURRENT_BACKLOG_SCHEMA_VERSION = 1
@@ -51,8 +59,7 @@ def _file_sha256(file_path: str) -> str | None:
 
 
 def _append_audit_event(project_path: str, event: dict[str, Any]) -> None:
-    audit_path = os.path.join(project_path, AUDIT_FILE)
-    os.makedirs(os.path.dirname(audit_path), exist_ok=True)
+    audit_path = workspace_file_path(project_path, AUDIT_FILE)
     payload = (json.dumps(event, sort_keys=True) + "\n").encode("utf-8")
     flags = os.O_APPEND | os.O_CREAT | os.O_WRONLY
     descriptor = os.open(audit_path, flags, 0o600)
@@ -69,7 +76,7 @@ def _append_audit_event(project_path: str, event: dict[str, Any]) -> None:
 
 
 def _read_audit_events(project_path: str) -> list[dict[str, Any]]:
-    audit_path = os.path.join(project_path, AUDIT_FILE)
+    audit_path = workspace_file_path(project_path, AUDIT_FILE)
     if not os.path.exists(audit_path):
         return []
 
@@ -114,8 +121,7 @@ def _read_audit_events(project_path: str) -> list[dict[str, Any]]:
 
 
 def _state_lock(project_path: str) -> FileLock:
-    lock_path = os.path.join(project_path, LOCK_FILE)
-    os.makedirs(os.path.dirname(lock_path), exist_ok=True)
+    lock_path = workspace_file_path(project_path, LOCK_FILE)
     return FileLock(lock_path, timeout=LOCK_TIMEOUT_SECONDS)
 
 
@@ -135,7 +141,7 @@ def _recover_incomplete_transactions(project_path: str) -> list[dict[str, str]]:
     if not prepared:
         return []
 
-    backlog_path = os.path.join(project_path, BACKLOG_FILE)
+    backlog_path = workspace_file_path(project_path, BACKLOG_FILE)
     current_hash = _file_sha256(backlog_path)
     recovered = []
     for transaction_id, event in prepared.items():
@@ -160,8 +166,10 @@ def _recover_incomplete_transactions(project_path: str) -> list[dict[str, str]]:
 def recover_incomplete_transactions(project_path: str = ".") -> list[dict[str, str]]:
     """Reconcile prepared transactions against the current backlog hash."""
 
-    with _state_lock(project_path):
-        return _recover_incomplete_transactions(project_path)
+    with workspace_migration_lock(project_path):
+        require_current_workspace(project_path)
+        with _state_lock(project_path):
+            return _recover_incomplete_transactions(project_path)
 
 
 def _migrate_v0_to_v1(data: dict[str, Any]) -> dict[str, Any]:
@@ -242,13 +250,15 @@ def migrate_backlog_data(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def load_backlog(project_path: str = ".") -> dict[str, Any]:
-    with _state_lock(project_path):
-        _recover_incomplete_transactions(project_path)
-        backlog_path = os.path.join(project_path, BACKLOG_FILE)
-        if not os.path.exists(backlog_path):
-            return migrate_backlog_data({})
-        with open(backlog_path, "r", encoding="utf-8") as handle:
-            return migrate_backlog_data(json.load(handle))
+    with workspace_migration_lock(project_path):
+        require_current_workspace(project_path)
+        with _state_lock(project_path):
+            _recover_incomplete_transactions(project_path)
+            backlog_path = workspace_file_path(project_path, BACKLOG_FILE)
+            if not os.path.exists(backlog_path):
+                return migrate_backlog_data({})
+            with open(backlog_path, "r", encoding="utf-8") as handle:
+                return migrate_backlog_data(json.load(handle))
 
 
 def save_backlog(
@@ -259,8 +269,10 @@ def save_backlog(
 ) -> None:
     """Atomically replace backlog state with a recoverable audit transaction."""
 
-    with _state_lock(project_path):
-        _save_backlog_unlocked(data, project_path, operation=operation)
+    with workspace_migration_lock(project_path):
+        require_current_workspace(project_path)
+        with _state_lock(project_path):
+            _save_backlog_unlocked(data, project_path, operation=operation)
 
 
 def _save_backlog_unlocked(
@@ -268,7 +280,7 @@ def _save_backlog_unlocked(
 ) -> None:
     _recover_incomplete_transactions(project_path)
     normalized = migrate_backlog_data(data)
-    backlog_path = os.path.join(project_path, BACKLOG_FILE)
+    backlog_path = workspace_file_path(project_path, BACKLOG_FILE)
     backlog_dir = os.path.dirname(backlog_path)
     os.makedirs(backlog_dir, exist_ok=True)
     if os.path.exists(backlog_path):
@@ -326,25 +338,29 @@ def _save_backlog_unlocked(
 def migrate_backlog(project_path: str = ".") -> dict[str, int | bool]:
     """Persist an existing backlog using the current schema and audit contract."""
 
-    with _state_lock(project_path):
-        _recover_incomplete_transactions(project_path)
-        backlog_path = os.path.join(project_path, BACKLOG_FILE)
-        if os.path.exists(backlog_path):
-            with open(backlog_path, "r", encoding="utf-8") as handle:
-                raw = json.load(handle)
-        else:
-            raw = {}
+    with workspace_migration_lock(project_path):
+        require_current_workspace(project_path)
+        with _state_lock(project_path):
+            _recover_incomplete_transactions(project_path)
+            backlog_path = workspace_file_path(project_path, BACKLOG_FILE)
+            if os.path.exists(backlog_path):
+                with open(backlog_path, "r", encoding="utf-8") as handle:
+                    raw = json.load(handle)
+            else:
+                raw = {}
 
-        from_version = raw.get("schema_version", 0) if isinstance(raw, dict) else 0
-        migrated = migrate_backlog_data(raw)
-        changed = raw != migrated
-        if changed:
-            _save_backlog_unlocked(migrated, project_path, operation="backlog.migrate")
-        return {
-            "from_version": from_version,
-            "to_version": CURRENT_BACKLOG_SCHEMA_VERSION,
-            "changed": changed,
-        }
+            from_version = raw.get("schema_version", 0) if isinstance(raw, dict) else 0
+            migrated = migrate_backlog_data(raw)
+            changed = raw != migrated
+            if changed:
+                _save_backlog_unlocked(
+                    migrated, project_path, operation="backlog.migrate"
+                )
+            return {
+                "from_version": from_version,
+                "to_version": CURRENT_BACKLOG_SCHEMA_VERSION,
+                "changed": changed,
+            }
 
 
 def retire_legacy_backlog(
@@ -352,65 +368,75 @@ def retire_legacy_backlog(
 ) -> dict[str, bool | str | None]:
     """Archive and remove the obsolete generated `.agentic-backlog.json`."""
 
-    with _state_lock(project_path):
-        legacy_path = os.path.join(project_path, ".agentic-backlog.json")
-        if not os.path.lexists(legacy_path):
-            return {"changed": False, "archive": None, "sha256": None}
-        if os.path.islink(legacy_path) or not os.path.isfile(legacy_path):
-            raise BacklogStateError(
-                "Legacy backlog must be a regular file; refusing to follow a link."
-            )
+    with workspace_migration_lock(project_path):
+        require_current_workspace(project_path)
+        with _state_lock(project_path):
+            return _retire_legacy_backlog_locked(project_path)
 
-        with open(legacy_path, "rb") as handle:
-            payload = handle.read()
-        try:
-            legacy_data = json.loads(payload)
-        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-            raise BacklogStateError(f"Legacy backlog is not valid JSON: {exc}") from exc
-        if not isinstance(legacy_data, dict):
-            raise BacklogStateError("Legacy backlog root must be an object.")
 
-        digest = hashlib.sha256(payload).hexdigest()
-        archive_relative = f"{LEGACY_DIR}/agentic-backlog-{digest}.json"
-        archive_path = os.path.join(project_path, archive_relative)
-        archive_dir = os.path.dirname(archive_path)
-        os.makedirs(archive_dir, exist_ok=True)
+def _retire_legacy_backlog_locked(
+    project_path: str,
+) -> dict[str, bool | str | None]:
+    """Retire the generated backlog while workspace and state locks are held."""
 
-        if os.path.exists(archive_path):
-            if _file_sha256(archive_path) != digest:
-                raise BacklogStateError(
-                    "Legacy archive hash collision; refusing to replace existing data."
-                )
-        else:
-            descriptor, temp_path = tempfile.mkstemp(
-                dir=archive_dir,
-                prefix=".agentic-backlog.",
-                suffix=".tmp",
-            )
-            try:
-                with os.fdopen(descriptor, "wb") as handle:
-                    handle.write(payload)
-                    handle.flush()
-                    os.fsync(handle.fileno())
-                os.replace(temp_path, archive_path)
-            finally:
-                if os.path.exists(temp_path):
-                    os.remove(temp_path)
-
-        os.remove(legacy_path)
-        _append_audit_event(
-            project_path,
-            {
-                "operation": "legacy-backlog.retire",
-                "phase": "committed",
-                "timestamp": _utc_now(),
-                "source": ".agentic-backlog.json",
-                "archive": archive_relative,
-                "sha256": digest,
-            },
+    legacy_path = os.path.join(project_path, ".agentic-backlog.json")
+    if not os.path.lexists(legacy_path):
+        return {"changed": False, "archive": None, "sha256": None}
+    if os.path.islink(legacy_path) or not os.path.isfile(legacy_path):
+        raise BacklogStateError(
+            "Legacy backlog must be a regular file; refusing to follow a link."
         )
-        return {
-            "changed": True,
+
+    with open(legacy_path, "rb") as handle:
+        payload = handle.read()
+    try:
+        legacy_data = json.loads(payload)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise BacklogStateError(f"Legacy backlog is not valid JSON: {exc}") from exc
+    if not isinstance(legacy_data, dict):
+        raise BacklogStateError("Legacy backlog root must be an object.")
+
+    digest = hashlib.sha256(payload).hexdigest()
+    archive_relative = f"{LEGACY_DIR}/agentic-backlog-{digest}.json"
+    archive_path = os.path.join(project_path, archive_relative)
+    archive_dir = os.path.dirname(archive_path)
+    os.makedirs(archive_dir, exist_ok=True)
+
+    if os.path.exists(archive_path):
+        if _file_sha256(archive_path) != digest:
+            raise BacklogStateError(
+                "Legacy archive hash collision; refusing to replace existing data."
+            )
+    else:
+        descriptor, temp_path = tempfile.mkstemp(
+            dir=archive_dir,
+            prefix=".agentic-backlog.",
+            suffix=".tmp",
+        )
+        try:
+            with os.fdopen(descriptor, "wb") as handle:
+                handle.write(payload)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temp_path, archive_path)
+        finally:
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+
+    os.remove(legacy_path)
+    _append_audit_event(
+        project_path,
+        {
+            "operation": "legacy-backlog.retire",
+            "phase": "committed",
+            "timestamp": _utc_now(),
+            "source": ".agentic-backlog.json",
             "archive": archive_relative,
             "sha256": digest,
-        }
+        },
+    )
+    return {
+        "changed": True,
+        "archive": archive_relative,
+        "sha256": digest,
+    }
