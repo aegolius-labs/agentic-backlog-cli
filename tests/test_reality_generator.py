@@ -216,7 +216,9 @@ def test_reality_generator_rejects_duplicate_canonical_source_markers(tmp_path):
         encoding="utf-8",
     )
 
-    with pytest.raises(ValueError, match="duplicate canonical source marker"):
+    with pytest.raises(
+        ValueError, match="source marker collides with existing identity"
+    ):
         RealityDAGGenerator(str(tmp_path), "Duplicate marker test").generate()
 
 

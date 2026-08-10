@@ -61,12 +61,15 @@ class RealityDAGGenerator:
         explicit_identity: bool = False,
     ):
         uid = self._id_to_uuid(id)
-        if explicit_identity and uid in self.source_locations:
-            existing_locations = self.source_locations[uid]
+        if explicit_identity and uid in self.nodes:
+            existing_locations = self.source_locations.get(uid, [])
             if source_location not in existing_locations:
-                existing = ", ".join(
-                    f"{location.path}:{location.marker_line}"
-                    for location in existing_locations
+                existing = (
+                    ", ".join(
+                        f"{location.path}:{location.marker_line}"
+                        for location in existing_locations
+                    )
+                    or f"existing {self.nodes[uid].type.value} node"
                 )
                 current = (
                     f"{source_location.path}:{source_location.marker_line}"
@@ -74,7 +77,8 @@ class RealityDAGGenerator:
                     else "unknown source"
                 )
                 raise ValueError(
-                    f"duplicate canonical source marker {uid}: {existing} and {current}"
+                    f"canonical source marker collides with existing identity {uid}: "
+                    f"{existing} and {current}"
                 )
         if uid not in self.nodes:
             self.nodes[uid] = DAGNode(

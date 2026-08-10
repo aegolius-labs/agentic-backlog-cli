@@ -1,4 +1,5 @@
 import json
+from uuid import NAMESPACE_DNS, uuid5
 
 import pytest
 from click.testing import CliRunner
@@ -401,3 +402,35 @@ def test_cli_diff_is_safe_by_default_and_legacy_is_explicit(sample_dag_file, tmp
     assert legacy_result.exit_code == 0
     legacy = json.loads(legacy_result.output)
     assert "Create System 'System 1'" in legacy["nodes"]
+
+
+def test_cli_generate_reality_rejects_system_identity_marker_without_output_loss(
+    tmp_path,
+):
+    project = tmp_path / "project"
+    project.mkdir()
+    system_id = str(uuid5(NAMESPACE_DNS, "system_root"))
+    (project / "collision.py").write_text(
+        f"# aio-sdlc-node: {system_id}\nclass Collision:\n    pass\n",
+        encoding="utf-8",
+    )
+    output = tmp_path / "reality-dag.yaml"
+    original = b"existing output must remain byte-identical\n"
+    output.write_bytes(original)
+
+    result = CliRunner().invoke(
+        cli,
+        [
+            "generate-reality",
+            "--dir",
+            str(project),
+            "--system",
+            "system_root",
+            "--output",
+            str(output),
+        ],
+    )
+
+    assert result.exit_code == 1
+    assert "source marker collides with existing identity" in result.output
+    assert output.read_bytes() == original
