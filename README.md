@@ -118,3 +118,18 @@ code. The historical structural algorithm requires the explicit `--mode legacy-s
 Both top-level records and nested candidate identities are bounded while complete totals and
 truncation metadata remain visible. Report output refuses to overwrite DAG, backlog, audit, or lock
 state.
+
+Promote one unique Python class or function candidate only through an explicit two-step decision:
+
+```bash
+uv run dag-tool mapping review --project-path /absolute/project --intent-id <guid>
+uv run dag-tool mapping approve --project-path /absolute/project --intent-id <guid> \
+  --candidate-reality-id <reviewed-guid> --evidence-digest <reviewed-digest> \
+  --approved-by <identity> --approved-at <timezone-aware-iso8601> \
+  --rationale "Why this exact source symbol implements the intent"
+```
+
+Review regenerates Reality in memory and binds the candidate to its exact source path, symbol,
+line, and SHA-256 without changing canonical state. Approval repeats that review under a dedicated
+lock, rejects stale or ambiguous evidence, atomically inserts the canonical marker and audit
+receipt, and rolls back unless a fresh scan confirms the intended GUID at the same symbol.

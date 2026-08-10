@@ -4,7 +4,12 @@ from pathlib import Path
 
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.dag_models import Metadata, Node, NodeType
-from aio_agentic_sdlc.mcp_server import generate_document, reconcile_dags
+from aio_agentic_sdlc.mcp_server import (
+    approve_mapping,
+    generate_document,
+    reconcile_dags,
+    review_mapping,
+)
 
 
 def test_mcp_generate_document(tmp_path):
@@ -113,3 +118,33 @@ def test_mcp_reconcile_dags_returns_the_same_evidence_report(tmp_path):
             "value": "00000000-0000-0000-0000-000000000001",
         }
     ]
+
+
+def test_mcp_mapping_review_and_approval_use_source_bound_evidence(tmp_path):
+    intent_id = "6506870b-b262-4f54-b6e9-43de4a873a55"
+    source_path = tmp_path / "src" / "archiver.py"
+    source_path.parent.mkdir(parents=True)
+    source_path.write_text("class PRDArchiver:\n    pass\n", encoding="utf-8")
+    DAGManager(
+        Metadata(name="Mapping MCP", version="1.0"),
+        [Node(id=intent_id, type=NodeType.COMPONENT, name="PRD Archiver")],
+        [],
+    ).save(str(tmp_path / "intention-dag.yaml"))
+
+    review = json.loads(review_mapping(intent_id=intent_id, project_path=str(tmp_path)))
+    candidate_id = review["candidates"][0]["reality"]["id"]
+    result = json.loads(
+        approve_mapping(
+            intent_id=intent_id,
+            candidate_reality_id=candidate_id,
+            evidence_digest=review["evidence_digest"],
+            approved_by="Felix",
+            approved_at="2026-08-07T21:30:00+00:00",
+            rationale="Reviewed exact MCP evidence.",
+            project_path=str(tmp_path),
+        )
+    )
+
+    assert result["postcondition"]["classification"] == "confirmed"
+    assert result["receipt"]["evidence_digest"] == review["evidence_digest"]
+    assert f"# aio-sdlc-node: {intent_id}" in source_path.read_text(encoding="utf-8")

@@ -20,6 +20,7 @@ from .dag_manager import DAGManager
 from .dag_models import Node, NodeType
 from .intent_ir import IntentIR
 from .intent_store import create_intent_node_file, update_intent_file
+from .mapping import MappingApproval, MappingEngine
 from .reconciliation import ReconciliationEngine
 from .templating_engine import generate_document as generate_document_from_template
 
@@ -375,6 +376,67 @@ def reconcile_dags(
         return json.dumps(report, indent=2)
     except Exception as e:
         return f"Error reconciling DAGs: {str(e)}"
+
+
+@mcp.tool()
+def review_mapping(
+    intent_id: Annotated[str, Field(description="Canonical Intention node GUID")],
+    project_path: Annotated[
+        str, Field(description="Absolute path to the project directory")
+    ] = ".",
+) -> str:
+    """Return fresh source-bound evidence for one mapping decision."""
+
+    try:
+        intention_path = os.path.join(
+            os.path.abspath(project_path), "intention-dag.yaml"
+        )
+        report = MappingEngine(project_path, intention_path).review(intent_id)
+        return json.dumps(report, indent=2)
+    except Exception as e:
+        return f"Error reviewing mapping: {str(e)}"
+
+
+@mcp.tool()
+def approve_mapping(
+    intent_id: Annotated[str, Field(description="Canonical Intention node GUID")],
+    candidate_reality_id: Annotated[
+        str, Field(description="Reality candidate GUID from the exact mapping review")
+    ],
+    evidence_digest: Annotated[
+        str, Field(description="Evidence digest from the exact mapping review")
+    ],
+    approved_by: Annotated[str, Field(description="Identity of the approver")],
+    approved_at: Annotated[
+        str, Field(description="Timezone-aware ISO-8601 approval timestamp")
+    ],
+    rationale: Annotated[str, Field(description="Reason for approving this mapping")],
+    project_path: Annotated[
+        str, Field(description="Absolute path to the project directory")
+    ] = ".",
+) -> str:
+    """Approve one fresh candidate and atomically persist verified source evidence."""
+
+    try:
+        intention_path = os.path.join(
+            os.path.abspath(project_path), "intention-dag.yaml"
+        )
+        approval = MappingApproval.model_validate(
+            {
+                "approved_by": approved_by,
+                "approved_at": approved_at,
+                "rationale": rationale,
+            }
+        )
+        result = MappingEngine(project_path, intention_path).approve(
+            intent_id,
+            candidate_reality_id,
+            evidence_digest,
+            approval,
+        )
+        return json.dumps(result, indent=2)
+    except Exception as e:
+        return f"Error approving mapping: {str(e)}"
 
 
 @mcp.tool()

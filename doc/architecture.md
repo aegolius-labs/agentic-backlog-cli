@@ -86,6 +86,13 @@ Candidates always require approval. The engine does not use semantic similarity 
 mappings and does not mutate either DAG. Reality nodes without a confirmed GUID are reported as
 `unclassified_reality`; they are not deletion evidence.
 
+Unique Python class and function candidates can pass through a separate approval-gated mapping
+transition. Review binds fresh reconciliation evidence to one exact source symbol and SHA-256.
+Approval requires the reviewed candidate GUID, evidence digest, approver, timezone-aware timestamp,
+and rationale; it then atomically adds an adjacent canonical marker plus audit receipt. Stale,
+ambiguous, unsupported, duplicate-marker, or escaping-path evidence fails without mutation, and a
+failed post-write Reality confirmation restores the original source bytes.
+
 Safe diffing is the default. It produces bounded mapping-review or implementation-investigation
 work and includes complete totals plus truncation metadata for both top-level work and nested
 candidate identities. Candidate matching uses a deterministic normalized-name/type index, and

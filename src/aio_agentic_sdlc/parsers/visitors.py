@@ -3,14 +3,74 @@ from typing import List
 from tree_sitter import Node
 
 from aio_agentic_sdlc.dag_models import EdgeType, NodeType
+from aio_agentic_sdlc.source_locations import SourceLocation
+from aio_agentic_sdlc.source_markers import canonical_node_marker
+
+STRUCTURAL_CONTAINER_TYPES = {
+    "module",
+    "block",
+    "if_statement",
+    "elif_clause",
+    "else_clause",
+    "try_statement",
+    "except_clause",
+    "finally_clause",
+    "with_statement",
+    "for_statement",
+    "while_statement",
+    "match_statement",
+    "case_clause",
+}
 
 
 class TreeSitterVisitor:
-    def __init__(self, generator, module_id: str):
+    def __init__(
+        self,
+        generator,
+        module_id: str,
+        *,
+        file_path: str,
+        content: str,
+        source_sha256: str,
+    ):
         self.generator = generator
         self.module_id = module_id
         self.current_scope = module_id
         self.scope_stack = [module_id]
+        self.file_path = file_path
+        self.lines = content.splitlines()
+        self.source_sha256 = source_sha256
+
+    def _definition_identity(self, node: Node, decorators: List[Node]):
+        marker_row = min(
+            [
+                node.start_point.row,
+                *(decorator.start_point.row for decorator in decorators),
+            ]
+        )
+        marker = None
+        if marker_row > 0:
+            marker = canonical_node_marker(self.lines[marker_row - 1])
+        marker_line = marker_row if marker is not None else marker_row + 1
+        return marker, marker_line
+
+    def _source_location(
+        self,
+        *,
+        node: Node,
+        decorators: List[Node],
+        symbol_kind: str,
+        symbol_name: str,
+    ) -> SourceLocation:
+        _, marker_line = self._definition_identity(node, decorators)
+        return SourceLocation(
+            path=self.generator._source_path(self.file_path),
+            symbol_kind=symbol_kind,
+            symbol_name=symbol_name,
+            definition_line=node.start_point.row + 1,
+            marker_line=marker_line,
+            source_sha256=self.source_sha256,
+        )
 
     def visit(self, node: Node):
         if node.type == "class_definition":
@@ -23,7 +83,7 @@ class TreeSitterVisitor:
             self.visit_import_statement(node)
         elif node.type == "import_from_statement":
             self.visit_import_from_statement(node)
-        else:
+        elif node.type in STRUCTURAL_CONTAINER_TYPES:
             for child in node.children:
                 if child.is_named:
                     self.visit(child)
@@ -45,7 +105,8 @@ class TreeSitterVisitor:
         if not name_node:
             return
         name = name_node.text.decode("utf8")
-        class_id = f"{self.current_scope}.{name}"
+        marker, _ = self._definition_identity(node, decorators)
+        class_id = marker or f"{self.current_scope}.{name}"
 
         is_entity = False
         superclasses_node = node.child_by_field_name("superclasses")
@@ -68,7 +129,17 @@ class TreeSitterVisitor:
                     docstring = first_expr.text.decode("utf8").strip("'\"")
 
         self.generator._add_node(
-            id=class_id, node_type=node_type, name=name, description=docstring
+            id=class_id,
+            node_type=node_type,
+            name=name,
+            description=docstring,
+            explicit_identity=marker is not None,
+            source_location=self._source_location(
+                node=node,
+                decorators=decorators,
+                symbol_kind="class",
+                symbol_name=name,
+            ),
         )
         self.generator._add_edge(self.current_scope, class_id, EdgeType.CONTAINS)
 
@@ -113,7 +184,8 @@ class TreeSitterVisitor:
         if name.startswith("_") and name != "__init__":
             return
 
-        func_id = f"{self.current_scope}.{name}"
+        marker, _ = self._definition_identity(node, decorators)
+        func_id = marker or f"{self.current_scope}.{name}"
 
         is_endpoint = False
         dec_names = self._extract_decorator_names(decorators)
@@ -133,7 +205,17 @@ class TreeSitterVisitor:
                     docstring = first_expr.text.decode("utf8").strip("'\"")
 
         self.generator._add_node(
-            id=func_id, node_type=node_type, name=name, description=docstring
+            id=func_id,
+            node_type=node_type,
+            name=name,
+            description=docstring,
+            explicit_identity=marker is not None,
+            source_location=self._source_location(
+                node=node,
+                decorators=decorators,
+                symbol_kind="function",
+                symbol_name=name,
+            ),
         )
         self.generator._add_edge(self.current_scope, func_id, EdgeType.CONTAINS)
 

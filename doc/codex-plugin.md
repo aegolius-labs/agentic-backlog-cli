@@ -67,10 +67,15 @@ prompts include:
 - “Show me the highest-priority unblocked task.”
 - “Generate the Reality DAG and report traceability drift.”
 - “Reconcile the Intention and Reality DAGs without proposing destructive cleanup.”
+- “Review this unique mapping candidate and ask me to approve the exact evidence.”
 
 For MCP calls, pass the absolute target repository as `project_path`. This is especially important
 when the plugin is installed because Codex runs the server from a cached plugin package, not from
 the target repository.
+
+For structural candidates, the plugin separates read-only review from mutation. It must show the
+exact candidate, source location, and evidence digest, then wait for explicit human approval before
+calling `approve_mapping`. Any intervening source or evidence change invalidates that approval.
 
 ## Validate changes
 

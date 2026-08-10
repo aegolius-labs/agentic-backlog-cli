@@ -23,6 +23,11 @@ candidates, and unmatched Reality observations are unclassified rather than dele
 - Intention drift: code exists without accepted intent; route to the architect for validation.
 - Tooling drift: the framework cannot represent or detect the state; record a framework blocker.
 
+When reconciliation yields exactly one supported structural candidate, run `review_mapping` and
+ask an authorized human to accept or reject the exact candidate, source path, and evidence digest.
+Only after that explicit decision may `approve_mapping` atomically add the canonical source marker
+and audit receipt. A changed digest or source requires a new review and a new approval.
+
 ## 4. Implementation
 
 Pull the highest-priority unblocked node with the MCP tool. Follow

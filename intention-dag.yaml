@@ -671,6 +671,223 @@ nodes:
       approved_at: '2026-07-30T21:19:57Z'
       rationale: The repository owner explicitly authorized this recovery milestone
         and delegated implementation judgment.
+- id: 6317643a-a8fc-5026-b373-9330004bc90d
+  type: component
+  name: Approval-Gated Source Mapping
+  domain: verification
+  description: Review and atomically approve one fresh structural mapping into canonical
+    source evidence.
+  intent:
+    schema_version: 1
+    provenance:
+    - source_type: human_statement
+      reference: codex:task:next-recovery-milestone:2026-08-07
+      statement: Continue the recovery work and get the next milestone working soon.
+    - source_type: document
+      reference: .aio-sdlc-recovery-roadmap.md#phase-15
+      statement: Add an approval-gated mapping operation that preserves canonical
+        GUIDs in source evidence.
+    assumptions:
+    - Canonical Intention GUIDs remain authoritative; an observed Reality GUID cannot
+      redefine intent.
+    - The first writable adapter targets Python class and function definitions already
+      supported by the Reality parser.
+    - Approval applies only to one fresh deterministic candidate and must not generalize
+      to ambiguous or semantic matches.
+    ambiguities: []
+    confidence: 0.97
+    acceptance_criteria:
+    - id: MAPPING-AC1
+      statement: A read-only review binds one fresh reconciliation result to its exact
+        source path, symbol location, candidate GUID, source hash, and deterministic
+        evidence digest.
+      required_evidence:
+      - test:mapping-review-source-binding
+      - cli:dag-tool-mapping-review
+      - mcp:review-mapping
+    - id: MAPPING-AC2
+      statement: Approval rejects ambiguous, unmapped, confirmed, unsupported, stale,
+        mismatched, duplicate-marker, or path-escaping evidence without modifying
+        source, DAG, or backlog state.
+      required_evidence:
+      - test:mapping-approval-fail-closed
+      - test:mapping-approval-stale-evidence
+      - test:mapping-approval-path-containment
+    - id: MAPPING-AC3
+      statement: A valid approval atomically inserts one canonical GUID marker and
+        a durable audit receipt adjacent to the exact Python symbol, then verifies
+        a fresh Reality scan confirms the Intention GUID or restores the original
+        source.
+      required_evidence:
+      - test:atomic-approved-source-marker
+      - test:mapping-verification-rollback
+      - report:self-dogfood-approved-mapping
+    - id: MAPPING-AC4
+      statement: The Python API, CLI, MCP, and Codex role guidance expose the same
+        approval-gated contract without hand-editing canonical DAG or generated frontmatter
+        state.
+      required_evidence:
+      - test:mapping-cli-mcp-parity
+      - validation:manage-sdlc-skill
+      - validation:codex-plugin
+    revision_history:
+    - revision: 1
+      recorded_at: '2026-08-07T17:25:14.432030-04:00'
+      actor: sdlc_intake
+      generator_version: aio-agentic-sdlc/0.3.0
+      summary: Compiled the approved source-bound mapping milestone from the recovery
+        roadmap.
+    responsible_agent: sdlc_cartographer
+    generator_version: aio-agentic-sdlc/0.3.0
+    approval:
+      state: approved
+      approved_by: Felix
+      approved_at: '2026-08-07T17:25:14.432030-04:00'
+      rationale: The user explicitly requested continuation into the next recovery
+        milestone.
+- id: f4658dd7-1ea1-5e1f-b851-2a376cc1649a
+  type: component
+  name: Legacy Intent IR Migration
+  domain: governance
+  description: Compiles legacy Intention nodes into provenance-preserving, reviewable
+    Intent IR without manual YAML maintenance.
+  intent:
+    schema_version: 1
+    provenance:
+    - source_type: human_statement
+      reference: codex:task:getting-back-on-track:2026-08-10
+      statement: Write down the upcoming roadmap work and continue getting the project
+        back on track.
+    - source_type: conversation
+      reference: codex:task:prd-archiver-mapping-review:2026-08-10
+      statement: The existing PRD Archiver node could not be rendered by intent-summary
+        because it has no Intent IR.
+    assumptions:
+    - The local Intention DAG remains authoritative and humans do not maintain its
+      YAML manually.
+    - Migration must preserve every canonical GUID, graph edge, and existing descriptive
+      field.
+    - Generated interpretations with incomplete provenance or low confidence require
+      human review rather than silent approval.
+    ambiguities: []
+    confidence: 0.99
+    acceptance_criteria:
+    - id: INTENT-MIGRATION-AC1
+      statement: The framework inventories every Intention node without Intent IR
+        and produces a deterministic coverage report with complete totals and bounded
+        detail.
+      required_evidence:
+      - test:legacy-intent-inventory
+      - report:intent-ir-coverage
+    - id: INTENT-MIGRATION-AC2
+      statement: A migration compiler creates versioned Intent IR from existing local
+        descriptions, relationships, specifications, and provenance without inventing
+        requirements; uncertain interpretations remain review-required.
+      required_evidence:
+      - test:legacy-intent-compilation
+      - test:uncertain-intent-review-gate
+      - report:migration-provenance
+    - id: INTENT-MIGRATION-AC3
+      statement: Each accepted migration is an atomic framework transition that preserves
+        canonical GUIDs, graph edges, prior fields, and revision history and rejects
+        stale writers without partial mutation.
+      required_evidence:
+      - test:atomic-intent-migration
+      - test:migration-graph-preservation
+      - test:migration-stale-writer
+    - id: INTENT-MIGRATION-AC4
+      statement: After migration, strict Intent IR validation succeeds for every node
+        and intent-summary renders each node without requiring raw YAML inspection.
+      required_evidence:
+      - validation:strict-intent-ir
+      - test:intent-summary-complete-coverage
+    revision_history:
+    - revision: 1
+      recorded_at: '2026-08-10T10:12:30.970663-04:00'
+      actor: sdlc_intake
+      generator_version: aio-agentic-sdlc/0.3.0
+      summary: Recorded the approved roadmap requirement to make legacy intent reviewable
+        without raw YAML.
+    responsible_agent: sdlc_cartographer
+    generator_version: aio-agentic-sdlc/0.3.0
+    approval:
+      state: approved
+      approved_by: Felix
+      approved_at: '2026-08-10T10:12:30.970663-04:00'
+      rationale: Felix explicitly requested that this upcoming recovery work be added
+        to the roadmap.
+- id: 841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58
+  type: component
+  name: DAG Visualization and Comparison
+  domain: ux
+  description: Renders bounded human-readable I-DAG and R-DAG views with reconciliation
+    and source evidence.
+  intent:
+    schema_version: 1
+    provenance:
+    - source_type: human_statement
+      reference: codex:task:dag-visualization-question:2026-08-10
+      statement: Provide a way to visualize the I-DAG so a person can compare implementation
+        to intention without inspecting raw data.
+    - source_type: conversation
+      reference: codex:task:getting-back-on-track:2026-08-10
+      statement: Write down this upcoming roadmap work and continue getting the project
+        back on track.
+    assumptions:
+    - The first portable visual surface is deterministic Mermaid plus a concise text
+      summary that renders in Codex and GitHub without a hosted application.
+    - Visualization is read-only and derives from canonical local DAG and reconciliation
+      evidence.
+    - Large graphs require focus, depth, record, and candidate bounds with complete
+      totals and truncation metadata.
+    ambiguities: []
+    confidence: 0.98
+    acceptance_criteria:
+    - id: DAG-VIS-AC1
+      statement: CLI and MCP operations render deterministic Mermaid and human-readable
+        summaries for an Intention DAG, Reality DAG, or a selected node neighborhood
+        without exposing raw YAML.
+      required_evidence:
+      - test:dag-visualization-determinism
+      - cli:dag-tool-visualize
+      - mcp:visualize-dag
+    - id: DAG-VIS-AC2
+      statement: A comparison view shows intended identity and relationships beside
+        confirmed, candidate, ambiguous, or unmapped Reality evidence, including exact
+        source evidence when available.
+      required_evidence:
+      - test:dag-comparison-evidence
+      - report:self-dogfood-dag-comparison
+    - id: DAG-VIS-AC3
+      statement: Visualization escapes untrusted labels, applies explicit graph and
+        nested-candidate bounds before output construction, reports complete totals
+        and truncation, and never mutates source or framework state.
+      required_evidence:
+      - test:visualization-label-escaping
+      - test:visualization-bounds
+      - test:visualization-read-only
+    - id: DAG-VIS-AC4
+      statement: The manage-sdlc plugin guides agents to present the visual review
+        before requesting identity approval, with documented CLI and MCP parity.
+      required_evidence:
+      - validation:manage-sdlc-skill
+      - validation:codex-plugin
+      - doc:dag-visualization-workflow
+    revision_history:
+    - revision: 1
+      recorded_at: '2026-08-10T10:12:30.970663-04:00'
+      actor: sdlc_intake
+      generator_version: aio-agentic-sdlc/0.3.0
+      summary: Recorded the approved roadmap requirement for visual Intention and
+        Reality comparison.
+    responsible_agent: sdlc_architect
+    generator_version: aio-agentic-sdlc/0.3.0
+    approval:
+      state: approved
+      approved_by: Felix
+      approved_at: '2026-08-10T10:12:30.970663-04:00'
+      rationale: Felix explicitly approved recording visualization as upcoming recovery
+        roadmap work.
 edges:
 - source: 4d76717e-55cd-4768-b05e-06a3cce1128b
   target: 54b91d55-08fe-48df-be35-445be7cd1e46
@@ -1001,3 +1218,19 @@ edges:
   target: 9015c8a3-fd14-5598-916d-d03fcf41e415
   type: depends_on
   description: Translation benchmarks require a safe reconciliation oracle.
+- source: 6317643a-a8fc-5026-b373-9330004bc90d
+  target: 9015c8a3-fd14-5598-916d-d03fcf41e415
+  type: depends_on
+  description: Writable mapping requires the evidence-gated reconciliation baseline.
+- source: f4658dd7-1ea1-5e1f-b851-2a376cc1649a
+  target: 7bcd1683-2a10-5cbc-ab91-440ea920eaf1
+  type: depends_on
+  description: Migration applies the accepted Intent IR v1 contract.
+- source: 841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58
+  target: f4658dd7-1ea1-5e1f-b851-2a376cc1649a
+  type: depends_on
+  description: Comparison requires reviewable intent rather than legacy labels alone.
+- source: 841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58
+  target: 9015c8a3-fd14-5598-916d-d03fcf41e415
+  type: depends_on
+  description: Comparison view consumes evidence-gated reconciliation classifications.
