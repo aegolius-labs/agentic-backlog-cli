@@ -1173,6 +1173,10 @@ nodes:
   type: component
   name: test_cli_diff_is_safe_by_default_and_legacy_is_explicit
   description: Function test_cli_diff_is_safe_by_default_and_legacy_is_explicit
+- id: f32f9c8e-c4f7-5f2b-955c-dd6909998280
+  type: component
+  name: test_cli_generate_reality_rejects_system_identity_marker_without_output_loss
+  description: Function test_cli_generate_reality_rejects_system_identity_marker_without_output_loss
 - id: 8b385454-109c-58ae-9b05-a2e90c009ea8
   type: module
   name: test_dag_manager.py
@@ -2921,6 +2925,9 @@ edges:
   type: contains
 - source: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
   target: 9ce05651-500c-5f75-9c1c-5b2b6cd17dc4
+  type: contains
+- source: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
+  target: f32f9c8e-c4f7-5f2b-955c-dd6909998280
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 8b385454-109c-58ae-9b05-a2e90c009ea8

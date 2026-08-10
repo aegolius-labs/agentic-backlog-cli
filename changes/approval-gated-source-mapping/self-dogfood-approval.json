@@ -23,16 +23,16 @@
   },
   "canonical_reconciliation": {
     "intention_nodes": 59,
-    "reality_nodes": 507,
+    "reality_nodes": 508,
     "confirmed": 3,
     "candidate": 5,
     "ambiguous": 0,
     "unmapped": 51,
-    "unclassified_reality": 504
+    "unclassified_reality": 505
   },
   "input_provenance": {
     "intention_dag_sha256": "3f54bddc136c4473ae912b1c7f25afd0086b61894787a3156a949d66190cee0f",
-    "reality_dag_sha256": "ac8a31324de0031bfc16bc83a7ddb79542d8607d0f061715de3f8b9d1f36ba3b",
+    "reality_dag_sha256": "e85fb5c2f8c590a632b0ceda0229b10a244f393f73e6064f48fde6e9690972de",
     "source_sha256": "95bd272d02fe5518d45ad8192b9f6a7fb63b087a3bcf519ca0ac6849a7b3476c"
   }
 }
