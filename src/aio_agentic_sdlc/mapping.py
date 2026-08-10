@@ -27,7 +27,12 @@ from aio_agentic_sdlc.source_markers import (
     NODE_MARKER_PREFIX,
     iter_canonical_node_markers,
 )
-from aio_agentic_sdlc.workspace import MAPPING_LOCK_FILE, workspace_file_path
+from aio_agentic_sdlc.workspace import (
+    MAPPING_LOCK_FILE,
+    require_current_workspace,
+    workspace_file_path,
+    workspace_migration_lock,
+)
 
 MAPPING_SCHEMA_VERSION = 1
 SUPPORTED_SYMBOL_KINDS = {"class", "function"}
@@ -295,7 +300,11 @@ class MappingEngine:
 
         canonical_intent_id = self._canonical_guid(intent_id, label="Intent GUID")
         lock_path = workspace_file_path(self.project_root, MAPPING_LOCK_FILE)
-        with FileLock(lock_path, timeout=10):
+        with (
+            workspace_migration_lock(self.project_root),
+            FileLock(lock_path, timeout=10),
+        ):
+            require_current_workspace(self.project_root)
             review = self.review(canonical_intent_id)
             if not review["approval"]["supported"]:
                 raise MappingError("mapping approval requires one unique candidate")

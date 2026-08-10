@@ -3,6 +3,7 @@ import threading
 from pathlib import Path
 
 import pytest
+from filelock import FileLock
 
 from aio_agentic_sdlc import core
 from aio_agentic_sdlc.config import save_config
@@ -224,6 +225,42 @@ def test_normal_state_operations_wait_for_the_workspace_migration_lock(tmp_path)
     assert not worker.is_alive()
     assert len(failures) == 1
     assert isinstance(failures[0], WorkspaceMigrationRequired)
+
+
+def test_workspace_migration_waits_for_the_legacy_mapping_lock(tmp_path):
+    legacy_backlog = tmp_path / "backlog.json"
+    legacy_backlog.write_text(
+        json.dumps({"nodes": {"Legacy": {}}, "edges": []}), encoding="utf-8"
+    )
+    legacy_state = tmp_path / ".aio-sdlc"
+    legacy_state.mkdir()
+    legacy_mapping_lock = legacy_state / "mapping.lock"
+    started = threading.Event()
+    finished = threading.Event()
+    failures = []
+
+    def migrate_in_thread():
+        started.set()
+        try:
+            migrate_legacy_workspace(tmp_path)
+        except Exception as exc:  # noqa: BLE001 - captured for cross-thread assertion
+            failures.append(exc)
+        finally:
+            finished.set()
+
+    with FileLock(legacy_mapping_lock, timeout=1):
+        worker = threading.Thread(target=migrate_in_thread)
+        worker.start()
+        assert started.wait(timeout=1)
+        assert not finished.wait(timeout=0.1)
+        assert legacy_backlog.exists()
+        assert not (tmp_path / BACKLOG_FILE).exists()
+
+    worker.join(timeout=3)
+    assert not worker.is_alive()
+    assert failures == []
+    assert not legacy_backlog.exists()
+    assert (tmp_path / BACKLOG_FILE).is_file()
 
 
 def test_state_and_config_reject_a_symlinked_canonical_parent(tmp_path):

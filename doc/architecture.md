@@ -85,14 +85,14 @@ The local files have distinct responsibilities:
 - `.agentic-backlog.json` is a retired generated artifact. Runtime code does not read it; `aio-sdlc migrate-state --retire-legacy` preserves a hash-named copy under ignored operational state before removing it.
 
 Projects upgrading from the former scattered layout must run `aio-sdlc migrate-state`.
-The migration acquires a dedicated workspace lock, validates all recognized legacy inputs before
+The migration acquires dedicated workspace, state, and mapping locks, validates all recognized legacy inputs before
 moving any of them, and records source/target hashes in `state-audit.jsonl`. It recognizes the old
 root backlog, config, Intention and Reality DAG filenames plus `.aio-sdlc` audit/legacy state. The
 retired GitHub configuration is stripped while local hierarchy and validation settings are
 preserved. A symlink, invalid envelope, or old/new path conflict fails closed; regular state
 commands refuse to hide legacy data and direct the operator to migrate first. Generic host-owned
 directories such as `specs/` and `changes/` are deliberately outside automatic migration. The
-migrator bridges the old and new state locks, removes known obsolete locks only after release,
+migrator bridges the old and new state and mapping locks, removes known obsolete locks only after release,
 deletes the deprecated directory when empty, and reports unknown entries without removing them.
 
 Framework tools, rather than hand edits, perform state transitions. External issue trackers may be reintroduced later as one-way projections, but they cannot select or replace the authoritative state.

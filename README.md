@@ -86,7 +86,7 @@ when a source is a symlink, or when its content is not a valid framework
 artifact. Normal state commands also fail with a migration instruction instead
 of silently starting an empty backlog. Generic host directories such as
 `specs/`, `changes/`, `archive/`, `inbox/`, and `research-spikes/` are never
-claimed automatically. The migrator bridges the former and current state locks,
+claimed automatically. The migrator bridges the former and current state and mapping locks,
 discards known obsolete lock files after release, removes `.aio-sdlc/` when it
 is empty, and reports rather than deletes any unknown entries that remain.
 

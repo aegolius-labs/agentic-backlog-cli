@@ -215,14 +215,14 @@ def _validate_legacy_dag(source: Path) -> None:
 
 
 def _normalized_legacy_audit(source: Path) -> bytes | None:
-    try:
-        payload = source.read_bytes()
-        text = payload.decode("utf-8")
-    except UnicodeDecodeError as exc:
-        raise WorkspaceMigrationError(f"Legacy audit log is not UTF-8: {exc}") from exc
-
+    payload = source.read_bytes()
     complete_length = payload.rfind(b"\n") + 1
-    complete_text = payload[:complete_length].decode("utf-8")
+    try:
+        complete_text = payload[:complete_length].decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise WorkspaceMigrationError(
+            f"Complete legacy audit records are not UTF-8: {exc}"
+        ) from exc
     for line_number, line in enumerate(complete_text.splitlines(), start=1):
         if not line.strip():
             continue
@@ -237,12 +237,12 @@ def _normalized_legacy_audit(source: Path) -> bytes | None:
                 f"Legacy audit record {line_number} must be an object."
             )
 
-    tail = text[len(payload[:complete_length].decode("utf-8")) :]
+    tail = payload[complete_length:]
     if not tail:
         return None
     try:
-        tail_event = json.loads(tail)
-    except json.JSONDecodeError:
+        tail_event = json.loads(tail.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
         recovery = {
             "operation": "audit.recover",
             "phase": "audit_tail_truncated",
@@ -304,10 +304,12 @@ def migrate_legacy_workspace(project_path: str | Path = ".") -> dict[str, Any]:
         with ExitStack() as locks:
             if legacy_state_dir.is_dir():
                 locks.enter_context(FileLock(bridge_paths[0], timeout=30))
-                if bridge_existed[bridge_paths[1]]:
-                    locks.enter_context(FileLock(bridge_paths[1], timeout=30))
+                locks.enter_context(FileLock(bridge_paths[1], timeout=30))
             locks.enter_context(
                 FileLock(workspace_file_path(root, STATE_LOCK_FILE), timeout=30)
+            )
+            locks.enter_context(
+                FileLock(workspace_file_path(root, MAPPING_LOCK_FILE), timeout=30)
             )
             migrated = _migrate_legacy_workspace_locked(root)
 

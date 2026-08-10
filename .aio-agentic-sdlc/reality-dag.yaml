@@ -1590,6 +1590,10 @@ nodes:
   type: component
   name: test_mapping_approval_atomically_marks_and_confirms_exact_python_symbol
   description: Function test_mapping_approval_atomically_marks_and_confirms_exact_python_symbol
+- id: 41270516-9ff9-55bd-8455-a677d19ee39d
+  type: component
+  name: test_mapping_approval_waits_for_workspace_migration_lock
+  description: Function test_mapping_approval_waits_for_workspace_migration_lock
 - id: e5d9c81a-f55b-5840-8688-9b3445c592b3
   type: component
   name: test_mapping_marker_precedes_decorators_and_preserves_crlf
@@ -2016,6 +2020,10 @@ nodes:
   type: component
   name: test_legacy_generated_backlog_is_archived_and_retired_idempotently
   description: Function test_legacy_generated_backlog_is_archived_and_retired_idempotently
+- id: edd9f5f9-42b2-5e10-9350-761de66bac2b
+  type: component
+  name: test_legacy_backlog_retirement_rejects_a_symlinked_archive_parent
+  description: Function test_legacy_backlog_retirement_rejects_a_symlinked_archive_parent
 - id: d1e24152-4c50-5373-b5e4-a0ef926d7b06
   type: component
   name: test_future_schema_is_rejected_without_modifying_state
@@ -2176,6 +2184,10 @@ nodes:
   type: component
   name: test_normal_state_operations_wait_for_the_workspace_migration_lock
   description: Function test_normal_state_operations_wait_for_the_workspace_migration_lock
+- id: 0c750d74-61ff-5066-89a7-ea81997cc150
+  type: component
+  name: test_workspace_migration_waits_for_the_legacy_mapping_lock
+  description: Function test_workspace_migration_waits_for_the_legacy_mapping_lock
 - id: e6abc03a-084f-56d3-9050-bd188b29021d
   type: component
   name: test_state_and_config_reject_a_symlinked_canonical_parent
@@ -3344,6 +3356,9 @@ edges:
   target: 49bb24d8-7a77-5a4b-b2f5-84ccf7e89a58
   type: contains
 - source: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
+  target: 41270516-9ff9-55bd-8455-a677d19ee39d
+  type: contains
+- source: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
   target: e5d9c81a-f55b-5840-8688-9b3445c592b3
   type: contains
 - source: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
@@ -3665,6 +3680,9 @@ edges:
   target: 88080ea6-ef86-5bc7-bf28-a2ad29a5f0e0
   type: contains
 - source: 7bb11dbc-3295-5af9-a19e-70455169489f
+  target: edd9f5f9-42b2-5e10-9350-761de66bac2b
+  type: contains
+- source: 7bb11dbc-3295-5af9-a19e-70455169489f
   target: d1e24152-4c50-5373-b5e4-a0ef926d7b06
   type: contains
 - source: 7bb11dbc-3295-5af9-a19e-70455169489f
@@ -3783,6 +3801,9 @@ edges:
   type: contains
 - source: 62747999-702e-56a2-9281-584a13bf6426
   target: 1238936c-83b3-543c-a460-05c30b8447ba
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: 0c750d74-61ff-5066-89a7-ea81997cc150
   type: contains
 - source: 62747999-702e-56a2-9281-584a13bf6426
   target: e6abc03a-084f-56d3-9050-bd188b29021d

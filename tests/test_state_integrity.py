@@ -14,7 +14,12 @@ from aio_agentic_sdlc.state import (
     migrate_backlog,
     retire_legacy_backlog,
 )
-from aio_agentic_sdlc.workspace import WORKSPACE_DIR
+from aio_agentic_sdlc.workspace import (
+    LEGACY_DIR,
+    WORKSPACE_DIR,
+    WorkspaceMigrationError,
+    ensure_workspace,
+)
 
 
 def _audit_events(project_path):
@@ -170,6 +175,27 @@ def test_legacy_generated_backlog_is_archived_and_retired_idempotently(tmp_path)
     assert event["operation"] == "legacy-backlog.retire"
     assert event["phase"] == "committed"
     assert event["sha256"] == first["sha256"]
+
+
+def test_legacy_backlog_retirement_rejects_a_symlinked_archive_parent(tmp_path):
+    legacy_path = tmp_path / ".agentic-backlog.json"
+    payload = b'{"nodes":{"Legacy":{}}}'
+    legacy_path.write_bytes(payload)
+    workspace = ensure_workspace(tmp_path)
+    redirect_target = tmp_path / "archive-redirect"
+    redirect_target.mkdir()
+    archive_parent = tmp_path / LEGACY_DIR
+    try:
+        archive_parent.symlink_to(redirect_target, target_is_directory=True)
+    except OSError as exc:
+        pytest.skip(f"Directory symlinks are unavailable: {exc}")
+
+    with pytest.raises(WorkspaceMigrationError, match="real directory"):
+        retire_legacy_backlog(str(tmp_path))
+
+    assert legacy_path.read_bytes() == payload
+    assert list(redirect_target.iterdir()) == []
+    assert workspace.is_dir()
 
 
 def test_future_schema_is_rejected_without_modifying_state(tmp_path):

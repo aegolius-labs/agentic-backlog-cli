@@ -398,9 +398,8 @@ def _retire_legacy_backlog_locked(
 
     digest = hashlib.sha256(payload).hexdigest()
     archive_relative = f"{LEGACY_DIR}/agentic-backlog-{digest}.json"
-    archive_path = os.path.join(project_path, archive_relative)
-    archive_dir = os.path.dirname(archive_path)
-    os.makedirs(archive_dir, exist_ok=True)
+    archive_path = workspace_file_path(project_path, archive_relative)
+    archive_dir = archive_path.parent
 
     if os.path.exists(archive_path):
         if _file_sha256(archive_path) != digest:
