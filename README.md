@@ -83,15 +83,15 @@ Instead of relying on token-heavy LLM context windows or external integrations, 
 
 - **Intention DAG (I-DAG)**: A graph-based structural representation of planned features and dependencies.
 - **Reality DAG (R-DAG)**: A deterministic reflection of the actual codebase logic.
-- **Canonical Traceability**: PRDs (Product Requirement Documents) in the `specs/` directory are firmly anchored to both DAGs using `aio-sdlc-node` GUID tags, allowing subagents to detect architectural drift automatically and execute Just-In-Time (JIT) TDD loops with zero hallucination.
+- **Canonical Traceability**: PRDs in `.aio-agentic-sdlc/specs/` are anchored to both DAGs using `aio-sdlc-node` GUID tags, allowing subagents to detect architectural drift and execute Just-In-Time (JIT) TDD loops from explicit evidence.
 
 Intent IR can be validated strictly or reviewed without reading raw YAML:
 
 ```bash
-uv run dag-tool intent create-node --file intention-dag.yaml --node-id <guid> \
+uv run dag-tool intent create-node --file .aio-agentic-sdlc/intention-dag.yaml --node-id <guid> \
   --type component --name "Capability" --payload-file intent.json
-uv run dag-tool validate-intent --file intention-dag.yaml
-uv run dag-tool intent-summary --file intention-dag.yaml
+uv run dag-tool validate-intent --file .aio-agentic-sdlc/intention-dag.yaml
+uv run dag-tool intent-summary --file .aio-agentic-sdlc/intention-dag.yaml
 ```
 
 Use `--allow-partial` during migration while legacy nodes do not yet contain Intent IR. Strict
@@ -101,13 +101,13 @@ Reconcile identity evidence before creating an execution backlog:
 
 ```bash
 uv run dag-tool reconcile \
-  --intention intention-dag.yaml \
-  --reality reality-dag.yaml \
+  --intention .aio-agentic-sdlc/intention-dag.yaml \
+  --reality .aio-agentic-sdlc/reality-dag.yaml \
   --max-items 100 \
   --max-candidates 20
 uv run dag-tool diff \
-  --intention intention-dag.yaml \
-  --reality reality-dag.yaml \
+  --intention .aio-agentic-sdlc/intention-dag.yaml \
+  --reality .aio-agentic-sdlc/reality-dag.yaml \
   --max-tasks 100 \
   --max-candidates 20
 ```

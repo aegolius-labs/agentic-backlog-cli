@@ -60,7 +60,7 @@ def seed_from_openspec(cwd="."):
 
 
 def seed_from_speckit(cwd="."):
-    """Parse markdown files in specs/ from Spec-Kit into backlog items."""
+    """Parse Spec-Kit Markdown into backlog items."""
     items = {}
     specs_dir = os.path.join(cwd, "specs")
     if os.path.exists(specs_dir) and os.path.isdir(specs_dir):

@@ -13,9 +13,9 @@ from typing import Any
 
 from filelock import FileLock
 
-BACKLOG_FILE = "backlog.json"
-AUDIT_FILE = ".aio-sdlc/state-audit.jsonl"
-LOCK_FILE = ".aio-sdlc/state.lock"
+from .workspace import AUDIT_FILE, BACKLOG_FILE, LEGACY_DIR, STATE_LOCK_FILE
+
+LOCK_FILE = STATE_LOCK_FILE
 CURRENT_BACKLOG_SCHEMA_VERSION = 1
 LOCK_TIMEOUT_SECONDS = 30
 
@@ -269,6 +269,8 @@ def _save_backlog_unlocked(
     _recover_incomplete_transactions(project_path)
     normalized = migrate_backlog_data(data)
     backlog_path = os.path.join(project_path, BACKLOG_FILE)
+    backlog_dir = os.path.dirname(backlog_path)
+    os.makedirs(backlog_dir, exist_ok=True)
     if os.path.exists(backlog_path):
         with open(backlog_path, "r", encoding="utf-8") as handle:
             current = migrate_backlog_data(json.load(handle))
@@ -298,8 +300,8 @@ def _save_backlog_unlocked(
     }
 
     descriptor, temp_path = tempfile.mkstemp(
-        dir=project_path,
-        prefix=f".{BACKLOG_FILE}.",
+        dir=backlog_dir,
+        prefix=".backlog.json.",
         suffix=".tmp",
     )
     try:
@@ -369,7 +371,7 @@ def retire_legacy_backlog(
             raise BacklogStateError("Legacy backlog root must be an object.")
 
         digest = hashlib.sha256(payload).hexdigest()
-        archive_relative = f".aio-sdlc/legacy/agentic-backlog-{digest}.json"
+        archive_relative = f"{LEGACY_DIR}/agentic-backlog-{digest}.json"
         archive_path = os.path.join(project_path, archive_relative)
         archive_dir = os.path.dirname(archive_path)
         os.makedirs(archive_dir, exist_ok=True)

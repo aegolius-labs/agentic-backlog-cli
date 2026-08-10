@@ -9,7 +9,7 @@ from aio_agentic_sdlc.source_locations import SourceLocation
 
 IGNORED_DIRECTORIES = {
     ".aio-agentic-sdlc",
-    ".aio-sdlc",
+    ".aio-sdlc",  # Deprecated state directory; exclude during migration cleanup.
     ".git",
     ".venv",
     "__pycache__",

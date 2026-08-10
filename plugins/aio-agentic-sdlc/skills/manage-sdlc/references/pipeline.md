@@ -2,7 +2,8 @@
 
 ## 1. Intake
 
-Identify the authoritative input: direct prompt, `inbox/`, `changes/`, `specs/`, or the agentic
+Identify the authoritative input: direct prompt, `.aio-agentic-sdlc/inbox/`,
+`.aio-agentic-sdlc/changes/`, `.aio-agentic-sdlc/specs/`, or the agentic
 backlog. For new requirements, follow [roles/intake.md](roles/intake.md). Do not invent missing
 product decisions when they would materially change scope.
 

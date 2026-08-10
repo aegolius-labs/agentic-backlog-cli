@@ -1,16 +1,12 @@
-import datetime
-import glob
 import heapq
-import json
 import os
-import time
 
 import yaml
 
 from .config import load_config
-from .state import BACKLOG_FILE
 from .state import load_backlog as _load_backlog
 from .state import save_backlog as _save_backlog
+from .workspace import INTENTION_DAG_FILE, REALITY_DAG_FILE, SPECS_DIR
 
 VALID_STATUSES = ("New", "In Progress", "Completed", "Blocked")
 
@@ -72,39 +68,6 @@ def load_backlog(project_path="."):
 
 def save_backlog(data, project_path=".", *, operation="backlog.save"):
     return _save_backlog(data, project_path, operation=operation)
-
-
-def _create_backup(project_path="."):
-    file_path = os.path.join(project_path, BACKLOG_FILE)
-    if not os.path.exists(file_path):
-        return
-    data = load_backlog(project_path)
-    if not data.get("nodes"):
-        return
-
-    ts = datetime.datetime.now().strftime("%Y_%m_%d_%H%M%S")
-    backup_file = os.path.join(project_path, f"{ts}_backlog.json")
-    with open(backup_file, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2)
-
-    now = time.time()
-    for f in glob.glob(os.path.join(project_path, "*_backlog.json")):
-        if os.path.isfile(f):
-            mtime = os.path.getmtime(f)
-            if now - mtime > 7 * 86400:
-                os.remove(f)
-
-    gitignore = os.path.join(project_path, ".gitignore")
-    pattern = "*_backlog.json\n"
-    if os.path.exists(gitignore):
-        with open(gitignore, "r", encoding="utf-8") as f:
-            lines = f.readlines()
-        if not any(pattern.strip() == line.strip() for line in lines):
-            with open(gitignore, "a", encoding="utf-8") as f:
-                f.write(f"\n# Auto-backlog-management backups\n{pattern}")
-    else:
-        with open(gitignore, "w", encoding="utf-8") as f:
-            f.write(f"# Auto-backlog-management backups\n{pattern}")
 
 
 def get_edges(data, from_node=None, to_node=None, relation=None):
@@ -271,7 +234,6 @@ def prioritize_items(project_path="."):
     if not data.get("nodes"):
         return False
 
-    _create_backup(project_path)
     nodes = data["nodes"]
     edges = data.get("edges", [])
     final_ordered_keys = _compute_sorted_items(nodes, edges)
@@ -366,8 +328,6 @@ def add_item(
 
     validate_hierarchy(item_type, parent_id, data, project_path)
 
-    _create_backup(project_path)
-
     requires_list = [r.strip() for r in requires.split(",")] if requires else []
     warnings = ensure_dependencies(data, requires_list)
     blockers_list = [b.strip() for b in blockers.split(",")] if blockers else []
@@ -412,7 +372,6 @@ def update_item(
     if name not in data.get("nodes", {}):
         raise ValueError(f"Item '{name}' not found.")
 
-    _create_backup(project_path)
     item = data["nodes"][name]
     warnings = []
 
@@ -448,7 +407,6 @@ def set_status(name, new_status, project_path="."):
     data = load_backlog(project_path)
     if name not in data.get("nodes", {}):
         raise ValueError(f"Item '{name}' not found.")
-    _create_backup(project_path)
     data["nodes"][name]["status"] = new_status
     save_backlog(data, project_path, operation="backlog.set-status")
 
@@ -457,7 +415,6 @@ def add_blocker(name, reason, project_path="."):
     data = load_backlog(project_path)
     if name not in data.get("nodes", {}):
         raise ValueError(f"Item '{name}' not found.")
-    _create_backup(project_path)
     item = data["nodes"][name]
     blockers = _get_blockers(item)
     if reason not in blockers:
@@ -472,7 +429,6 @@ def remove_blocker(name, reason, project_path="."):
     data = load_backlog(project_path)
     if name not in data.get("nodes", {}):
         raise ValueError(f"Item '{name}' not found.")
-    _create_backup(project_path)
     item = data["nodes"][name]
     blockers = _get_blockers(item)
     if reason in blockers:
@@ -487,8 +443,6 @@ def remove_item(name, project_path="."):
     data = load_backlog(project_path)
     if name not in data.get("nodes", {}):
         raise ValueError(f"Item '{name}' not found.")
-
-    _create_backup(project_path)
 
     # Remove from edges
     data["edges"] = [
@@ -508,9 +462,9 @@ def remove_item(name, project_path="."):
 class TraceabilityValidator:
     def __init__(
         self,
-        intention_path="intention-dag.yaml",
-        reality_path="reality-dag.yaml",
-        specs_dir="specs",
+        intention_path=INTENTION_DAG_FILE,
+        reality_path=REALITY_DAG_FILE,
+        specs_dir=SPECS_DIR,
         code_dir="src",
     ):
         self.intention_path = intention_path

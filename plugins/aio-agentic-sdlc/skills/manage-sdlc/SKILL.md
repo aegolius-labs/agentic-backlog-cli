@@ -24,7 +24,8 @@ architecture, implementation, review, and coordination.
 
 1. Resolve the repository root to an absolute path.
 2. Read the applicable `AGENTS.md` chain and the requested PRD or task artifact.
-3. Inspect `intention-dag.yaml`, `reality-dag.yaml`, and runtime backlog state only as needed.
+3. Inspect `.aio-agentic-sdlc/intention-dag.yaml`,
+   `.aio-agentic-sdlc/reality-dag.yaml`, and runtime backlog state only as needed.
 4. Pass the absolute repository root as `project_path` to every MCP tool that accepts it.
 5. Prefer plugin MCP tools. If unavailable, use the local UV environment with `uv run`.
    Use the portable `uvx --from git+https://github.com/aegolius-labs/aio-agentic-sdlc`
@@ -45,7 +46,8 @@ architecture, implementation, review, and coordination.
 
 ## Enforce invariants
 
-- Never edit `intention-dag.yaml`, `reality-dag.yaml`, or backlog state by hand. Use MCP, CLI,
+- Never edit `.aio-agentic-sdlc/intention-dag.yaml`,
+  `.aio-agentic-sdlc/reality-dag.yaml`, or backlog state by hand. Use MCP, CLI,
   or the Python API.
 - Never manually alter generated document frontmatter or promote a spec with filesystem moves.
 - Preserve canonical GUID traceability across DAG nodes, specifications, and source markers.

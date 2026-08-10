@@ -1,7 +1,7 @@
 import json
 import os
 
-CONFIG_FILE = ".aio-agentic-sdlc.json"
+from .workspace import CONFIG_FILE
 
 
 def load_config(project_path="."):
@@ -14,5 +14,6 @@ def load_config(project_path="."):
 
 def save_config(config_dict, project_path="."):
     file_path = os.path.join(project_path, CONFIG_FILE)
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(config_dict, f, indent=2)

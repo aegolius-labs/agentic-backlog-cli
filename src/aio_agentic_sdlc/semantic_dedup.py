@@ -5,6 +5,8 @@ from typing import Any, Dict, List
 
 import sqlite_vec
 
+from .workspace import SPECS_DIR, WORKSPACE_DIR
+
 # Lazy load sentence_transformers to speed up CLI for other commands
 _model = None
 
@@ -20,7 +22,7 @@ def get_model():
 
 
 def get_db(project_path: str) -> sqlite3.Connection:
-    db_path = os.path.join(project_path, ".agents", "semantic_cache.db")
+    db_path = os.path.join(project_path, WORKSPACE_DIR, "semantic-cache.db")
     os.makedirs(os.path.dirname(db_path), exist_ok=True)
 
     db = sqlite3.connect(db_path)
@@ -29,29 +31,25 @@ def get_db(project_path: str) -> sqlite3.Connection:
     db.enable_load_extension(False)
 
     # Initialize schema
-    db.execute(
-        """
+    db.execute("""
         CREATE VIRTUAL TABLE IF NOT EXISTS prd_embeddings USING vec0(
             embedding float[384]
         )
-    """
-    )
-    db.execute(
-        """
+    """)
+    db.execute("""
         CREATE TABLE IF NOT EXISTS prd_metadata (
             rowid INTEGER PRIMARY KEY,
             filepath TEXT UNIQUE,
             last_modified REAL
         )
-    """
-    )
+    """)
     db.commit()
     return db
 
 
 def sync_documents(project_path: str, db: sqlite3.Connection):
-    """Scan specs/ and update embeddings for new/modified/deleted .md files."""
-    specs_path = os.path.join(project_path, "specs", "**", "*.md")
+    """Scan canonical specs and update embeddings for changed Markdown files."""
+    specs_path = os.path.join(project_path, SPECS_DIR, "**", "*.md")
 
     files = glob.glob(specs_path, recursive=True)
 

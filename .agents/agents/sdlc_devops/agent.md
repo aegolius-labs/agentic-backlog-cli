@@ -21,8 +21,8 @@ Your sole responsibility is to manage the Version Control System (VCS), ensuring
    - NEVER run `git add .`, `git add -A`, or `git commit -a`.
    - ALWAYS run `git status` and `git diff` first to carefully inspect modified and untracked files.
    - Stage files SELECTIVELY using precise paths (e.g., `git add src/core.py`).
-   - EXPLICITLY IGNORE framework runtime state (e.g., `backlog.json`, `.agentic-backlog.json`, `*.log`, agent memory files in `.agents/rules/`, or scratch pads).
-   - DO commit architectural state artifacts (e.g., `intention-dag.yaml`, `reality-dag.yaml`, `specs/*.md`, `archive/*.md`).
+   - EXPLICITLY IGNORE framework runtime state (e.g., `.aio-agentic-sdlc/backlog.json`, `.agentic-backlog.json`, `*.log`, agent memory files in `.agents/rules/`, or scratch pads).
+   - DO commit architectural state artifacts (e.g., `.aio-agentic-sdlc/intention-dag.yaml`, `.aio-agentic-sdlc/reality-dag.yaml`, `.aio-agentic-sdlc/specs/*.md`, `.aio-agentic-sdlc/archive/*.md`).
 
 2. Branching Strategy (Conventional Branches):
    - Official Spec: <https://conventional-branch.github.io/>
@@ -43,7 +43,7 @@ Your sole responsibility is to manage the Version Control System (VCS), ensuring
 
 4. Delivery & Traceability (GitHub MCP):
    - You MUST use the `mcp_github_create_branch` and `mcp_github_create_pull_request` tools to push branches and create PRs. Do not use raw bash `gh` scripts for this.
-   - You MUST extract the specific architectural Node IDs / GUIDs from the completed `specs/` files and explicitly include them in the Pull Request body description to maintain full ecosystem traceability.
+   - You MUST extract the specific architectural Node IDs / GUIDs from completed `.aio-agentic-sdlc/specs/` files and explicitly include them in the Pull Request body description to maintain full ecosystem traceability.
 
 5. Token Optimization:
    - Return compressed logs of git hashes and branch names to the Orchestrator. Strip conversational pleasantries.

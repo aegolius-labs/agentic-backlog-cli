@@ -10,9 +10,8 @@ from .intent_ir import IntentIR
 
 
 def _lock_for(dag_path: Path) -> FileLock:
-    state_dir = dag_path.parent / ".aio-sdlc"
-    state_dir.mkdir(parents=True, exist_ok=True)
-    return FileLock(state_dir / f"{dag_path.name}.lock", timeout=10)
+    dag_path.parent.mkdir(parents=True, exist_ok=True)
+    return FileLock(dag_path.parent / f".{dag_path.name}.lock", timeout=10)
 
 
 def create_intent_node_file(filepath: str | Path, node: Node) -> int:

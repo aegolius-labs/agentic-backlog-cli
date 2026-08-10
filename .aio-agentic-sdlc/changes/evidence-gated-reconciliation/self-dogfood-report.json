@@ -1,0 +1,275 @@
+{
+  "schema_version": 1,
+  "summary": {
+    "intention_nodes": 59,
+    "reality_nodes": 517,
+    "confirmed": 3,
+    "candidate": 5,
+    "ambiguous": 0,
+    "unmapped": 51,
+    "unclassified_reality": 514
+  },
+  "limit": {
+    "max_items": 10,
+    "total_items": 573,
+    "returned_items": 10,
+    "truncated": true
+  },
+  "items": [
+    {
+      "subject_kind": "intent",
+      "classification": "confirmed",
+      "intent": {
+        "id": "6317643a-a8fc-5026-b373-9330004bc90d",
+        "type": "component",
+        "name": "Approval-Gated Source Mapping"
+      },
+      "reality_candidates": [
+        {
+          "id": "6317643a-a8fc-5026-b373-9330004bc90d",
+          "type": "component",
+          "name": "MappingEngine"
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "canonical_guid",
+          "value": "6317643a-a8fc-5026-b373-9330004bc90d"
+        }
+      ],
+      "requires_approval": false
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "confirmed",
+      "intent": {
+        "id": "6506870b-b262-4f54-b6e9-43de4a873a55",
+        "type": "component",
+        "name": "PRD Archiver"
+      },
+      "reality_candidates": [
+        {
+          "id": "6506870b-b262-4f54-b6e9-43de4a873a55",
+          "type": "component",
+          "name": "PRDArchiver"
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "canonical_guid",
+          "value": "6506870b-b262-4f54-b6e9-43de4a873a55"
+        }
+      ],
+      "requires_approval": false
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "confirmed",
+      "intent": {
+        "id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+        "type": "component",
+        "name": "Evidence-Gated Reconciliation Baseline"
+      },
+      "reality_candidates": [
+        {
+          "id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+          "type": "module",
+          "name": "reconciliation.py"
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "canonical_guid",
+          "value": "9015c8a3-fd14-5598-916d-d03fcf41e415"
+        }
+      ],
+      "requires_approval": false
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "candidate",
+      "intent": {
+        "id": "0fea8fea-9a23-404b-a16b-a9c9c3990e1b",
+        "type": "component",
+        "name": "Reality DAG Generator"
+      },
+      "reality_candidates": [
+        {
+          "id": "5f9d3dc7-cd7e-5402-86cd-356a4b6846fb",
+          "type": "component",
+          "name": "RealityDAGGenerator"
+        }
+      ],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 1,
+        "returned_candidates": 1,
+        "truncated": false
+      },
+      "evidence": [
+        {
+          "kind": "normalized_name_and_type",
+          "normalized_name": "realitydaggenerator",
+          "node_type": "component"
+        }
+      ],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "candidate",
+      "intent": {
+        "id": "685b1d12-3eed-48f6-9fa8-b8ec88a5587f",
+        "type": "component",
+        "name": "Traceability Validator"
+      },
+      "reality_candidates": [
+        {
+          "id": "4332ee05-cded-51dc-b884-7249af9d97cd",
+          "type": "component",
+          "name": "TraceabilityValidator"
+        }
+      ],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 1,
+        "returned_candidates": 1,
+        "truncated": false
+      },
+      "evidence": [
+        {
+          "kind": "normalized_name_and_type",
+          "normalized_name": "traceabilityvalidator",
+          "node_type": "component"
+        }
+      ],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "candidate",
+      "intent": {
+        "id": "9865715b-99a5-4dcb-ba92-90b03cc3cf1c",
+        "type": "component",
+        "name": "Tree-Sitter Parser"
+      },
+      "reality_candidates": [
+        {
+          "id": "68d91d09-7a15-5e5c-8387-68ac2ec30139",
+          "type": "component",
+          "name": "TreeSitterParser"
+        }
+      ],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 1,
+        "returned_candidates": 1,
+        "truncated": false
+      },
+      "evidence": [
+        {
+          "kind": "normalized_name_and_type",
+          "normalized_name": "treesitterparser",
+          "node_type": "component"
+        }
+      ],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "candidate",
+      "intent": {
+        "id": "d0307d83-371e-4bb6-925d-84a4b70beb6b",
+        "type": "component",
+        "name": "Parser Factory"
+      },
+      "reality_candidates": [
+        {
+          "id": "a7278b66-0ac6-5e6b-91d7-0604d42cc40f",
+          "type": "component",
+          "name": "ParserFactory"
+        }
+      ],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 1,
+        "returned_candidates": 1,
+        "truncated": false
+      },
+      "evidence": [
+        {
+          "kind": "normalized_name_and_type",
+          "normalized_name": "parserfactory",
+          "node_type": "component"
+        }
+      ],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "candidate",
+      "intent": {
+        "id": "fa35fa8a-b6b5-40ca-9080-b31421117e37",
+        "type": "component",
+        "name": "Diffing Engine"
+      },
+      "reality_candidates": [
+        {
+          "id": "6199cd62-9332-5ad1-b458-18bd2e865da1",
+          "type": "component",
+          "name": "DiffingEngine"
+        }
+      ],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 1,
+        "returned_candidates": 1,
+        "truncated": false
+      },
+      "evidence": [
+        {
+          "kind": "normalized_name_and_type",
+          "normalized_name": "diffingengine",
+          "node_type": "component"
+        }
+      ],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "07e7e16c-c4d7-4f59-ac98-5d33599f0270",
+        "type": "agent",
+        "name": "SDLC Architect Agent"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "09497db1-e4c8-43f3-8c27-ee8577b2b59f",
+        "type": "component",
+        "name": "TUI Dashboard"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    }
+  ]
+}

@@ -27,6 +27,7 @@ from aio_agentic_sdlc.source_markers import (
     NODE_MARKER_PREFIX,
     iter_canonical_node_markers,
 )
+from aio_agentic_sdlc.workspace import MAPPING_LOCK_FILE
 
 MAPPING_SCHEMA_VERSION = 1
 SUPPORTED_SYMBOL_KINDS = {"class", "function"}
@@ -293,7 +294,7 @@ class MappingEngine:
         """Atomically persist one approved candidate as verified source evidence."""
 
         canonical_intent_id = self._canonical_guid(intent_id, label="Intent GUID")
-        lock_path = self.project_root / ".aio-sdlc" / "mapping.lock"
+        lock_path = self.project_root / MAPPING_LOCK_FILE
         lock_path.parent.mkdir(parents=True, exist_ok=True)
         with FileLock(lock_path, timeout=10):
             review = self.review(canonical_intent_id)
