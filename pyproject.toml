@@ -18,7 +18,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "filelock>=3.18.0",
+    "filelock>=3.32.2",
     "mcp>=1.28.0",
     "pydantic>=2.0.0",
     "pyyaml>=6.0.0",
