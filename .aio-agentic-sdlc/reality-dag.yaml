@@ -684,7 +684,7 @@ nodes:
   name: ingest_diff
   description: "\r\n    Loads intention/reality DAGs via DAGManager, uses DiffingEngine\
     \ to calculate the diff,\r\n    and merges the resulting tasks and edges into\
-    \ the local framework backlog\n    using core.load_backlog and core.save_backlog,\
+    \ the local framework backlog\r\n    using core.load_backlog and core.save_backlog,\
     \ followed by core.prioritize_items.\r\n    "
 - id: aa788b5d-b918-5414-b688-a1db5fda7ea4
   type: component
@@ -706,8 +706,8 @@ nodes:
 - id: 5f9d3dc7-cd7e-5402-86cd-356a4b6846fb
   type: component
   name: RealityDAGGenerator
-  description: "\n    Generates a Reality DAG by statically analyzing source code.\n\
-    \    Implements a tree-sitter parser to be stack-agnostic.\n    "
+  description: "\r\n    Generates a Reality DAG by statically analyzing source code.\r\
+    \n    Implements a tree-sitter parser to be stack-agnostic.\r\n    "
 - id: d484d25c-d3d6-5215-93bb-76543a0e7867
   type: component
   name: __init__
@@ -851,8 +851,8 @@ nodes:
     \ file in the templates/ directory.\r\n        data: A dictionary of data to populate\
     \ the template.\r\n        output_path: The path where the generated document\
     \ will be saved.\r\n        templates_dir: Optional explicit template directory.\
-    \ When omitted, use the templates\n            bundled with the installed framework\
-    \ package.\n\r\n    Returns:\r\n        The content of the generated document.\r\
+    \ When omitted, use the templates\r\n            bundled with the installed framework\
+    \ package.\r\n\r\n    Returns:\r\n        The content of the generated document.\r\
     \n    "
 - id: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
   type: module
@@ -1251,6 +1251,14 @@ nodes:
   type: component
   name: test_find_nodes
   description: Function test_find_nodes
+- id: bc644a99-9a32-5c73-9d3f-fe9a1f4ff135
+  type: module
+  name: test_dependency_contract.py
+  description: Module tests.test_dependency_contract
+- id: 1d0f4a6f-61aa-5fe4-9e26-c89634484036
+  type: component
+  name: test_mcp_dependency_excludes_the_unsupported_v2_api
+  description: Function test_mcp_dependency_excludes_the_unsupported_v2_api
 - id: ba4ab388-6a80-5b3b-b658-cd9d4bb3f5f8
   type: module
   name: test_detect.py
@@ -3099,6 +3107,12 @@ edges:
   type: contains
 - source: 8b385454-109c-58ae-9b05-a2e90c009ea8
   target: c5cc8a30-94ef-57e5-8590-42095d457c9b
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: bc644a99-9a32-5c73-9d3f-fe9a1f4ff135
+  type: contains
+- source: bc644a99-9a32-5c73-9d3f-fe9a1f4ff135
+  target: 1d0f4a6f-61aa-5fe4-9e26-c89634484036
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: ba4ab388-6a80-5b3b-b658-cd9d4bb3f5f8
