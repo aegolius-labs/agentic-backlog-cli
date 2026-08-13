@@ -118,6 +118,11 @@ and legacy ID migration, so each artifact and write derives from one coherent sn
 commit succeeds but optional result-report persistence fails, the CLI reports the committed result
 inline instead of claiming the migration failed.
 
+The shared guard rejects symlink or reparse-point parents and leaves before load or write, then
+revalidates the exact non-following path under lock. Derived JSON report outputs use the same guard.
+Legacy ID migration preflights both DAGs for duplicate raw/result identities before replacing
+either and restores the first file if the second replacement fails.
+
 Intent IR creation and revision are serialized by a lock beside the canonical DAG under
 `.aio-agentic-sdlc/`. Callers provide the
 current node revision; stale writers fail instead of overwriting newer interpretation. Revisions

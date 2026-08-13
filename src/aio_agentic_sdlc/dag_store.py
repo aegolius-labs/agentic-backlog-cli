@@ -21,7 +21,7 @@ def _is_link_like(path: Path) -> bool:
     return bool(attributes & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0))
 
 
-def guarded_dag_path(
+def guarded_file_path(
     filepath: str | Path,
     *,
     create_parent: bool = False,
@@ -44,17 +44,27 @@ def guarded_dag_path(
     return dag_path
 
 
+def guarded_dag_path(
+    filepath: str | Path,
+    *,
+    create_parent: bool = False,
+) -> Path:
+    """Backward-compatible semantic name for a guarded DAG file path."""
+
+    return guarded_file_path(filepath, create_parent=create_parent)
+
+
 @contextmanager
 def dag_file_lock(filepath: str | Path) -> Iterator[Path]:
     """Lock one exact non-following DAG path and revalidate it under lock."""
 
-    dag_path = guarded_dag_path(filepath, create_parent=True)
-    lock_path = guarded_dag_path(
+    dag_path = guarded_file_path(filepath, create_parent=True)
+    lock_path = guarded_file_path(
         dag_path.parent / f".{dag_path.name}.lock",
         create_parent=True,
     )
     with FileLock(lock_path, timeout=10):
-        yield guarded_dag_path(dag_path)
+        yield guarded_file_path(dag_path)
 
 
 def mutate_dag_file(
@@ -64,9 +74,9 @@ def mutate_dag_file(
     """Load, mutate, validate through the callback, and atomically save under one lock."""
 
     with dag_file_lock(filepath) as dag_path:
-        guarded_dag_path(dag_path)
+        guarded_file_path(dag_path)
         manager = DAGManager.load(str(dag_path))
         result = mutation(manager)
-        guarded_dag_path(dag_path)
+        guarded_file_path(dag_path)
         manager.save(str(dag_path))
         return result

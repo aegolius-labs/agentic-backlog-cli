@@ -14,6 +14,7 @@ from uuid import UUID
 
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.dag_models import Node, NodeType
+from aio_agentic_sdlc.dag_store import guarded_file_path
 
 REPORT_SCHEMA_VERSION = 1
 DEFAULT_MAX_ITEMS = 100
@@ -68,10 +69,10 @@ def validate_reconciliation_report_output(
 ) -> Path:
     """Resolve a report target and reject protected framework state aliases."""
 
-    target = Path(output).resolve()
+    target = guarded_file_path(output, create_parent=True)
     target_identity = os.path.normcase(str(target))
     protected_identities = {
-        os.path.normcase(str(Path(path).resolve())) for path in protected_paths
+        os.path.normcase(os.path.abspath(os.fspath(path))) for path in protected_paths
     }
     if (
         target.name.casefold() in PROTECTED_STATE_FILENAMES
@@ -95,7 +96,7 @@ def write_reconciliation_report(
         output,
         protected_paths=protected_paths,
     )
-    target.parent.mkdir(parents=True, exist_ok=True)
+    target = guarded_file_path(target)
     descriptor, temporary = tempfile.mkstemp(
         dir=target.parent,
         prefix=f".{target.name}.",

@@ -3,6 +3,7 @@ import threading
 from datetime import datetime, timezone
 from pathlib import Path
 
+import pytest
 import yaml
 
 from aio_agentic_sdlc.cli import migrate_ids_cmd
@@ -20,10 +21,12 @@ def test_migrate_ids_maintains_cross_file_consistency(tmpdir, monkeypatch):
     monkeypatch.chdir(tmpdir)
 
     intention_data = {
+        "metadata": {"name": "Intent", "version": "1.0"},
         "nodes": [{"id": "shared-node-1", "type": "module", "name": "Shared"}],
         "edges": [],
     }
     reality_data = {
+        "metadata": {"name": "Reality", "version": "1.0"},
         "nodes": [{"id": "shared-node-1", "type": "module", "name": "Shared"}],
         "edges": [],
     }
@@ -45,6 +48,81 @@ def test_migrate_ids_maintains_cross_file_consistency(tmpdir, monkeypatch):
     real_id = real_data["nodes"][0]["id"]
 
     assert int_id == real_id, f"IDs diverged! Intention: {int_id}, Reality: {real_id}"
+
+
+def test_migrate_ids_rejects_duplicate_raw_ids_without_mutating_either_dag(
+    tmp_path,
+    monkeypatch,
+):
+    monkeypatch.chdir(tmp_path)
+    workspace = tmp_path / ".aio-agentic-sdlc"
+    workspace.mkdir()
+    intention_path = tmp_path / INTENTION_DAG_FILE
+    reality_path = tmp_path / REALITY_DAG_FILE
+    duplicate = {
+        "nodes": [
+            {"id": "duplicated-legacy-id", "type": "module", "name": "First"},
+            {"id": "duplicated-legacy-id", "type": "module", "name": "Second"},
+        ],
+        "edges": [],
+    }
+    reality = {
+        "nodes": [{"id": "reality-legacy-id", "type": "module", "name": "Reality"}],
+        "edges": [],
+    }
+    intention_path.write_text(yaml.safe_dump(duplicate), encoding="utf-8")
+    reality_path.write_text(yaml.safe_dump(reality), encoding="utf-8")
+    intention_before = intention_path.read_bytes()
+    reality_before = reality_path.read_bytes()
+
+    with pytest.raises(ValueError, match="duplicate node IDs before migration"):
+        migrate_ids_cmd(DummyArgs())
+
+    assert intention_path.read_bytes() == intention_before
+    assert reality_path.read_bytes() == reality_before
+
+
+def test_migrate_ids_rolls_back_intention_when_reality_replace_fails(
+    tmp_path,
+    monkeypatch,
+):
+    monkeypatch.chdir(tmp_path)
+    workspace = tmp_path / ".aio-agentic-sdlc"
+    workspace.mkdir()
+    intention_path = tmp_path / INTENTION_DAG_FILE
+    reality_path = tmp_path / REALITY_DAG_FILE
+    intention = {
+        "metadata": {"name": "Intent", "version": "1.0"},
+        "nodes": [{"id": "shared-legacy-id", "type": "module", "name": "Intent"}],
+        "edges": [],
+    }
+    reality = {
+        "metadata": {"name": "Reality", "version": "1.0"},
+        "nodes": [{"id": "shared-legacy-id", "type": "module", "name": "Reality"}],
+        "edges": [],
+    }
+    intention_path.write_text(yaml.safe_dump(intention), encoding="utf-8")
+    reality_path.write_text(yaml.safe_dump(reality), encoding="utf-8")
+    intention_before = intention_path.read_bytes()
+    reality_before = reality_path.read_bytes()
+    original_replace = __import__("os").replace
+    replacements = 0
+
+    def fail_second_commit(source, target):
+        nonlocal replacements
+        if str(source).endswith(".tmp") and ".rollback." not in str(source):
+            replacements += 1
+            if replacements == 2:
+                raise OSError("simulated Reality replacement failure")
+        return original_replace(source, target)
+
+    monkeypatch.setattr("aio_agentic_sdlc.cli.os.replace", fail_second_commit)
+
+    with pytest.raises(OSError, match="simulated Reality replacement failure"):
+        migrate_ids_cmd(DummyArgs())
+
+    assert intention_path.read_bytes() == intention_before
+    assert reality_path.read_bytes() == reality_before
 
 
 def test_migrate_ids_serializes_with_intent_migration(tmp_path, monkeypatch):

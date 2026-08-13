@@ -432,10 +432,14 @@ nodes:
   type: module
   name: dag_store.py
   description: Module src.aio_agentic_sdlc.dag_store
+- id: af950be8-5c9c-5591-9f1a-31d66d4aa96f
+  type: component
+  name: guarded_file_path
+  description: Return one absolute, non-following path after rejecting redirection.
 - id: aaf238cb-a903-5932-9ab9-5f917d876eb3
   type: component
   name: guarded_dag_path
-  description: Return one absolute, non-following path after rejecting redirection.
+  description: Backward-compatible semantic name for a guarded DAG file path.
 - id: a15537e4-b893-5730-9b84-a7ea0b9fe0b1
   type: component
   name: dag_file_lock
@@ -1652,6 +1656,14 @@ nodes:
   type: component
   name: test_cli_rejects_protected_apply_output_before_mutating_intent
   description: Function test_cli_rejects_protected_apply_output_before_mutating_intent
+- id: 55c71df0-3abd-5858-aafa-71b034ef5a4c
+  type: component
+  name: test_cli_rejects_symlinked_result_output_before_mutating_intent
+  description: Function test_cli_rejects_symlinked_result_output_before_mutating_intent
+- id: 99115eef-e4b0-5e36-bf68-07fcfcb12898
+  type: component
+  name: test_cli_inventory_rejects_symlinked_output_parent
+  description: Function test_cli_inventory_rejects_symlinked_output_parent
 - id: 6b957405-800a-5af4-8323-cc9a81061f2b
   type: module
   name: test_intent_mutation.py
@@ -1864,6 +1876,14 @@ nodes:
   type: component
   name: test_migrate_ids_maintains_cross_file_consistency
   description: Function test_migrate_ids_maintains_cross_file_consistency
+- id: a0e050a2-22f6-5295-b971-7e52fc031a22
+  type: component
+  name: test_migrate_ids_rejects_duplicate_raw_ids_without_mutating_either_dag
+  description: Function test_migrate_ids_rejects_duplicate_raw_ids_without_mutating_either_dag
+- id: e33f107a-a53f-5a5d-80d8-65ce271e9d14
+  type: component
+  name: test_migrate_ids_rolls_back_intention_when_reality_replace_fails
+  description: Function test_migrate_ids_rolls_back_intention_when_reality_replace_fails
 - id: 1e4b1e1d-3bcb-59eb-829f-a40dee9e74ce
   type: component
   name: test_migrate_ids_serializes_with_intent_migration
@@ -2663,6 +2683,9 @@ edges:
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 2f396232-c75e-5a6d-b04b-0fa5f940313b
+  type: contains
+- source: 2f396232-c75e-5a6d-b04b-0fa5f940313b
+  target: af950be8-5c9c-5591-9f1a-31d66d4aa96f
   type: contains
 - source: 2f396232-c75e-5a6d-b04b-0fa5f940313b
   target: aaf238cb-a903-5932-9ab9-5f917d876eb3
@@ -3558,6 +3581,12 @@ edges:
 - source: 08eab625-a0fb-5b62-9349-bf3b094bbd01
   target: 301ef3b3-3bb3-5d54-9157-2ef16f610b0c
   type: contains
+- source: 08eab625-a0fb-5b62-9349-bf3b094bbd01
+  target: 55c71df0-3abd-5858-aafa-71b034ef5a4c
+  type: contains
+- source: 08eab625-a0fb-5b62-9349-bf3b094bbd01
+  target: 99115eef-e4b0-5e36-bf68-07fcfcb12898
+  type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 6b957405-800a-5af4-8323-cc9a81061f2b
   type: contains
@@ -3722,6 +3751,12 @@ edges:
   type: contains
 - source: c89cf80c-c223-536d-9d0e-235dbd48443c
   target: 234a139c-3147-50f2-bb10-fa938abb7598
+  type: contains
+- source: c89cf80c-c223-536d-9d0e-235dbd48443c
+  target: a0e050a2-22f6-5295-b971-7e52fc031a22
+  type: contains
+- source: c89cf80c-c223-536d-9d0e-235dbd48443c
+  target: e33f107a-a53f-5a5d-80d8-65ce271e9d14
   type: contains
 - source: c89cf80c-c223-536d-9d0e-235dbd48443c
   target: 1e4b1e1d-3bcb-59eb-829f-a40dee9e74ce

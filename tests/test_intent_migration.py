@@ -570,3 +570,67 @@ def test_cli_rejects_protected_apply_output_before_mutating_intent(tmp_path, tar
     assert "Refusing to overwrite protected framework state" in result.output
     assert dag_path.read_bytes() == before_dag
     assert plan_path.read_bytes() == before_plan
+
+
+def test_cli_rejects_symlinked_result_output_before_mutating_intent(tmp_path):
+    dag_path = _write_project(tmp_path)
+    plan_path = tmp_path / "migration-plan.json"
+    plan_path.write_text(
+        json.dumps(_plan(LegacyIntentMigrator(tmp_path))),
+        encoding="utf-8",
+    )
+    external = tmp_path / "external.json"
+    external.write_text("preserve me\n", encoding="utf-8")
+    result_link = tmp_path / "migration-result.json"
+    try:
+        result_link.symlink_to(external)
+    except OSError as error:
+        pytest.skip(f"symlink creation unavailable: {error}")
+    dag_before = dag_path.read_bytes()
+    external_before = external.read_bytes()
+
+    result = CliRunner().invoke(
+        cli,
+        [
+            "intent",
+            "apply-migration",
+            "--project-path",
+            str(tmp_path),
+            "--plan-file",
+            str(plan_path),
+            "--output",
+            str(result_link),
+        ],
+    )
+
+    assert result.exit_code == 1
+    assert "regular file" in result.output
+    assert dag_path.read_bytes() == dag_before
+    assert external.read_bytes() == external_before
+
+
+def test_cli_inventory_rejects_symlinked_output_parent(tmp_path):
+    _write_project(tmp_path)
+    external = tmp_path / "external"
+    external.mkdir()
+    output_parent = tmp_path / "redirected"
+    try:
+        output_parent.symlink_to(external, target_is_directory=True)
+    except OSError as error:
+        pytest.skip(f"directory symlink creation unavailable: {error}")
+
+    result = CliRunner().invoke(
+        cli,
+        [
+            "intent",
+            "inventory",
+            "--project-path",
+            str(tmp_path),
+            "--output",
+            str(output_parent / "coverage.json"),
+        ],
+    )
+
+    assert result.exit_code == 1
+    assert "real directory" in result.output
+    assert list(external.iterdir()) == []
