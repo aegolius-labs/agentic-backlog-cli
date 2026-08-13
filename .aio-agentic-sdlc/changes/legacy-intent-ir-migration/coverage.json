@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "source": {
+    "path": ".aio-agentic-sdlc/intention-dag.yaml",
+    "sha256": "b6fbeed822b398c4b319f22406e399d71fae3e4d0aa655e9c9d6636e1a3fee3b"
+  },
+  "summary": {
+    "total_nodes": 59,
+    "intent_ir_nodes": 11,
+    "legacy_nodes": 48
+  },
+  "limit": {
+    "max_items": 10,
+    "total_items": 48,
+    "returned_items": 10,
+    "truncated": true
+  },
+  "items": [
+    {
+      "node_id": "07e7e16c-c4d7-4f59-ac98-5d33599f0270",
+      "type": "agent",
+      "name": "SDLC Architect Agent",
+      "domain": "core",
+      "has_description": true,
+      "relationship_count": 9
+    },
+    {
+      "node_id": "09497db1-e4c8-43f3-8c27-ee8577b2b59f",
+      "type": "component",
+      "name": "TUI Dashboard",
+      "domain": "ux",
+      "has_description": true,
+      "relationship_count": 2
+    },
+    {
+      "node_id": "0fea8fea-9a23-404b-a16b-a9c9c3990e1b",
+      "type": "component",
+      "name": "Reality DAG Generator",
+      "domain": "core",
+      "has_description": true,
+      "relationship_count": 5
+    },
+    {
+      "node_id": "10d4c0ba-de03-49ac-ae0e-41048fd557ed",
+      "type": "component",
+      "name": "Daemon Watcher",
+      "domain": "orchestration",
+      "has_description": true,
+      "relationship_count": 3
+    },
+    {
+      "node_id": "1525a991-0ffa-4f82-b5a1-b23602346ca4",
+      "type": "endpoint",
+      "name": "Health Check Endpoint",
+      "domain": "orchestration",
+      "has_description": true,
+      "relationship_count": 1
+    },
+    {
+      "node_id": "22822d50-4438-4b48-821f-451933f557dd",
+      "type": "agent",
+      "name": "SDLC Intake Agent",
+      "domain": "ux",
+      "has_description": true,
+      "relationship_count": 6
+    },
+    {
+      "node_id": "2499ec97-aa53-4f54-8a55-5406403a647b",
+      "type": "component",
+      "name": "DAG Schema Migrator",
+      "domain": "core",
+      "has_description": true,
+      "relationship_count": 2
+    },
+    {
+      "node_id": "277fe548-6b99-4711-a89c-b681d262f820",
+      "type": "entity",
+      "name": "Unified Agent Definitions",
+      "domain": "core",
+      "has_description": true,
+      "relationship_count": 2
+    },
+    {
+      "node_id": "2e8a1562-7e77-4402-992f-f461e8c7161f",
+      "type": "component",
+      "name": "Canonical GUID Extractor",
+      "domain": "core",
+      "has_description": true,
+      "relationship_count": 3
+    },
+    {
+      "node_id": "37c790a3-75a2-4533-9384-889a06a9e573",
+      "type": "component",
+      "name": "Agent Format Migrator",
+      "domain": "core",
+      "has_description": true,
+      "relationship_count": 2
+    }
+  ]
+}

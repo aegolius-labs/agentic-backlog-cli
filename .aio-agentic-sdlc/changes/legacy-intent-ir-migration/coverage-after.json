@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "source": {
+    "path": ".aio-agentic-sdlc/intention-dag.yaml",
+    "sha256": "affdc95cbaf3b054a78b2d4eca1b1d6f96d2b7e95f6e21d9e009a8f37bbc0511"
+  },
+  "summary": {
+    "total_nodes": 59,
+    "intent_ir_nodes": 59,
+    "legacy_nodes": 0
+  },
+  "limit": {
+    "max_items": 10,
+    "total_items": 0,
+    "returned_items": 0,
+    "truncated": false
+  },
+  "items": []
+}

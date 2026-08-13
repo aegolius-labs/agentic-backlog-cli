@@ -40,6 +40,8 @@ graph TD
     
     subgraph Local Persistence
         CLI --> IntentReview[Intent IR validation and review]
+        CLI --> IntentMigration[Legacy Intent IR compiler and atomic migration]
+        IntentMigration --> Intent
         IntentReview --> Intent[(.aio-agentic-sdlc/intention-dag.yaml)]
         CLI --> Reality[(.aio-agentic-sdlc/reality-dag.yaml)]
         Intent --> Reconcile[Evidence-gated reconciliation]
@@ -100,9 +102,14 @@ Framework tools, rather than hand edits, perform state transitions. External iss
 Intention DAG nodes can embed the versioned Intent IR v1 contract. Intent IR records provenance,
 assumptions, ambiguities, confidence, acceptance criteria and their required evidence, revision
 history, generator ownership, and approval state. Existing nodes remain readable during migration,
-but strict validation requires Intent IR on every node. `dag-tool intent-summary` provides a
-human-readable review surface without exposing raw graph YAML. The schema decision and migration
-tradeoffs are recorded in [ADR 0002](adr/0002-intent-ir-v1.md).
+but strict validation requires Intent IR on every node. `dag-tool intent inventory` reports complete
+legacy coverage with bounded detail. `plan-migration` deterministically compiles exact preserved
+descriptions, described relationships, and exact-title documents into a digest-bound plan. It
+records uncertainty explicitly and cannot approve migrated intent. `apply-migration` acquires the
+canonical DAG lock, recompiles the expected plan, rejects stale, incomplete, or altered plans,
+validates every payload before mutation, and atomically applies the complete transition. `dag-tool
+intent-summary` provides a human-readable review surface without exposing raw graph YAML. The
+schema decision and migration tradeoffs are recorded in [ADR 0002](adr/0002-intent-ir-v1.md).
 
 Intent IR creation and revision are serialized by a lock beside the canonical DAG under
 `.aio-agentic-sdlc/`. Callers provide the

@@ -61,13 +61,12 @@ def _canonical_guid_index(
     return index
 
 
-def write_reconciliation_report(
-    report: dict[str, Any],
+def validate_reconciliation_report_output(
     output: str | Path,
     *,
     protected_paths: tuple[str | Path, ...] = (),
-) -> None:
-    """Atomically persist one derived reconciliation report."""
+) -> Path:
+    """Resolve a report target and reject protected framework state aliases."""
 
     target = Path(output).resolve()
     target_identity = os.path.normcase(str(target))
@@ -81,6 +80,21 @@ def write_reconciliation_report(
         raise ValueError(
             f"Refusing to overwrite protected framework state with a report: {target}"
         )
+    return target
+
+
+def write_reconciliation_report(
+    report: dict[str, Any],
+    output: str | Path,
+    *,
+    protected_paths: tuple[str | Path, ...] = (),
+) -> None:
+    """Atomically persist one derived reconciliation report."""
+
+    target = validate_reconciliation_report_output(
+        output,
+        protected_paths=protected_paths,
+    )
     target.parent.mkdir(parents=True, exist_ok=True)
     descriptor, temporary = tempfile.mkstemp(
         dir=target.parent,

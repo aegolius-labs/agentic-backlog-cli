@@ -1,0 +1,1608 @@
+{
+  "schema_version": 1,
+  "summary": {
+    "intention_nodes": 59,
+    "reality_nodes": 561,
+    "confirmed": 3,
+    "candidate": 5,
+    "ambiguous": 0,
+    "unmapped": 51,
+    "unclassified_reality": 558
+  },
+  "limit": {
+    "max_items": 100,
+    "total_items": 617,
+    "returned_items": 100,
+    "truncated": true
+  },
+  "items": [
+    {
+      "subject_kind": "intent",
+      "classification": "confirmed",
+      "intent": {
+        "id": "6317643a-a8fc-5026-b373-9330004bc90d",
+        "type": "component",
+        "name": "Approval-Gated Source Mapping"
+      },
+      "reality_candidates": [
+        {
+          "id": "6317643a-a8fc-5026-b373-9330004bc90d",
+          "type": "component",
+          "name": "MappingEngine"
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "canonical_guid",
+          "value": "6317643a-a8fc-5026-b373-9330004bc90d"
+        }
+      ],
+      "requires_approval": false
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "confirmed",
+      "intent": {
+        "id": "6506870b-b262-4f54-b6e9-43de4a873a55",
+        "type": "component",
+        "name": "PRD Archiver"
+      },
+      "reality_candidates": [
+        {
+          "id": "6506870b-b262-4f54-b6e9-43de4a873a55",
+          "type": "component",
+          "name": "PRDArchiver"
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "canonical_guid",
+          "value": "6506870b-b262-4f54-b6e9-43de4a873a55"
+        }
+      ],
+      "requires_approval": false
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "confirmed",
+      "intent": {
+        "id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+        "type": "component",
+        "name": "Evidence-Gated Reconciliation Baseline"
+      },
+      "reality_candidates": [
+        {
+          "id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+          "type": "module",
+          "name": "reconciliation.py"
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "canonical_guid",
+          "value": "9015c8a3-fd14-5598-916d-d03fcf41e415"
+        }
+      ],
+      "requires_approval": false
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "candidate",
+      "intent": {
+        "id": "0fea8fea-9a23-404b-a16b-a9c9c3990e1b",
+        "type": "component",
+        "name": "Reality DAG Generator"
+      },
+      "reality_candidates": [
+        {
+          "id": "5f9d3dc7-cd7e-5402-86cd-356a4b6846fb",
+          "type": "component",
+          "name": "RealityDAGGenerator"
+        }
+      ],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 1,
+        "returned_candidates": 1,
+        "truncated": false
+      },
+      "evidence": [
+        {
+          "kind": "normalized_name_and_type",
+          "normalized_name": "realitydaggenerator",
+          "node_type": "component"
+        }
+      ],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "candidate",
+      "intent": {
+        "id": "685b1d12-3eed-48f6-9fa8-b8ec88a5587f",
+        "type": "component",
+        "name": "Traceability Validator"
+      },
+      "reality_candidates": [
+        {
+          "id": "4332ee05-cded-51dc-b884-7249af9d97cd",
+          "type": "component",
+          "name": "TraceabilityValidator"
+        }
+      ],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 1,
+        "returned_candidates": 1,
+        "truncated": false
+      },
+      "evidence": [
+        {
+          "kind": "normalized_name_and_type",
+          "normalized_name": "traceabilityvalidator",
+          "node_type": "component"
+        }
+      ],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "candidate",
+      "intent": {
+        "id": "9865715b-99a5-4dcb-ba92-90b03cc3cf1c",
+        "type": "component",
+        "name": "Tree-Sitter Parser"
+      },
+      "reality_candidates": [
+        {
+          "id": "68d91d09-7a15-5e5c-8387-68ac2ec30139",
+          "type": "component",
+          "name": "TreeSitterParser"
+        }
+      ],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 1,
+        "returned_candidates": 1,
+        "truncated": false
+      },
+      "evidence": [
+        {
+          "kind": "normalized_name_and_type",
+          "normalized_name": "treesitterparser",
+          "node_type": "component"
+        }
+      ],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "candidate",
+      "intent": {
+        "id": "d0307d83-371e-4bb6-925d-84a4b70beb6b",
+        "type": "component",
+        "name": "Parser Factory"
+      },
+      "reality_candidates": [
+        {
+          "id": "a7278b66-0ac6-5e6b-91d7-0604d42cc40f",
+          "type": "component",
+          "name": "ParserFactory"
+        }
+      ],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 1,
+        "returned_candidates": 1,
+        "truncated": false
+      },
+      "evidence": [
+        {
+          "kind": "normalized_name_and_type",
+          "normalized_name": "parserfactory",
+          "node_type": "component"
+        }
+      ],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "candidate",
+      "intent": {
+        "id": "fa35fa8a-b6b5-40ca-9080-b31421117e37",
+        "type": "component",
+        "name": "Diffing Engine"
+      },
+      "reality_candidates": [
+        {
+          "id": "6199cd62-9332-5ad1-b458-18bd2e865da1",
+          "type": "component",
+          "name": "DiffingEngine"
+        }
+      ],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 1,
+        "returned_candidates": 1,
+        "truncated": false
+      },
+      "evidence": [
+        {
+          "kind": "normalized_name_and_type",
+          "normalized_name": "diffingengine",
+          "node_type": "component"
+        }
+      ],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "07e7e16c-c4d7-4f59-ac98-5d33599f0270",
+        "type": "agent",
+        "name": "SDLC Architect Agent"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "09497db1-e4c8-43f3-8c27-ee8577b2b59f",
+        "type": "component",
+        "name": "TUI Dashboard"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "10d4c0ba-de03-49ac-ae0e-41048fd557ed",
+        "type": "component",
+        "name": "Daemon Watcher"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "1525a991-0ffa-4f82-b5a1-b23602346ca4",
+        "type": "endpoint",
+        "name": "Health Check Endpoint"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "15302505-8828-525a-bebb-f72621f467a1",
+        "type": "component",
+        "name": "Cross-language Ontology Portability"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "22822d50-4438-4b48-821f-451933f557dd",
+        "type": "agent",
+        "name": "SDLC Intake Agent"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "2499ec97-aa53-4f54-8a55-5406403a647b",
+        "type": "component",
+        "name": "DAG Schema Migrator"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "277fe548-6b99-4711-a89c-b681d262f820",
+        "type": "entity",
+        "name": "Unified Agent Definitions"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "2e8a1562-7e77-4402-992f-f461e8c7161f",
+        "type": "component",
+        "name": "Canonical GUID Extractor"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "37c790a3-75a2-4533-9384-889a06a9e573",
+        "type": "component",
+        "name": "Agent Format Migrator"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "3ea4e322-7259-4f15-99c8-cbee950afe00",
+        "type": "component",
+        "name": "EULA & Privacy Prompt"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "40566eb0-0911-40cc-a1df-9ff6697734c8",
+        "type": "component",
+        "name": "Approval Gate"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "415fa500-6e50-488d-97ee-39ec4a9b2255",
+        "type": "endpoint",
+        "name": "Telemetry Backend"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "45b34e7b-3c77-48f9-9b7c-8ec541243767",
+        "type": "entity",
+        "name": "Agent Personas Config"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "48295997-8b54-4168-bccc-30d49ae766d8",
+        "type": "agent",
+        "name": "Implementer Agent"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "483abc2c-fab5-460f-9cd7-47bc25e0d3b3",
+        "type": "component",
+        "name": "Variance Report Router"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "4d76717e-55cd-4768-b05e-06a3cce1128b",
+        "type": "system",
+        "name": "AIO Agentic SDLC System"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "4f6cdecf-639d-50e5-bc6d-ad71c1750000",
+        "type": "component",
+        "name": "Agent Runtime Portability"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "54a600df-269a-42b2-a7e1-62f2a6687169",
+        "type": "agent",
+        "name": "Specialized QA Agents"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "54b91d55-08fe-48df-be35-445be7cd1e46",
+        "type": "container",
+        "name": "Agentic Orchestrator Loop"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "5a81e63d-85c7-4704-a0b1-e076367b2fd1",
+        "type": "component",
+        "name": "Artifact Templating Engine"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "5a916efe-75ec-4b0d-a8de-79fcd8e5035c",
+        "type": "component",
+        "name": "Conflict Resolution Manager"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "64b5afea-5e38-4659-82bb-662be3f3458e",
+        "type": "entity",
+        "name": "Unified Configuration File"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "6b1b3459-38a0-5cd5-8ff4-1453f17c3d76",
+        "type": "component",
+        "name": "Explicit Evidence Model"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "6ff0c1eb-b872-4036-987b-20988d9b380f",
+        "type": "entity",
+        "name": "Research Spikes Directory"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "7418a0a0-0d7e-45ba-94a3-b388cfa0ec5f",
+        "type": "module",
+        "name": "AST Visitor"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "7b029abd-1321-4cd7-9c1d-9e9f7b62046c",
+        "type": "entity",
+        "name": "Operational Modes Config"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "7bcd1683-2a10-5cbc-ab91-440ea920eaf1",
+        "type": "component",
+        "name": "Intent IR v1"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "82579715-d088-51ac-999f-4a95235b561c",
+        "type": "component",
+        "name": "Product Hardening"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+        "type": "component",
+        "name": "DAG Visualization and Comparison"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "900f5127-2c5e-46e1-890e-991ef7b27043",
+        "type": "component",
+        "name": "Commercial Licensing Enforcer"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "9066081a-24ea-4937-9f47-5ba87e09f731",
+        "type": "component",
+        "name": "Parallel Task Runner"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "908d2539-0567-41cd-9d34-260e1ef345a1",
+        "type": "entity",
+        "name": "Archive Directory"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "989b390d-aa2a-4cdc-8dc5-593b76c4b08b",
+        "type": "component",
+        "name": "Version Command"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "a187faf6-c03a-4657-9ac6-9319e51499b8",
+        "type": "component",
+        "name": "Telemetry Module"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "a6cf0410-832b-4597-a505-8fd5eb90d367",
+        "type": "entity",
+        "name": "Templates Directory"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "a937dc0f-c261-461a-975f-03950289be88",
+        "type": "component",
+        "name": "Markdown Parser"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "b4e6a8f3-a7f7-489e-8192-6d969a8fa6dd",
+        "type": "entity",
+        "name": "Subagent Output Templates"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "b9c4304e-70cd-47de-a94c-dcfbbca66335",
+        "type": "component",
+        "name": "Session Report Compiler"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "bcb5855b-46cf-475c-bf5c-5267a124e58a",
+        "type": "agent",
+        "name": "SDLC Researcher Agent"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "c2d35f1b-2d6c-43db-9c54-91f1f5d125f2",
+        "type": "entity",
+        "name": "Specs Directory"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "cb02a996-6d3f-5610-9043-b1e768587d84",
+        "type": "component",
+        "name": "Closed-loop Reference Demo"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "cb432b58-db06-4d49-a6ab-c11c9e86bcc2",
+        "type": "container",
+        "name": "DAG Engine Container"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "d4049c0c-4bf8-4d13-94b6-5e5410190f49",
+        "type": "entity",
+        "name": "Inbox Directory"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "d64fbc3a-bdde-5672-8645-4aaa75464e46",
+        "type": "component",
+        "name": "Intent Translation Benchmark"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "da3ee4cb-c37b-40f1-a1c4-93c24822e597",
+        "type": "endpoint",
+        "name": "Merchant of Record API"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "ea4ceb31-1218-43b9-becc-333e69e98abe",
+        "type": "entity",
+        "name": "Shared State Store"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "f1009cfe-9cde-4260-9235-72886d71fa94",
+        "type": "container",
+        "name": "MCP Server"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "f24b7477-032b-4f93-abcf-9b1c70627900",
+        "type": "component",
+        "name": "CLI Entrypoint"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+        "type": "component",
+        "name": "Legacy Intent IR Migration"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "f4d2f082-e822-4aa6-b74d-38b14bd84c87",
+        "type": "module",
+        "name": "QA Swarm Orchestrator"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 20,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "003cc972-7a3b-54e2-af38-26ce8f54dd07",
+        "type": "component",
+        "name": "visit_class_definition"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "01382c12-efbb-5d74-8ce4-04ee5ace65a5",
+        "type": "component",
+        "name": "parse"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "014d3f5d-595e-5582-aeb5-2ead9d6ba95f",
+        "type": "component",
+        "name": "DiffPolicy"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "01972ce1-dba9-54a3-9f75-771d02ad2cec",
+        "type": "agent",
+        "name": "sdlc_architect"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "0241c54b-6b96-55d2-a55c-dd039443b228",
+        "type": "component",
+        "name": "DummyArgs"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "02702c9c-f095-5993-ac3a-6223c055b941",
+        "type": "component",
+        "name": "check_duplicate_prd"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "02c5fb32-1131-5598-8673-f714d88eb2bf",
+        "type": "component",
+        "name": "test_framework_paths_share_the_full_project_name_parent"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "037c26cb-574d-5946-9ca3-14b082668762",
+        "type": "component",
+        "name": "extract_h2"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "03ab3d9a-beb1-5a32-b3f4-5efdddeee956",
+        "type": "module",
+        "name": "intent_ir.py"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "0562a648-29c2-578c-bd36-90bc2e3ea221",
+        "type": "component",
+        "name": "test_mcp_reconcile_dags_returns_the_same_evidence_report"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "05fc6c09-9731-5dcb-b32b-6d564298af1e",
+        "type": "component",
+        "name": "test_safe_diff_does_not_treat_missing_observations_as_drift"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "0606fdad-9caf-569e-adf7-0622f9a6ee0a",
+        "type": "component",
+        "name": "test_mcp_generate_document"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "08949c1f-e697-5962-9aaf-919f16b1d857",
+        "type": "component",
+        "name": "remove_item"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "08eab625-a0fb-5b62-9349-bf3b094bbd01",
+        "type": "module",
+        "name": "test_intent_migration.py"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "0a163bed-7cab-5793-9dd8-c412fcfd6f39",
+        "type": "module",
+        "name": "test_templating_engine.py"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "0b13dfa7-537a-587a-bcad-ae36747fa5c9",
+        "type": "module",
+        "name": "test_cli.py"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "0b472f99-e8b6-5cf8-9a44-c0238dd3cdd0",
+        "type": "component",
+        "name": "WorkspaceMigrationError"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "0c026709-faeb-5559-b6a4-ebe5949c2def",
+        "type": "component",
+        "name": "test_acceptance_criterion_rejects_blank_evidence_reference"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "0c16f2bc-7c68-5ad9-bd22-b4223d083f1e",
+        "type": "component",
+        "name": "__init__"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "0c750d74-61ff-5066-89a7-ea81997cc150",
+        "type": "component",
+        "name": "test_workspace_migration_waits_for_the_legacy_mapping_lock"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "0c8a6b20-4822-57d7-be3f-8342e6623d3a",
+        "type": "component",
+        "name": "BacklogStateError"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "0d512ec6-874a-5d29-8297-d192372a0b26",
+        "type": "component",
+        "name": "test_cli_reconcile_refuses_to_overwrite_versioned_state"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "0d739ffd-fe16-56dd-9440-edcc1a67c577",
+        "type": "component",
+        "name": "render_intent_summary"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "0e159810-cde1-5fb7-9250-9e1e63b47898",
+        "type": "agent",
+        "name": "sdlc_devops"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "0e2977b9-3646-5467-94a9-f1d6f8a17052",
+        "type": "component",
+        "name": "set_intent"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "0e78e571-e133-5e84-acf8-8d29677e6e00",
+        "type": "component",
+        "name": "migrate_backlog"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "0ed46e46-0115-5f0f-91cc-5e79007a6add",
+        "type": "component",
+        "name": "generate_reality"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "0f519f09-c7d6-57ac-a441-f63cf11536ba",
+        "type": "component",
+        "name": "test_update_intent_file_creates_and_revises_with_expected_revision"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "0f66e8c4-8f30-51d7-8a78-04603ffc6a96",
+        "type": "component",
+        "name": "test_mapping_approval_rejects_hidden_duplicate_canonical_marker"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "105ff938-5035-5a4e-9c13-e8ba56df729e",
+        "type": "component",
+        "name": "TestBlockCmd"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "10e8ca84-bd3d-5f86-87a8-a7dc364d9db5",
+        "type": "component",
+        "name": "require_timezone_aware_timestamp"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "11238375-0914-56b9-b548-b1e2f88e5fbc",
+        "type": "component",
+        "name": "test_blocked_item_auto_status"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "1238936c-83b3-543c-a460-05c30b8447ba",
+        "type": "component",
+        "name": "test_normal_state_operations_wait_for_the_workspace_migration_lock"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "134ec7e9-0379-5027-bc3f-3b6addecffe3",
+        "type": "component",
+        "name": "validate"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "1372b175-e4f2-5c8f-aba9-a0e38fb1ce52",
+        "type": "component",
+        "name": "TestNextCmd"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "13ff4d02-e93c-5cae-b42a-528a248a5907",
+        "type": "component",
+        "name": "visit_import_from_statement"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "1439a387-5fac-5026-8cb9-d879e62efccb",
+        "type": "component",
+        "name": "detect_frameworks"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "14ceeddf-0f1b-5792-9398-33792fb158ae",
+        "type": "component",
+        "name": "test_mcp_create_intent_node_uses_canonical_project_dag"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "14d0034e-f619-58e4-afab-20fdd764240c",
+        "type": "entity",
+        "name": "IntentModel"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "14e9edee-fd26-5142-9cdc-998626c1682b",
+        "type": "component",
+        "name": "Provenance"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "15faaf7c-18b9-5aa9-831a-b32f07a20f8d",
+        "type": "component",
+        "name": "test_init_empty"
+      },
+      "evidence": [],
+      "requires_approval": true
+    }
+  ]
+}

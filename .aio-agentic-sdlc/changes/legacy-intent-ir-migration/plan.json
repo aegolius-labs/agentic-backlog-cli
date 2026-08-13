@@ -1,0 +1,2785 @@
+{
+  "schema_version": 1,
+  "source": {
+    "path": ".aio-agentic-sdlc/intention-dag.yaml",
+    "sha256": "b6fbeed822b398c4b319f22406e399d71fae3e4d0aa655e9c9d6636e1a3fee3b"
+  },
+  "generated_at": "2026-08-12T21:04:15.854802-04:00",
+  "actor": "Codex/sdlc_cartographer",
+  "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+  "summary": {
+    "total_nodes": 59,
+    "already_migrated": 11,
+    "planned_migrations": 48,
+    "approval_state": "review_required"
+  },
+  "items": [
+    {
+      "node_id": "07e7e16c-c4d7-4f59-ac98-5d33599f0270",
+      "node_fingerprint": "9d1a1fed00d7eea7f2c12818d91e8fc11dcd55c7a2710c4f73d31220b68b3a5c",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:07e7e16c-c4d7-4f59-ac98-5d33599f0270",
+            "statement": "Reads PRDs from .aio-agentic-sdlc/inbox/, performs technical research, maps new architectural nodes into .aio-agentic-sdlc/intention-dag.yaml, and moves processed PRDs to .aio-agentic-sdlc/specs/."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:07e7e16c-c4d7-4f59-ac98-5d33599f0270:calls:5a81e63d-85c7-4704-a0b1-e076367b2fd1",
+            "statement": "Generates standardized SDDs"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:07e7e16c-c4d7-4f59-ac98-5d33599f0270:calls:6506870b-b262-4f54-b6e9-43de4a873a55",
+            "statement": "Triggers archival after processing a PRD"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:07e7e16c-c4d7-4f59-ac98-5d33599f0270:reads:d4049c0c-4bf8-4d13-94b6-5e5410190f49",
+            "statement": "Architect reads PRDs from inbox"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:483abc2c-fab5-460f-9cd7-47bc25e0d3b3:calls:07e7e16c-c4d7-4f59-ac98-5d33599f0270",
+            "statement": "Routes pushback to architect for spec revision"
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for SDLC Architect Agent?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-07e7e16c-c4d7-4f59-ac98-5d33599f0270-AC1",
+            "statement": "Reads PRDs from .aio-agentic-sdlc/inbox/, performs technical research, maps new architectural nodes into .aio-agentic-sdlc/intention-dag.yaml, and moves processed PRDs to .aio-agentic-sdlc/specs/.",
+            "required_evidence": [
+              "reconciliation:intent:07e7e16c-c4d7-4f59-ac98-5d33599f0270"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "09497db1-e4c8-43f3-8c27-ee8577b2b59f",
+      "node_fingerprint": "a050de338866d25d630a76d2b22822739691205eeb118efe0e3993eec1307a7c",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:09497db1-e4c8-43f3-8c27-ee8577b2b59f",
+            "statement": "Local terminal UI dashboard providing real-time visibility into the dynamic DAG and parallel swarms."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for TUI Dashboard?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.55,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-09497db1-e4c8-43f3-8c27-ee8577b2b59f-AC1",
+            "statement": "Local terminal UI dashboard providing real-time visibility into the dynamic DAG and parallel swarms.",
+            "required_evidence": [
+              "reconciliation:intent:09497db1-e4c8-43f3-8c27-ee8577b2b59f"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "0fea8fea-9a23-404b-a16b-a9c9c3990e1b",
+      "node_fingerprint": "d5f01d6002b2c376d75c9844b447e7f5080781b2d0b21acbf7acca2a4b1dc6fb",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:0fea8fea-9a23-404b-a16b-a9c9c3990e1b",
+            "statement": "Generates an accurate, real-time graph of the existing codebase"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:fa35fa8a-b6b5-40ca-9080-b31421117e37:depends_on:0fea8fea-9a23-404b-a16b-a9c9c3990e1b",
+            "statement": "Requires the current reality DAG to calculate differences"
+          },
+          {
+            "source_type": "document",
+            "reference": ".aio-agentic-sdlc/specs/reality-dag-generator.md:1",
+            "statement": "# Reality DAG Generator Specification"
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Reality DAG Generator?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.75,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-0fea8fea-9a23-404b-a16b-a9c9c3990e1b-AC1",
+            "statement": "Generates an accurate, real-time graph of the existing codebase",
+            "required_evidence": [
+              "reconciliation:intent:0fea8fea-9a23-404b-a16b-a9c9c3990e1b"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "10d4c0ba-de03-49ac-ae0e-41048fd557ed",
+      "node_fingerprint": "3718e201a65765ac87f616be1dc14b471ef8e7867ebf93bb399b27e3dd5f9db1",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:10d4c0ba-de03-49ac-ae0e-41048fd557ed",
+            "statement": "Long-running background process that monitors the inbox directory for PRDs and triggers pipelines."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Daemon Watcher?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.55,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-10d4c0ba-de03-49ac-ae0e-41048fd557ed-AC1",
+            "statement": "Long-running background process that monitors the inbox directory for PRDs and triggers pipelines.",
+            "required_evidence": [
+              "reconciliation:intent:10d4c0ba-de03-49ac-ae0e-41048fd557ed"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "1525a991-0ffa-4f82-b5a1-b23602346ca4",
+      "node_fingerprint": "cc49d0ad5841cc237191a44d0e072b2a94e4a2be4ede1d48fed1bc7a9ed933e1",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:1525a991-0ffa-4f82-b5a1-b23602346ca4",
+            "statement": "Lightweight health check endpoint for liveness probes"
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Health Check Endpoint?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.55,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-1525a991-0ffa-4f82-b5a1-b23602346ca4-AC1",
+            "statement": "Lightweight health check endpoint for liveness probes",
+            "required_evidence": [
+              "reconciliation:intent:1525a991-0ffa-4f82-b5a1-b23602346ca4"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "22822d50-4438-4b48-821f-451933f557dd",
+      "node_fingerprint": "a5579ba3ab45d26557b2b1645d917da2bc64bfe52f39925a3a053a62d596574f",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:22822d50-4438-4b48-821f-451933f557dd",
+            "statement": "Chats with the user, distills ideas into PRDs, and writes them to .aio-agentic-sdlc/inbox/ safely without writing execution code"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:22822d50-4438-4b48-821f-451933f557dd:calls:5a81e63d-85c7-4704-a0b1-e076367b2fd1",
+            "statement": "Generates standardized PRDs"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:22822d50-4438-4b48-821f-451933f557dd:reads:908d2539-0567-41cd-9d34-260e1ef345a1",
+            "statement": "Intake agent reads archived PRDs to check for historical overlaps"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:22822d50-4438-4b48-821f-451933f557dd:reads:d4049c0c-4bf8-4d13-94b6-5e5410190f49",
+            "statement": "Intake agent reads existing PRDs to check for overlaps"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:22822d50-4438-4b48-821f-451933f557dd:writes:d4049c0c-4bf8-4d13-94b6-5e5410190f49",
+            "statement": "Intake agent writes PRDs to inbox"
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for SDLC Intake Agent?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-22822d50-4438-4b48-821f-451933f557dd-AC1",
+            "statement": "Chats with the user, distills ideas into PRDs, and writes them to .aio-agentic-sdlc/inbox/ safely without writing execution code",
+            "required_evidence": [
+              "reconciliation:intent:22822d50-4438-4b48-821f-451933f557dd"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "2499ec97-aa53-4f54-8a55-5406403a647b",
+      "node_fingerprint": "b054e983be2239548c492b3df194644646a5f14d9e9235854b5c1c65b0a58f4f",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:2499ec97-aa53-4f54-8a55-5406403a647b",
+            "statement": "Tooling to migrate existing DAG schema states to enforce strict GUID/Integer node IDs and eliminate fuzzy string matching."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:f24b7477-032b-4f93-abcf-9b1c70627900:calls:2499ec97-aa53-4f54-8a55-5406403a647b",
+            "statement": "Executes one-off migrations of DAG schemas to strict Node IDs."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for DAG Schema Migrator?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-2499ec97-aa53-4f54-8a55-5406403a647b-AC1",
+            "statement": "Tooling to migrate existing DAG schema states to enforce strict GUID/Integer node IDs and eliminate fuzzy string matching.",
+            "required_evidence": [
+              "reconciliation:intent:2499ec97-aa53-4f54-8a55-5406403a647b"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "277fe548-6b99-4711-a89c-b681d262f820",
+      "node_fingerprint": "2c618a126bf549bcf6d5b41519bbe1c5d10f0a83d7c81ebc39cd83dd8e2c875e",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:277fe548-6b99-4711-a89c-b681d262f820",
+            "statement": "Standardized agent definitions using the unified agent.md format with YAML frontmatter and markdown instructions."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:37c790a3-75a2-4533-9384-889a06a9e573:writes:277fe548-6b99-4711-a89c-b681d262f820",
+            "statement": "Normalizes agent configurations into the unified agent.md format."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Unified Agent Definitions?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-277fe548-6b99-4711-a89c-b681d262f820-AC1",
+            "statement": "Standardized agent definitions using the unified agent.md format with YAML frontmatter and markdown instructions.",
+            "required_evidence": [
+              "reconciliation:intent:277fe548-6b99-4711-a89c-b681d262f820"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "2e8a1562-7e77-4402-992f-f461e8c7161f",
+      "node_fingerprint": "1c7ae406586646f3a69bddbc12c6af53033c70bab707ef7f0c0c92b1f1da93c2",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:2e8a1562-7e77-4402-992f-f461e8c7161f",
+            "statement": "Extracts 'aio-sdlc-node' UUIDs from code comments via Tree-Sitter and agent frontmatters via PyYAML."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:2e8a1562-7e77-4402-992f-f461e8c7161f:calls:9865715b-99a5-4dcb-ba92-90b03cc3cf1c",
+            "statement": "Calls Tree-Sitter to fetch codebase comments for UUID extraction."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:2e8a1562-7e77-4402-992f-f461e8c7161f:calls:a937dc0f-c261-461a-975f-03950289be88",
+            "statement": "Calls Markdown parser to fetch frontmatter for UUID extraction."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Canonical GUID Extractor?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-2e8a1562-7e77-4402-992f-f461e8c7161f-AC1",
+            "statement": "Extracts 'aio-sdlc-node' UUIDs from code comments via Tree-Sitter and agent frontmatters via PyYAML.",
+            "required_evidence": [
+              "reconciliation:intent:2e8a1562-7e77-4402-992f-f461e8c7161f"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "37c790a3-75a2-4533-9384-889a06a9e573",
+      "node_fingerprint": "983417344e64003451acc49b89d1bcdc485beb22c0db173f01f151c4a2b03310",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:37c790a3-75a2-4533-9384-889a06a9e573",
+            "statement": "Tooling to scan .agents/agents/ for legacy agent.json and system_prompt.md files, consolidate them into agent.md with YAML frontmatter, and delete the legacy files."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:37c790a3-75a2-4533-9384-889a06a9e573:writes:277fe548-6b99-4711-a89c-b681d262f820",
+            "statement": "Normalizes agent configurations into the unified agent.md format."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Agent Format Migrator?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-37c790a3-75a2-4533-9384-889a06a9e573-AC1",
+            "statement": "Tooling to scan .agents/agents/ for legacy agent.json and system_prompt.md files, consolidate them into agent.md with YAML frontmatter, and delete the legacy files.",
+            "required_evidence": [
+              "reconciliation:intent:37c790a3-75a2-4533-9384-889a06a9e573"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "3ea4e322-7259-4f15-99c8-cbee950afe00",
+      "node_fingerprint": "55cbed28dc863d37434da9ffbbefc0d966495aae82df0a20551f4aa9a3ed738e",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:3ea4e322-7259-4f15-99c8-cbee950afe00",
+            "statement": "Clickwrap prompt for first-time users to accept the Non-Commercial terms and Privacy Policy."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for EULA & Privacy Prompt?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.55,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-3ea4e322-7259-4f15-99c8-cbee950afe00-AC1",
+            "statement": "Clickwrap prompt for first-time users to accept the Non-Commercial terms and Privacy Policy.",
+            "required_evidence": [
+              "reconciliation:intent:3ea4e322-7259-4f15-99c8-cbee950afe00"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "40566eb0-0911-40cc-a1df-9ff6697734c8",
+      "node_fingerprint": "d19e5e0dd4c85729fbedaa304931cf81cf0c8a1612fed5f0d1a2f8b557d4bce2",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:40566eb0-0911-40cc-a1df-9ff6697734c8",
+            "statement": "Pauses pipeline before merging for user review, bypassable via configuration."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Approval Gate?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.55,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-40566eb0-0911-40cc-a1df-9ff6697734c8-AC1",
+            "statement": "Pauses pipeline before merging for user review, bypassable via configuration.",
+            "required_evidence": [
+              "reconciliation:intent:40566eb0-0911-40cc-a1df-9ff6697734c8"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "415fa500-6e50-488d-97ee-39ec4a9b2255",
+      "node_fingerprint": "9a71591cacdfc564081983a0f8b170fc1777075ab46a4ecd62d1bb574ac34396",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:415fa500-6e50-488d-97ee-39ec4a9b2255",
+            "statement": "Third-party managed telemetry provider (e.g., PostHog/Sentry)."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Telemetry Backend?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.55,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-415fa500-6e50-488d-97ee-39ec4a9b2255-AC1",
+            "statement": "Third-party managed telemetry provider (e.g., PostHog/Sentry).",
+            "required_evidence": [
+              "reconciliation:intent:415fa500-6e50-488d-97ee-39ec4a9b2255"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "45b34e7b-3c77-48f9-9b7c-8ec541243767",
+      "node_fingerprint": "91868c6f1602132d1b579d6991bbbecae9de8cd08290b0389fc0f9ad07c9b3b7",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:45b34e7b-3c77-48f9-9b7c-8ec541243767",
+            "statement": "Configuration for custom names and personalities of user-facing agents, injected into prompts."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Agent Personas Config?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.55,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-45b34e7b-3c77-48f9-9b7c-8ec541243767-AC1",
+            "statement": "Configuration for custom names and personalities of user-facing agents, injected into prompts.",
+            "required_evidence": [
+              "reconciliation:intent:45b34e7b-3c77-48f9-9b7c-8ec541243767"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "48295997-8b54-4168-bccc-30d49ae766d8",
+      "node_fingerprint": "beda387d92f2dd45ba2dbf724d028319fcdbf323c523aba36da8bacea7d9d8ef",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:48295997-8b54-4168-bccc-30d49ae766d8",
+            "statement": "Swarm agent that implements SDDs, returning Variance Reports if technical roadblocks occur."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Implementer Agent?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.55,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-48295997-8b54-4168-bccc-30d49ae766d8-AC1",
+            "statement": "Swarm agent that implements SDDs, returning Variance Reports if technical roadblocks occur.",
+            "required_evidence": [
+              "reconciliation:intent:48295997-8b54-4168-bccc-30d49ae766d8"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "483abc2c-fab5-460f-9cd7-47bc25e0d3b3",
+      "node_fingerprint": "7c96e46c3fdebd2532b881e331cf7892751651795ccd620ee93b98a95e981ea1",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:483abc2c-fab5-460f-9cd7-47bc25e0d3b3",
+            "statement": "Captures spec pushback from implementers and routes it to the Architect for dynamic SDD revision."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:483abc2c-fab5-460f-9cd7-47bc25e0d3b3:calls:07e7e16c-c4d7-4f59-ac98-5d33599f0270",
+            "statement": "Routes pushback to architect for spec revision"
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Variance Report Router?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-483abc2c-fab5-460f-9cd7-47bc25e0d3b3-AC1",
+            "statement": "Captures spec pushback from implementers and routes it to the Architect for dynamic SDD revision.",
+            "required_evidence": [
+              "reconciliation:intent:483abc2c-fab5-460f-9cd7-47bc25e0d3b3"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "4d76717e-55cd-4768-b05e-06a3cce1128b",
+      "node_fingerprint": "116d3303d01d060396207e7be957619ac3d921fed866cbecd46c815879852c1b",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:4d76717e-55cd-4768-b05e-06a3cce1128b",
+            "statement": "Dual-DAG reconciliation engine for autonomous software development"
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for AIO Agentic SDLC System?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.55,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-4d76717e-55cd-4768-b05e-06a3cce1128b-AC1",
+            "statement": "Dual-DAG reconciliation engine for autonomous software development",
+            "required_evidence": [
+              "reconciliation:intent:4d76717e-55cd-4768-b05e-06a3cce1128b"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "54a600df-269a-42b2-a7e1-62f2a6687169",
+      "node_fingerprint": "37e91fcd6a0028f894a703d942fc171039ae5255854134ae57372d7b77c3ebfe",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:54a600df-269a-42b2-a7e1-62f2a6687169",
+            "statement": "Swarm of specialized subagents (A11Y, Security, API Contracts, etc.) invoked for domain-specific checks."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Specialized QA Agents?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.55,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-54a600df-269a-42b2-a7e1-62f2a6687169-AC1",
+            "statement": "Swarm of specialized subagents (A11Y, Security, API Contracts, etc.) invoked for domain-specific checks.",
+            "required_evidence": [
+              "reconciliation:intent:54a600df-269a-42b2-a7e1-62f2a6687169"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "54b91d55-08fe-48df-be35-445be7cd1e46",
+      "node_fingerprint": "e34302b8a90e530e6f51da3b438ea1dbb73cc9c4efd6680c6ce72100d8b733b5",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:54b91d55-08fe-48df-be35-445be7cd1e46",
+            "statement": "Main orchestrator binding the calculated Diff to the SDLC Pipeline"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:54b91d55-08fe-48df-be35-445be7cd1e46:reads:7b029abd-1321-4cd7-9c1d-9e9f7b62046c",
+            "statement": "Reads configuration to determine if user approval is required"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:54b91d55-08fe-48df-be35-445be7cd1e46:calls:fa35fa8a-b6b5-40ca-9080-b31421117e37",
+            "statement": "Requests the dynamically generated backlog (Diff)"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:f24b7477-032b-4f93-abcf-9b1c70627900:calls:54b91d55-08fe-48df-be35-445be7cd1e46",
+            "statement": "Executes the orchestrator_loop via apply command"
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Agentic Orchestrator Loop?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-54b91d55-08fe-48df-be35-445be7cd1e46-AC1",
+            "statement": "Main orchestrator binding the calculated Diff to the SDLC Pipeline",
+            "required_evidence": [
+              "reconciliation:intent:54b91d55-08fe-48df-be35-445be7cd1e46"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "5a81e63d-85c7-4704-a0b1-e076367b2fd1",
+      "node_fingerprint": "cf0ba1b014a1f5fcdd300b94247eb914b5e60678fe0ad17e620b3e9d5ba4b187",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:5a81e63d-85c7-4704-a0b1-e076367b2fd1",
+            "statement": "Programmatically generates standardized documentation artifacts from structured data."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:07e7e16c-c4d7-4f59-ac98-5d33599f0270:calls:5a81e63d-85c7-4704-a0b1-e076367b2fd1",
+            "statement": "Generates standardized SDDs"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:22822d50-4438-4b48-821f-451933f557dd:calls:5a81e63d-85c7-4704-a0b1-e076367b2fd1",
+            "statement": "Generates standardized PRDs"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:bcb5855b-46cf-475c-bf5c-5267a124e58a:calls:5a81e63d-85c7-4704-a0b1-e076367b2fd1",
+            "statement": "Generates standardized Research Spikes"
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Artifact Templating Engine?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-5a81e63d-85c7-4704-a0b1-e076367b2fd1-AC1",
+            "statement": "Programmatically generates standardized documentation artifacts from structured data.",
+            "required_evidence": [
+              "reconciliation:intent:5a81e63d-85c7-4704-a0b1-e076367b2fd1"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "5a916efe-75ec-4b0d-a8de-79fcd8e5035c",
+      "node_fingerprint": "53a7e190fda9e75e2b70670a204de0222a7ff61add8a95c0735d855aa7554a8b",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:5a916efe-75ec-4b0d-a8de-79fcd8e5035c",
+            "statement": "Detects and resolves DAG and file-level merge conflicts across parallel execution tasks."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Conflict Resolution Manager?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.55,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-5a916efe-75ec-4b0d-a8de-79fcd8e5035c-AC1",
+            "statement": "Detects and resolves DAG and file-level merge conflicts across parallel execution tasks.",
+            "required_evidence": [
+              "reconciliation:intent:5a916efe-75ec-4b0d-a8de-79fcd8e5035c"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "64b5afea-5e38-4659-82bb-662be3f3458e",
+      "node_fingerprint": "0960340621585885a7317497c59fae4988de1935e54ed5813ecb50f762c2b5db",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:64b5afea-5e38-4659-82bb-662be3f3458e",
+            "statement": "Project-local configuration at .aio-agentic-sdlc/config.json, replacing legacy external tracker configuration."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:a187faf6-c03a-4657-9ac6-9319e51499b8:reads:64b5afea-5e38-4659-82bb-662be3f3458e",
+            "statement": "Checks for opt-out flags"
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Unified Configuration File?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-64b5afea-5e38-4659-82bb-662be3f3458e-AC1",
+            "statement": "Project-local configuration at .aio-agentic-sdlc/config.json, replacing legacy external tracker configuration.",
+            "required_evidence": [
+              "reconciliation:intent:64b5afea-5e38-4659-82bb-662be3f3458e"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "6506870b-b262-4f54-b6e9-43de4a873a55",
+      "node_fingerprint": "e44c5830519e2c73dd4d03cc1703e14868aefc5cb386a0b11b081c9c6192cae2",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:6506870b-b262-4f54-b6e9-43de4a873a55",
+            "statement": "Automates moving processed PRDs from .aio-agentic-sdlc/inbox/ to .aio-agentic-sdlc/archive/."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:07e7e16c-c4d7-4f59-ac98-5d33599f0270:calls:6506870b-b262-4f54-b6e9-43de4a873a55",
+            "statement": "Triggers archival after processing a PRD"
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for PRD Archiver?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-6506870b-b262-4f54-b6e9-43de4a873a55-AC1",
+            "statement": "Automates moving processed PRDs from .aio-agentic-sdlc/inbox/ to .aio-agentic-sdlc/archive/.",
+            "required_evidence": [
+              "reconciliation:intent:6506870b-b262-4f54-b6e9-43de4a873a55"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "685b1d12-3eed-48f6-9fa8-b8ec88a5587f",
+      "node_fingerprint": "5350a61955d0e956cfcecf95aba1510750656b9f6d0c6ad3c593a6ae24a27c19",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:685b1d12-3eed-48f6-9fa8-b8ec88a5587f",
+            "statement": "Automatically validates that Node IDs (GUID/Integer) consistently align across intention DAG, reality DAG, specs, and codebase."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:cb432b58-db06-4d49-a6ab-c11c9e86bcc2:calls:685b1d12-3eed-48f6-9fa8-b8ec88a5587f",
+            "statement": "Validates Node ID constraints during DAG parsing and manipulation."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:f4d2f082-e822-4aa6-b74d-38b14bd84c87:calls:685b1d12-3eed-48f6-9fa8-b8ec88a5587f",
+            "statement": "Invokes traceability validation during QA to ensure Node ID alignment."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Traceability Validator?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-685b1d12-3eed-48f6-9fa8-b8ec88a5587f-AC1",
+            "statement": "Automatically validates that Node IDs (GUID/Integer) consistently align across intention DAG, reality DAG, specs, and codebase.",
+            "required_evidence": [
+              "reconciliation:intent:685b1d12-3eed-48f6-9fa8-b8ec88a5587f"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "6ff0c1eb-b872-4036-987b-20988d9b380f",
+      "node_fingerprint": "ef144db08783d7eb6d7387146299506fe78f609b80518d9000daef98a61d7624",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:6ff0c1eb-b872-4036-987b-20988d9b380f",
+            "statement": "Output location for Research Spikes generated by the Researcher Agent."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Research Spikes Directory?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.55,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-6ff0c1eb-b872-4036-987b-20988d9b380f-AC1",
+            "statement": "Output location for Research Spikes generated by the Researcher Agent.",
+            "required_evidence": [
+              "reconciliation:intent:6ff0c1eb-b872-4036-987b-20988d9b380f"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "7418a0a0-0d7e-45ba-94a3-b388cfa0ec5f",
+      "node_fingerprint": "c6b4e63a81bfa60b31424017ae5a75f4fc4b2f9b5c9f336d3fc1bcf419860247",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:7418a0a0-0d7e-45ba-94a3-b388cfa0ec5f",
+            "statement": "Traverses parsed ASTs (or YAML data) and constructs Reality DAG Nodes."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:7418a0a0-0d7e-45ba-94a3-b388cfa0ec5f:reads:9865715b-99a5-4dcb-ba92-90b03cc3cf1c",
+            "statement": "Visitor traverses the AST generated by Tree-Sitter."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:7418a0a0-0d7e-45ba-94a3-b388cfa0ec5f:reads:a937dc0f-c261-461a-975f-03950289be88",
+            "statement": "Visitor processes the data extracted by the Markdown Parser."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for AST Visitor?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-7418a0a0-0d7e-45ba-94a3-b388cfa0ec5f-AC1",
+            "statement": "Traverses parsed ASTs (or YAML data) and constructs Reality DAG Nodes.",
+            "required_evidence": [
+              "reconciliation:intent:7418a0a0-0d7e-45ba-94a3-b388cfa0ec5f"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "7b029abd-1321-4cd7-9c1d-9e9f7b62046c",
+      "node_fingerprint": "87b2adbf8623ae3a63bc27b00ee150de105a85ea24e27577a1ef38fdaba7f2f2",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:7b029abd-1321-4cd7-9c1d-9e9f7b62046c",
+            "statement": "Configuration for approval gates vs bypass mode for continuous delivery"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:54b91d55-08fe-48df-be35-445be7cd1e46:reads:7b029abd-1321-4cd7-9c1d-9e9f7b62046c",
+            "statement": "Reads configuration to determine if user approval is required"
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Operational Modes Config?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-7b029abd-1321-4cd7-9c1d-9e9f7b62046c-AC1",
+            "statement": "Configuration for approval gates vs bypass mode for continuous delivery",
+            "required_evidence": [
+              "reconciliation:intent:7b029abd-1321-4cd7-9c1d-9e9f7b62046c"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "900f5127-2c5e-46e1-890e-991ef7b27043",
+      "node_fingerprint": "1a9c68c19f3107ae0e6ce3c86bceedebea611e34364d008b6bcbbc10d80f7096",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:900f5127-2c5e-46e1-890e-991ef7b27043",
+            "statement": "Validates commercial usage via license keys against an external Merchant of Record API."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Commercial Licensing Enforcer?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.55,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-900f5127-2c5e-46e1-890e-991ef7b27043-AC1",
+            "statement": "Validates commercial usage via license keys against an external Merchant of Record API.",
+            "required_evidence": [
+              "reconciliation:intent:900f5127-2c5e-46e1-890e-991ef7b27043"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "9066081a-24ea-4937-9f47-5ba87e09f731",
+      "node_fingerprint": "a2d0a6e3d24e8797f902585f9cb3cfc4f894d50cdeee515abc7a3e2bd5eab4b4",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:9066081a-24ea-4937-9f47-5ba87e09f731",
+            "statement": "Spawns concurrent subagents for unblocked items in the backlog, handling DAG concurrency and merge conflicts"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:9066081a-24ea-4937-9f47-5ba87e09f731:calls:f4d2f082-e822-4aa6-b74d-38b14bd84c87",
+            "statement": "Triggers QA validation after executing parallel tasks"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:9066081a-24ea-4937-9f47-5ba87e09f731:reads:fa35fa8a-b6b5-40ca-9080-b31421117e37",
+            "statement": "Reads unblocked tasks from the calculated diff"
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Parallel Task Runner?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-9066081a-24ea-4937-9f47-5ba87e09f731-AC1",
+            "statement": "Spawns concurrent subagents for unblocked items in the backlog, handling DAG concurrency and merge conflicts",
+            "required_evidence": [
+              "reconciliation:intent:9066081a-24ea-4937-9f47-5ba87e09f731"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "908d2539-0567-41cd-9d34-260e1ef345a1",
+      "node_fingerprint": "8358959b8e0f16effa0bfdb951989f4d342aa8d8ba76acaae810e1fa8a676e49",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:908d2539-0567-41cd-9d34-260e1ef345a1",
+            "statement": "Storage for successfully processed Product Requirement Documents (PRDs)."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:22822d50-4438-4b48-821f-451933f557dd:reads:908d2539-0567-41cd-9d34-260e1ef345a1",
+            "statement": "Intake agent reads archived PRDs to check for historical overlaps"
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Archive Directory?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-908d2539-0567-41cd-9d34-260e1ef345a1-AC1",
+            "statement": "Storage for successfully processed Product Requirement Documents (PRDs).",
+            "required_evidence": [
+              "reconciliation:intent:908d2539-0567-41cd-9d34-260e1ef345a1"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "9865715b-99a5-4dcb-ba92-90b03cc3cf1c",
+      "node_fingerprint": "44fa44c19f76b32a4b2d171976e278b8a832c04ca736a5a438247e865c37cb11",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:9865715b-99a5-4dcb-ba92-90b03cc3cf1c",
+            "statement": "Uses dynamically loaded Tree-Sitter grammars to parse source code into an AST."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:2e8a1562-7e77-4402-992f-f461e8c7161f:calls:9865715b-99a5-4dcb-ba92-90b03cc3cf1c",
+            "statement": "Calls Tree-Sitter to fetch codebase comments for UUID extraction."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:7418a0a0-0d7e-45ba-94a3-b388cfa0ec5f:reads:9865715b-99a5-4dcb-ba92-90b03cc3cf1c",
+            "statement": "Visitor traverses the AST generated by Tree-Sitter."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Tree-Sitter Parser?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-9865715b-99a5-4dcb-ba92-90b03cc3cf1c-AC1",
+            "statement": "Uses dynamically loaded Tree-Sitter grammars to parse source code into an AST.",
+            "required_evidence": [
+              "reconciliation:intent:9865715b-99a5-4dcb-ba92-90b03cc3cf1c"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "989b390d-aa2a-4cdc-8dc5-593b76c4b08b",
+      "node_fingerprint": "d8aa2c1220e2940622692d60f4647acb60f93acdd3f3ec56c7c76dadffb30f3f",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:989b390d-aa2a-4cdc-8dc5-593b76c4b08b",
+            "statement": "CLI and MCP entrypoint for safely reporting framework version before initialization."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Version Command?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.55,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-989b390d-aa2a-4cdc-8dc5-593b76c4b08b-AC1",
+            "statement": "CLI and MCP entrypoint for safely reporting framework version before initialization.",
+            "required_evidence": [
+              "reconciliation:intent:989b390d-aa2a-4cdc-8dc5-593b76c4b08b"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "a187faf6-c03a-4657-9ac6-9319e51499b8",
+      "node_fingerprint": "74ca745d0ab54728c0e43ac249963f0a761815840d57ad63a75e3115d6eef383",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:a187faf6-c03a-4657-9ac6-9319e51499b8",
+            "statement": "Lightweight client for collecting anonymized usage metrics and crash reports, opt-out enabled."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:a187faf6-c03a-4657-9ac6-9319e51499b8:reads:64b5afea-5e38-4659-82bb-662be3f3458e",
+            "statement": "Checks for opt-out flags"
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Telemetry Module?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-a187faf6-c03a-4657-9ac6-9319e51499b8-AC1",
+            "statement": "Lightweight client for collecting anonymized usage metrics and crash reports, opt-out enabled.",
+            "required_evidence": [
+              "reconciliation:intent:a187faf6-c03a-4657-9ac6-9319e51499b8"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "a6cf0410-832b-4597-a505-8fd5eb90d367",
+      "node_fingerprint": "424cf363ce1b1bfe5cd404dc0d8b9b8b2966800b0903225e2372e4fe9baf428c",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:a6cf0410-832b-4597-a505-8fd5eb90d367",
+            "statement": "Centralized storage for structured Markdown templates (PRD, SDD, Research Spike)."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Templates Directory?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.55,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-a6cf0410-832b-4597-a505-8fd5eb90d367-AC1",
+            "statement": "Centralized storage for structured Markdown templates (PRD, SDD, Research Spike).",
+            "required_evidence": [
+              "reconciliation:intent:a6cf0410-832b-4597-a505-8fd5eb90d367"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "a937dc0f-c261-461a-975f-03950289be88",
+      "node_fingerprint": "f23a92d4677a4e61dcd3a58f2af2f15a8d50222ac240237a2b0455f15c4f2586",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:a937dc0f-c261-461a-975f-03950289be88",
+            "statement": "Parses Markdown files to extract YAML frontmatter for agent configuration."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:2e8a1562-7e77-4402-992f-f461e8c7161f:calls:a937dc0f-c261-461a-975f-03950289be88",
+            "statement": "Calls Markdown parser to fetch frontmatter for UUID extraction."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:7418a0a0-0d7e-45ba-94a3-b388cfa0ec5f:reads:a937dc0f-c261-461a-975f-03950289be88",
+            "statement": "Visitor processes the data extracted by the Markdown Parser."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Markdown Parser?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-a937dc0f-c261-461a-975f-03950289be88-AC1",
+            "statement": "Parses Markdown files to extract YAML frontmatter for agent configuration.",
+            "required_evidence": [
+              "reconciliation:intent:a937dc0f-c261-461a-975f-03950289be88"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "b4e6a8f3-a7f7-489e-8192-6d969a8fa6dd",
+      "node_fingerprint": "417ec0544904e9e407091770a034904ece292c7486341bff075022041bca496e",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:b4e6a8f3-a7f7-489e-8192-6d969a8fa6dd",
+            "statement": "Structured reporting templates for each subagent so the Orchestrator can compile a clean, human-readable summary of the entire parallel session."
+          },
+          {
+            "source_type": "document",
+            "reference": ".aio-agentic-sdlc/specs/subagent-output-templates.md:1",
+            "statement": "# Specification: Subagent Output Templates"
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Subagent Output Templates?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-b4e6a8f3-a7f7-489e-8192-6d969a8fa6dd-AC1",
+            "statement": "Structured reporting templates for each subagent so the Orchestrator can compile a clean, human-readable summary of the entire parallel session.",
+            "required_evidence": [
+              "reconciliation:intent:b4e6a8f3-a7f7-489e-8192-6d969a8fa6dd"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "b9c4304e-70cd-47de-a94c-dcfbbca66335",
+      "node_fingerprint": "99b82a9980f6cf92be020125e0cc9bfa79a7ec29ae4393d2e386b5b2fded59c7",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:b9c4304e-70cd-47de-a94c-dcfbbca66335",
+            "statement": "Compiles structured subagent templates into unified Markdown session summaries."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Session Report Compiler?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.55,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-b9c4304e-70cd-47de-a94c-dcfbbca66335-AC1",
+            "statement": "Compiles structured subagent templates into unified Markdown session summaries.",
+            "required_evidence": [
+              "reconciliation:intent:b9c4304e-70cd-47de-a94c-dcfbbca66335"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "bcb5855b-46cf-475c-bf5c-5267a124e58a",
+      "node_fingerprint": "bed30b37dcee84ba5984a53dd7640fca4c6d64998666ee17d4aeb6d75438307d",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:bcb5855b-46cf-475c-bf5c-5267a124e58a",
+            "statement": "Dedicated subagent spawned by the Architect to perform deep technical research and draft spikes."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:bcb5855b-46cf-475c-bf5c-5267a124e58a:calls:5a81e63d-85c7-4704-a0b1-e076367b2fd1",
+            "statement": "Generates standardized Research Spikes"
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for SDLC Researcher Agent?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-bcb5855b-46cf-475c-bf5c-5267a124e58a-AC1",
+            "statement": "Dedicated subagent spawned by the Architect to perform deep technical research and draft spikes.",
+            "required_evidence": [
+              "reconciliation:intent:bcb5855b-46cf-475c-bf5c-5267a124e58a"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "c2d35f1b-2d6c-43db-9c54-91f1f5d125f2",
+      "node_fingerprint": "c5cb4fc3cbf7f9f22166831dab0c177b4cb8c9e39961797c42293fa3d6d9c60e",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:c2d35f1b-2d6c-43db-9c54-91f1f5d125f2",
+            "statement": "Directory storing deterministic Markdown Software Design Documents natively bound to the DAG."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Specs Directory?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.55,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-c2d35f1b-2d6c-43db-9c54-91f1f5d125f2-AC1",
+            "statement": "Directory storing deterministic Markdown Software Design Documents natively bound to the DAG.",
+            "required_evidence": [
+              "reconciliation:intent:c2d35f1b-2d6c-43db-9c54-91f1f5d125f2"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "cb432b58-db06-4d49-a6ab-c11c9e86bcc2",
+      "node_fingerprint": "4c5aa796e199872054e1e9d7feabb0fb59d18faca60e08955732987ed96bb626",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:cb432b58-db06-4d49-a6ab-c11c9e86bcc2",
+            "statement": "Core container for DAG management and difference calculation"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:cb432b58-db06-4d49-a6ab-c11c9e86bcc2:calls:685b1d12-3eed-48f6-9fa8-b8ec88a5587f",
+            "statement": "Validates Node ID constraints during DAG parsing and manipulation."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for DAG Engine Container?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-cb432b58-db06-4d49-a6ab-c11c9e86bcc2-AC1",
+            "statement": "Core container for DAG management and difference calculation",
+            "required_evidence": [
+              "reconciliation:intent:cb432b58-db06-4d49-a6ab-c11c9e86bcc2"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "d0307d83-371e-4bb6-925d-84a4b70beb6b",
+      "node_fingerprint": "55167b0616baa1b6d56a6a42da3c750248ce178dab51a1941b5cf392b362d224",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:d0307d83-371e-4bb6-925d-84a4b70beb6b",
+            "statement": "Dynamically loads the appropriate FileParser based on file extension."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Parser Factory?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.55,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-d0307d83-371e-4bb6-925d-84a4b70beb6b-AC1",
+            "statement": "Dynamically loads the appropriate FileParser based on file extension.",
+            "required_evidence": [
+              "reconciliation:intent:d0307d83-371e-4bb6-925d-84a4b70beb6b"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "d4049c0c-4bf8-4d13-94b6-5e5410190f49",
+      "node_fingerprint": "5f5bfc5e9ba2bea6767e8e07f2139dc02ed28fc8e57efcedc7787746f9068691",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:d4049c0c-4bf8-4d13-94b6-5e5410190f49",
+            "statement": "Directory containing new, unprocessed Product Requirement Documents (PRDs)."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:07e7e16c-c4d7-4f59-ac98-5d33599f0270:reads:d4049c0c-4bf8-4d13-94b6-5e5410190f49",
+            "statement": "Architect reads PRDs from inbox"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:22822d50-4438-4b48-821f-451933f557dd:reads:d4049c0c-4bf8-4d13-94b6-5e5410190f49",
+            "statement": "Intake agent reads existing PRDs to check for overlaps"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:22822d50-4438-4b48-821f-451933f557dd:writes:d4049c0c-4bf8-4d13-94b6-5e5410190f49",
+            "statement": "Intake agent writes PRDs to inbox"
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Inbox Directory?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-d4049c0c-4bf8-4d13-94b6-5e5410190f49-AC1",
+            "statement": "Directory containing new, unprocessed Product Requirement Documents (PRDs).",
+            "required_evidence": [
+              "reconciliation:intent:d4049c0c-4bf8-4d13-94b6-5e5410190f49"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "da3ee4cb-c37b-40f1-a1c4-93c24822e597",
+      "node_fingerprint": "a80afdc3b5496413464f3f318c878b7d80a0d4e576443c5b6ee0b7512de8d89f",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:da3ee4cb-c37b-40f1-a1c4-93c24822e597",
+            "statement": "External API (e.g., Lemon Squeezy/Paddle) to validate keys and manage software monetization."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Merchant of Record API?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.55,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-da3ee4cb-c37b-40f1-a1c4-93c24822e597-AC1",
+            "statement": "External API (e.g., Lemon Squeezy/Paddle) to validate keys and manage software monetization.",
+            "required_evidence": [
+              "reconciliation:intent:da3ee4cb-c37b-40f1-a1c4-93c24822e597"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "ea4ceb31-1218-43b9-becc-333e69e98abe",
+      "node_fingerprint": "d825e692e7a3a1dde3b22a34de32ea11972184184241a2850b244edd36163af3",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:ea4ceb31-1218-43b9-becc-333e69e98abe",
+            "statement": "Local state tracking mechanism to feed the TUI dashboard live updates."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Shared State Store?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.55,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-ea4ceb31-1218-43b9-becc-333e69e98abe-AC1",
+            "statement": "Local state tracking mechanism to feed the TUI dashboard live updates.",
+            "required_evidence": [
+              "reconciliation:intent:ea4ceb31-1218-43b9-becc-333e69e98abe"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "f1009cfe-9cde-4260-9235-72886d71fa94",
+      "node_fingerprint": "7fa14c27c390770fdd8af35494073e0bf959558ff61e9f06a5e379677be6a0c3",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:f1009cfe-9cde-4260-9235-72886d71fa94",
+            "statement": "Primary MCP-First interface for agents, exposing dynamic resources (e.g., the diff backlog) and core tools."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:f1009cfe-9cde-4260-9235-72886d71fa94:reads:fa35fa8a-b6b5-40ca-9080-b31421117e37",
+            "statement": "Exposes the backlog Diff as a dynamic MCP resource."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for MCP Server?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-f1009cfe-9cde-4260-9235-72886d71fa94-AC1",
+            "statement": "Primary MCP-First interface for agents, exposing dynamic resources (e.g., the diff backlog) and core tools.",
+            "required_evidence": [
+              "reconciliation:intent:f1009cfe-9cde-4260-9235-72886d71fa94"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "f24b7477-032b-4f93-abcf-9b1c70627900",
+      "node_fingerprint": "aff10af003dd9b5588ce920240e36da81284bae2c40b68b9472e189b582025fc",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:f24b7477-032b-4f93-abcf-9b1c70627900",
+            "statement": "Exposes plan and apply commands to run the DiffingEngine and Orchestrator Loop"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:f24b7477-032b-4f93-abcf-9b1c70627900:calls:2499ec97-aa53-4f54-8a55-5406403a647b",
+            "statement": "Executes one-off migrations of DAG schemas to strict Node IDs."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:f24b7477-032b-4f93-abcf-9b1c70627900:calls:54b91d55-08fe-48df-be35-445be7cd1e46",
+            "statement": "Executes the orchestrator_loop via apply command"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:f24b7477-032b-4f93-abcf-9b1c70627900:calls:fa35fa8a-b6b5-40ca-9080-b31421117e37",
+            "statement": "Runs the DiffingEngine and outputs generated backlog/diff via plan command"
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for CLI Entrypoint?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-f24b7477-032b-4f93-abcf-9b1c70627900-AC1",
+            "statement": "Exposes plan and apply commands to run the DiffingEngine and Orchestrator Loop",
+            "required_evidence": [
+              "reconciliation:intent:f24b7477-032b-4f93-abcf-9b1c70627900"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "f4d2f082-e822-4aa6-b74d-38b14bd84c87",
+      "node_fingerprint": "5d991b6b82366cb92790007da2168b17a56fa4878817735069b4aab28df6fb35",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:f4d2f082-e822-4aa6-b74d-38b14bd84c87",
+            "statement": "Manages a swarm of specialized QA subagents to ensure bulletproof code generation"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:9066081a-24ea-4937-9f47-5ba87e09f731:calls:f4d2f082-e822-4aa6-b74d-38b14bd84c87",
+            "statement": "Triggers QA validation after executing parallel tasks"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:f4d2f082-e822-4aa6-b74d-38b14bd84c87:calls:685b1d12-3eed-48f6-9fa8-b8ec88a5587f",
+            "statement": "Invokes traceability validation during QA to ensure Node ID alignment."
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for QA Swarm Orchestrator?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-f4d2f082-e822-4aa6-b74d-38b14bd84c87-AC1",
+            "statement": "Manages a swarm of specialized QA subagents to ensure bulletproof code generation",
+            "required_evidence": [
+              "reconciliation:intent:f4d2f082-e822-4aa6-b74d-38b14bd84c87"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    },
+    {
+      "node_id": "fa35fa8a-b6b5-40ca-9080-b31421117e37",
+      "node_fingerprint": "9a692f0276f12e8e7ff18d9ccf779df08e7fc2e48e47d27f326de730c2536a92",
+      "intent": {
+        "schema_version": 1,
+        "provenance": [
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:fa35fa8a-b6b5-40ca-9080-b31421117e37",
+            "statement": "Calculates the Diff by superimposing Intention DAG over Reality DAG"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:54b91d55-08fe-48df-be35-445be7cd1e46:calls:fa35fa8a-b6b5-40ca-9080-b31421117e37",
+            "statement": "Requests the dynamically generated backlog (Diff)"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:9066081a-24ea-4937-9f47-5ba87e09f731:reads:fa35fa8a-b6b5-40ca-9080-b31421117e37",
+            "statement": "Reads unblocked tasks from the calculated diff"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:f1009cfe-9cde-4260-9235-72886d71fa94:reads:fa35fa8a-b6b5-40ca-9080-b31421117e37",
+            "statement": "Exposes the backlog Diff as a dynamic MCP resource."
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:f24b7477-032b-4f93-abcf-9b1c70627900:calls:fa35fa8a-b6b5-40ca-9080-b31421117e37",
+            "statement": "Runs the DiffingEngine and outputs generated backlog/diff via plan command"
+          },
+          {
+            "source_type": "imported_spec",
+            "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:fa35fa8a-b6b5-40ca-9080-b31421117e37:depends_on:0fea8fea-9a23-404b-a16b-a9c9c3990e1b",
+            "statement": "Requires the current reality DAG to calculate differences"
+          }
+        ],
+        "assumptions": [
+          "The preserved node description is the complete locally available statement of legacy intent.",
+          "Existing graph relationships remain authoritative structural context."
+        ],
+        "ambiguities": [
+          {
+            "question": "Does this mechanically compiled payload fully capture the original intent for Diffing Engine?",
+            "status": "open",
+            "resolution": null
+          }
+        ],
+        "confidence": 0.65,
+        "acceptance_criteria": [
+          {
+            "id": "LEGACY-fa35fa8a-b6b5-40ca-9080-b31421117e37-AC1",
+            "statement": "Calculates the Diff by superimposing Intention DAG over Reality DAG",
+            "required_evidence": [
+              "reconciliation:intent:fa35fa8a-b6b5-40ca-9080-b31421117e37"
+            ]
+          }
+        ],
+        "revision_history": [
+          {
+            "revision": 1,
+            "recorded_at": "2026-08-12T21:04:15.854802-04:00",
+            "actor": "Codex/sdlc_cartographer",
+            "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+            "summary": "Mechanically migrated preserved legacy intent; human review remains required."
+          }
+        ],
+        "responsible_agent": "sdlc_cartographer",
+        "generator_version": "aio-agentic-sdlc/legacy-intent-migration-v1",
+        "approval": {
+          "state": "review_required",
+          "approved_by": null,
+          "approved_at": null,
+          "rationale": "Mechanical migration preserves available sources but does not claim semantic completeness."
+        }
+      }
+    }
+  ],
+  "plan_sha256": "3c57abf2dc9cd78594b1237583f71f52c6cfffedf645e57abe6414ca30304757"
+}

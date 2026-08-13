@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "plan_sha256": "3c57abf2dc9cd78594b1237583f71f52c6cfffedf645e57abe6414ca30304757",
+  "before_sha256": "b6fbeed822b398c4b319f22406e399d71fae3e4d0aa655e9c9d6636e1a3fee3b",
+  "after_sha256": "affdc95cbaf3b054a78b2d4eca1b1d6f96d2b7e95f6e21d9e009a8f37bbc0511",
+  "migrated_nodes": 48,
+  "strict_validation": true,
+  "approval_state": "review_required"
+}

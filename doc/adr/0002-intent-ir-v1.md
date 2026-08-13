@@ -31,16 +31,25 @@ and fails when any node is missing the payload.
 or edit raw graph YAML. State mutation remains the responsibility of framework tools; these review
 and validation commands do not mutate the DAG.
 
-`set_intent` and `dag-tool intent set` are the only supported Intent IR mutation surfaces. They
-serialize writes with a local lock, require the caller's expected revision, preserve existing
+`set_intent` and `dag-tool intent set` are the supported single-node Intent IR mutation surfaces.
+They serialize writes with a local lock, require the caller's expected revision, preserve existing
 history, append exactly one revision, and atomically replace the DAG file.
+
+The framework-managed legacy migration surface consists of `dag-tool intent inventory`,
+`plan-migration`, and `apply-migration`. The compiler uses only exact preserved descriptions,
+described relationships, and exact-title framework documents as provenance. Every mechanically
+compiled payload remains `review_required` with an open ambiguity. Plans cover every legacy node in
+canonical GUID order, bind the source DAG and each node fingerprint, and carry a content digest.
+Apply recompiles and validates the complete plan under the canonical DAG lock before one atomic
+replacement; stale, incomplete, modified, re-digested, or mechanically approved plans fail without
+mutation.
 
 ## Consequences
 
 - Human statements and imported sources remain traceable through subsequent agent transformations.
 - Acceptance criteria state their required evidence before implementation is judged complete.
 - Low-confidence interpretations and open ambiguities are visible before downstream execution.
-- Legacy DAGs can migrate incrementally, but they do not pass strict Intent IR validation.
+- Legacy DAGs can migrate atomically into strict coverage while retaining explicit review gates.
 - Structural node creation and a benchmarked Intake-to-Intent translation loop remain necessary
   before the framework can fully dogfood its roadmap.
 

@@ -1,6 +1,8 @@
 import json
 import sys
+from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 import click
 
@@ -8,14 +10,20 @@ from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.dag_models import Edge, EdgeType, Node, NodeType
 from aio_agentic_sdlc.diffing_engine import DiffingEngine, DiffPolicy
 from aio_agentic_sdlc.intent_ir import IntentIR
+from aio_agentic_sdlc.intent_migration import LegacyIntentMigrator
 from aio_agentic_sdlc.intent_store import create_intent_node_file, update_intent_file
 from aio_agentic_sdlc.mapping import MappingApproval, MappingEngine
 from aio_agentic_sdlc.reality_dag_generator import RealityDAGGenerator
 from aio_agentic_sdlc.reconciliation import (
     ReconciliationEngine,
+    validate_reconciliation_report_output,
     write_reconciliation_report,
 )
-from aio_agentic_sdlc.workspace import INTENTION_DAG_FILE
+from aio_agentic_sdlc.workspace import (
+    BACKLOG_FILE,
+    INTENTION_DAG_FILE,
+    REALITY_DAG_FILE,
+)
 
 
 @click.group()
@@ -167,6 +175,168 @@ def intent_set(file, node_id, payload_file, expected_revision):
         click.echo(f"Intent IR for node '{node_id}' saved at revision {revision}.")
     except Exception as e:
         click.secho(f"Error setting Intent IR: {str(e)}", err=True, fg="red")
+        sys.exit(1)
+
+
+def _intent_migration_protected_paths(
+    project_path: str | Path,
+    *extra_paths: str | Path,
+) -> tuple[Path, ...]:
+    root = Path(project_path).resolve()
+    return (
+        root / INTENTION_DAG_FILE,
+        root / REALITY_DAG_FILE,
+        root / BACKLOG_FILE,
+        *(Path(path).resolve() for path in extra_paths),
+    )
+
+
+def _write_intent_migration_artifact(
+    payload: dict[str, Any],
+    output: str | Path,
+    project_path: str | Path,
+    *,
+    extra_protected_paths: tuple[str | Path, ...] = (),
+) -> None:
+    """Persist derived migration evidence without overwriting framework state."""
+
+    write_reconciliation_report(
+        payload,
+        output,
+        protected_paths=_intent_migration_protected_paths(
+            project_path,
+            *extra_protected_paths,
+        ),
+    )
+
+
+@intent.command("inventory")
+@click.option(
+    "--project-path",
+    required=True,
+    type=click.Path(exists=True, file_okay=False),
+    help="Absolute path to the project directory.",
+)
+@click.option(
+    "--max-items",
+    default=100,
+    show_default=True,
+    type=click.IntRange(min=0),
+    help="Maximum legacy-node details to return while preserving complete totals.",
+)
+@click.option(
+    "--output",
+    type=click.Path(dir_okay=False),
+    help="Optional JSON report path; otherwise print the report.",
+)
+def intent_inventory(project_path, max_items, output):
+    """Inventory legacy nodes with bounded detail and complete coverage totals."""
+
+    try:
+        report = LegacyIntentMigrator(project_path).inventory(max_items=max_items)
+        if output:
+            _write_intent_migration_artifact(report, output, project_path)
+            click.echo(f"Legacy Intent IR inventory saved to {output}.")
+        else:
+            click.echo(json.dumps(report, indent=2))
+    except Exception as e:
+        click.secho(f"Error inventorying legacy intent: {str(e)}", err=True, fg="red")
+        sys.exit(1)
+
+
+@intent.command("plan-migration")
+@click.option(
+    "--project-path",
+    required=True,
+    type=click.Path(exists=True, file_okay=False),
+    help="Absolute path to the project directory.",
+)
+@click.option(
+    "--recorded-at",
+    required=True,
+    help="Timezone-aware ISO-8601 timestamp used for deterministic revision history.",
+)
+@click.option("--actor", required=True, help="Identity compiling the migration plan.")
+@click.option(
+    "--generator-version",
+    required=True,
+    help="Versioned compiler identity stored in each Intent IR revision.",
+)
+@click.option(
+    "--output",
+    required=True,
+    type=click.Path(dir_okay=False),
+    help="JSON migration-plan path.",
+)
+def intent_plan_migration(project_path, recorded_at, actor, generator_version, output):
+    """Compile every legacy node into a deterministic review-required plan."""
+
+    try:
+        timestamp = datetime.fromisoformat(recorded_at)
+        plan = LegacyIntentMigrator(project_path).plan(
+            recorded_at=timestamp,
+            actor=actor,
+            generator_version=generator_version,
+        )
+        _write_intent_migration_artifact(plan, output, project_path)
+        click.echo(
+            f"Legacy Intent IR migration plan saved to {output} "
+            f"for {plan['summary']['planned_migrations']} node(s)."
+        )
+    except Exception as e:
+        click.secho(
+            f"Error planning legacy intent migration: {str(e)}", err=True, fg="red"
+        )
+        sys.exit(1)
+
+
+@intent.command("apply-migration")
+@click.option(
+    "--project-path",
+    required=True,
+    type=click.Path(exists=True, file_okay=False),
+    help="Absolute path to the project directory.",
+)
+@click.option(
+    "--plan-file",
+    required=True,
+    type=click.Path(exists=True, dir_okay=False),
+    help="Exact JSON migration plan produced by plan-migration.",
+)
+@click.option(
+    "--output",
+    type=click.Path(dir_okay=False),
+    help="Optional JSON result path; otherwise print the result.",
+)
+def intent_apply_migration(project_path, plan_file, output):
+    """Atomically apply one complete, non-stale review-required migration plan."""
+
+    try:
+        if output:
+            validate_reconciliation_report_output(
+                output,
+                protected_paths=_intent_migration_protected_paths(
+                    project_path,
+                    plan_file,
+                ),
+            )
+        with open(plan_file, "r", encoding="utf-8") as handle:
+            plan = json.load(handle)
+        result = LegacyIntentMigrator(project_path).apply(plan)
+        if output:
+            _write_intent_migration_artifact(
+                result,
+                output,
+                project_path,
+                extra_protected_paths=(plan_file,),
+            )
+            click.echo(f"Legacy Intent IR migration result saved to {output}.")
+        else:
+            click.echo(json.dumps(result, indent=2))
+    except Exception as e:
+        click.secho(
+            f"Error applying legacy intent migration: {str(e)}", err=True, fg="red"
+        )
         sys.exit(1)
 
 

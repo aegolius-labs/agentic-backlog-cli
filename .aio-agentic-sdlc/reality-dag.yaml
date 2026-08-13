@@ -270,6 +270,19 @@ nodes:
   type: component
   name: intent_set
   description: Create or revise Intent IR using optimistic revision protection.
+- id: 3e311f99-16aa-5421-9b44-6b5694ca6437
+  type: component
+  name: intent_inventory
+  description: Inventory legacy nodes with bounded detail and complete coverage totals.
+- id: 4586cc9a-5f5b-5f3f-b1b4-9fc2fc4dc175
+  type: component
+  name: intent_plan_migration
+  description: Compile every legacy node into a deterministic review-required plan.
+- id: c5d13ed4-9173-5214-b098-f38664f2466e
+  type: component
+  name: intent_apply_migration
+  description: Atomically apply one complete, non-stale review-required migration
+    plan.
 - id: eb4faf78-202c-583f-9e3c-20664c39f163
   type: component
   name: mapping
@@ -530,6 +543,30 @@ nodes:
   type: component
   name: validate_revision_history
   description: Function validate_revision_history
+- id: 251be45c-4b0c-5331-af40-3b635e667cfb
+  type: module
+  name: intent_migration.py
+  description: Module src.aio_agentic_sdlc.intent_migration
+- id: a70ce5eb-4ce7-58a7-ae41-db176a6bcde6
+  type: component
+  name: LegacyIntentMigrator
+  description: Inventory, compile, and atomically apply review-required legacy intent.
+- id: a83d9847-1c02-51ff-97e4-710e0f6720dc
+  type: component
+  name: __init__
+  description: Function __init__
+- id: 2ca51b52-848b-5f29-a2f1-f2384a3a04fd
+  type: component
+  name: inventory
+  description: Return complete totals with bounded, deterministic legacy-node detail.
+- id: 9e2449d0-40fd-5b0c-adca-8170145ab790
+  type: component
+  name: plan
+  description: Compile a deterministic, review-required plan for every legacy node.
+- id: cd1f7638-14ae-52ae-85e7-13397158226d
+  type: component
+  name: apply
+  description: Apply a complete plan as one optimistic, atomic DAG transition.
 - id: 214466a1-8303-573d-abd3-6c91afc5783e
   type: module
   name: intent_store.py
@@ -724,6 +761,10 @@ nodes:
   type: component
   name: normalize_node_name
   description: Return a conservative comparison key without inferring semantics.
+- id: 9f2fbda6-e6ed-5c36-b260-8c77d34a0c15
+  type: component
+  name: validate_reconciliation_report_output
+  description: Resolve a report target and reject protected framework state aliases.
 - id: bf419a61-02eb-5269-9274-a3e643e46ab4
   type: component
   name: write_reconciliation_report
@@ -1510,6 +1551,54 @@ nodes:
   type: component
   name: test_intent_cli_validates_and_summarizes
   description: Function test_intent_cli_validates_and_summarizes
+- id: 08eab625-a0fb-5b62-9349-bf3b094bbd01
+  type: module
+  name: test_intent_migration.py
+  description: Module tests.test_intent_migration
+- id: 613caa5d-65f0-5abb-8800-4fb3efcb1d4c
+  type: component
+  name: test_inventory_is_bounded_and_reports_complete_coverage
+  description: Function test_inventory_is_bounded_and_reports_complete_coverage
+- id: 2fd7c34d-1c41-5df7-922d-69369a9d31bf
+  type: component
+  name: test_plan_is_deterministic_and_keeps_uncertain_intent_review_required
+  description: Function test_plan_is_deterministic_and_keeps_uncertain_intent_review_required
+- id: 9defe927-fcac-5e42-9bdc-fed5ddaa9e34
+  type: component
+  name: test_plan_bounds_duplicate_document_evidence_without_hiding_omissions
+  description: Function test_plan_bounds_duplicate_document_evidence_without_hiding_omissions
+- id: 5e0e0a26-a066-5ccc-9b30-62af6a994be4
+  type: component
+  name: test_apply_migrates_all_legacy_nodes_atomically_and_preserves_graph
+  description: Function test_apply_migrates_all_legacy_nodes_atomically_and_preserves_graph
+- id: ebf55ca1-1aa0-593a-81f7-4a41de316531
+  type: component
+  name: test_apply_rejects_stale_source_without_mutation
+  description: Function test_apply_rejects_stale_source_without_mutation
+- id: 50457788-a388-591c-ab54-14b3a2165ed7
+  type: component
+  name: test_apply_rejects_invalid_plan_without_partial_mutation
+  description: Function test_apply_rejects_invalid_plan_without_partial_mutation
+- id: 59788223-2ec0-5fd6-b5f7-cf50dc652c95
+  type: component
+  name: test_apply_rejects_validly_redigested_semantic_tampering
+  description: Function test_apply_rejects_validly_redigested_semantic_tampering
+- id: 33a24234-2516-5064-944e-985840cabe03
+  type: component
+  name: test_apply_preserves_canonical_dag_when_atomic_replace_fails
+  description: Function test_apply_preserves_canonical_dag_when_atomic_replace_fails
+- id: b168a6ee-ca59-534f-9a3a-a95c9a78d454
+  type: component
+  name: test_cli_inventory_plan_and_apply_complete_strict_migration
+  description: Function test_cli_inventory_plan_and_apply_complete_strict_migration
+- id: c778371a-c1f8-5ccb-9cce-4619f14d0989
+  type: component
+  name: test_cli_refuses_to_overwrite_canonical_state_with_inventory
+  description: Function test_cli_refuses_to_overwrite_canonical_state_with_inventory
+- id: 301ef3b3-3bb3-5d54-9157-2ef16f610b0c
+  type: component
+  name: test_cli_rejects_protected_apply_output_before_mutating_intent
+  description: Function test_cli_rejects_protected_apply_output_before_mutating_intent
 - id: 6b957405-800a-5af4-8323-cc9a81061f2b
   type: module
   name: test_intent_mutation.py
@@ -2395,6 +2484,15 @@ edges:
   target: eecf7ebe-dbd5-5b94-b7e2-c9979bb55136
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 3e311f99-16aa-5421-9b44-6b5694ca6437
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 4586cc9a-5f5b-5f3f-b1b4-9fc2fc4dc175
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: c5d13ed4-9173-5214-b098-f38664f2466e
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
   target: eb4faf78-202c-583f-9e3c-20664c39f163
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
@@ -2587,6 +2685,24 @@ edges:
   target: d9ff483d-1f84-5eec-9be6-5d7c286090ab
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 251be45c-4b0c-5331-af40-3b635e667cfb
+  type: contains
+- source: 251be45c-4b0c-5331-af40-3b635e667cfb
+  target: a70ce5eb-4ce7-58a7-ae41-db176a6bcde6
+  type: contains
+- source: a70ce5eb-4ce7-58a7-ae41-db176a6bcde6
+  target: a83d9847-1c02-51ff-97e4-710e0f6720dc
+  type: contains
+- source: a70ce5eb-4ce7-58a7-ae41-db176a6bcde6
+  target: 2ca51b52-848b-5f29-a2f1-f2384a3a04fd
+  type: contains
+- source: a70ce5eb-4ce7-58a7-ae41-db176a6bcde6
+  target: 9e2449d0-40fd-5b0c-adca-8170145ab790
+  type: contains
+- source: a70ce5eb-4ce7-58a7-ae41-db176a6bcde6
+  target: cd1f7638-14ae-52ae-85e7-13397158226d
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 214466a1-8303-573d-abd3-6c91afc5783e
   type: contains
 - source: 214466a1-8303-573d-abd3-6c91afc5783e
@@ -2720,6 +2836,9 @@ edges:
   type: contains
 - source: 9015c8a3-fd14-5598-916d-d03fcf41e415
   target: a913cfa4-0b24-59ed-bed0-483c531138e3
+  type: contains
+- source: 9015c8a3-fd14-5598-916d-d03fcf41e415
+  target: 9f2fbda6-e6ed-5c36-b260-8c77d34a0c15
   type: contains
 - source: 9015c8a3-fd14-5598-916d-d03fcf41e415
   target: bf419a61-02eb-5269-9274-a3e643e46ab4
@@ -3299,6 +3418,45 @@ edges:
   type: contains
 - source: 58608c3e-4108-5f19-b87d-f07956cd195c
   target: a5acbbee-4a36-5133-a2e3-784f907b4730
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 08eab625-a0fb-5b62-9349-bf3b094bbd01
+  type: contains
+- source: 08eab625-a0fb-5b62-9349-bf3b094bbd01
+  target: 58608c3e-4108-5f19-b87d-f07956cd195c
+  type: depends_on
+- source: 08eab625-a0fb-5b62-9349-bf3b094bbd01
+  target: 613caa5d-65f0-5abb-8800-4fb3efcb1d4c
+  type: contains
+- source: 08eab625-a0fb-5b62-9349-bf3b094bbd01
+  target: 2fd7c34d-1c41-5df7-922d-69369a9d31bf
+  type: contains
+- source: 08eab625-a0fb-5b62-9349-bf3b094bbd01
+  target: 9defe927-fcac-5e42-9bdc-fed5ddaa9e34
+  type: contains
+- source: 08eab625-a0fb-5b62-9349-bf3b094bbd01
+  target: 5e0e0a26-a066-5ccc-9b30-62af6a994be4
+  type: contains
+- source: 08eab625-a0fb-5b62-9349-bf3b094bbd01
+  target: ebf55ca1-1aa0-593a-81f7-4a41de316531
+  type: contains
+- source: 08eab625-a0fb-5b62-9349-bf3b094bbd01
+  target: 50457788-a388-591c-ab54-14b3a2165ed7
+  type: contains
+- source: 08eab625-a0fb-5b62-9349-bf3b094bbd01
+  target: 59788223-2ec0-5fd6-b5f7-cf50dc652c95
+  type: contains
+- source: 08eab625-a0fb-5b62-9349-bf3b094bbd01
+  target: 33a24234-2516-5064-944e-985840cabe03
+  type: contains
+- source: 08eab625-a0fb-5b62-9349-bf3b094bbd01
+  target: b168a6ee-ca59-534f-9a3a-a95c9a78d454
+  type: contains
+- source: 08eab625-a0fb-5b62-9349-bf3b094bbd01
+  target: c778371a-c1f8-5ccb-9cce-4619f14d0989
+  type: contains
+- source: 08eab625-a0fb-5b62-9349-bf3b094bbd01
+  target: 301ef3b3-3bb3-5d54-9157-2ef16f610b0c
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 6b957405-800a-5af4-8323-cc9a81061f2b

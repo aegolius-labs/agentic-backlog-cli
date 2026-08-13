@@ -121,6 +121,25 @@ uv run dag-tool intent-summary --file .aio-agentic-sdlc/intention-dag.yaml
 Use `--allow-partial` during migration while legacy nodes do not yet contain Intent IR. Strict
 validation remains the default.
 
+Legacy DAGs can be compiled and migrated without hand-editing canonical YAML:
+
+```bash
+uv run dag-tool intent inventory --project-path . --max-items 100
+uv run dag-tool intent plan-migration --project-path . \
+  --recorded-at <timezone-aware-iso-timestamp> \
+  --actor <actor> \
+  --generator-version <version> \
+  --output .aio-agentic-sdlc/changes/legacy-intent-ir-migration/plan.json
+uv run dag-tool intent apply-migration --project-path . \
+  --plan-file .aio-agentic-sdlc/changes/legacy-intent-ir-migration/plan.json
+```
+
+The deterministic compiler preserves exact legacy descriptions and relationship evidence. It
+does not infer semantic completeness: every migrated payload retains an open ambiguity and the
+`review_required` approval state. Apply is all-or-nothing and rejects stale plans or protected
+output paths before changing canonical state. It also recompiles the expected plan, so editing and
+re-digesting a valid payload cannot bypass the deterministic compiler.
+
 Reconcile identity evidence before creating an execution backlog:
 
 ```bash
