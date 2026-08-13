@@ -25,9 +25,12 @@ candidates, and unmatched Reality observations are unclassified rather than dele
 - Tooling drift: the framework cannot represent or detect the state; record a framework blocker.
 
 When reconciliation yields exactly one supported structural candidate, run `review_mapping` and
-ask an authorized human to accept or reject the exact candidate, source path, and evidence digest.
-Only after that explicit decision may `approve_mapping` atomically add the canonical source marker
-and audit receipt. A changed digest or source requires a new review and a new approval.
+present its human decision brief. Ask an authorized human whether the implementation responsibility,
+public surface, documentation, and related-test evidence justify linking the candidate to the
+Intention node. Structural matching and test references are not behavioral proof, so defer is the
+default. Only after an explicit identity-linkage decision may `approve_mapping` atomically add the
+canonical source marker and audit receipt. GUIDs and the digest are audit inputs, and any changed
+digest, intent, or source requires a new review and approval.
 
 ## 4. Implementation
 

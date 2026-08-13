@@ -12,10 +12,13 @@ Reconcile intended architecture with repository reality through deterministic to
    structural matches remain approval-required candidates, and unmatched Reality observations are
    unclassified rather than deletion candidates. Keep both record and nested-candidate limits
    bounded, and retain their complete totals and truncation metadata.
-5. For one unique structural candidate, run `review_mapping` and present its exact source-bound
-   evidence and digest. Call `approve_mapping` only after an authorized human explicitly approves
-   that exact candidate and supplies the approver identity, timezone-aware time, and rationale.
-   Never infer approval or approve ambiguous, unmapped, unsupported, stale, or mismatched evidence.
+5. For one unique structural candidate, run `review_mapping` and present the human decision brief:
+   intended responsibility and criteria, implementation documentation and public API, related tests,
+   and unresolved gaps. State that test references are not proof and mapping links identity rather
+   than approving behavior. Put source-bound GUIDs and the digest last as audit metadata. Call
+   `approve_mapping` only after an authorized human explicitly approves that exact identity linkage
+   and supplies the approver identity, timezone-aware time, and rationale. Never infer approval or
+   approve ambiguous, unmapped, unsupported, stale, or mismatched evidence.
 6. Run `validate_traceability` against the generated Reality DAG, Intention DAG, specs, and source.
 7. Classify mismatches as reality drift, intention drift, or framework-tooling drift.
 8. Report drift to the orchestrator; do not patch DAG files or generated metadata manually.

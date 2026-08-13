@@ -33,7 +33,10 @@ root so its containment checks apply to the target repository instead of the MCP
 Treat warnings and string results beginning with `Error:` as failed operations. Re-read state after
 a write before claiming success. Do not fall back to manual edits for protected state.
 
-Mapping is a two-step approval gate. Run `review_mapping` immediately before presenting a decision,
-show the exact intent, Reality candidate, source path and evidence digest, and call `approve_mapping`
-only after an authorized human explicitly accepts that exact evidence. Never approve ambiguous,
-unmapped, unsupported, stale, or mismatched evidence.
+Mapping is a two-step approval gate. Run `review_mapping` immediately before presenting a decision.
+Present the decision brief first: intended responsibility and acceptance criteria, actual symbol
+documentation and public API, related tests, and unresolved gaps. Explain that test references are
+not proof and that approval links identity rather than approving behavior. Show GUIDs and the digest
+last as audit inputs. Call `approve_mapping` only after an authorized human explicitly accepts that
+exact identity linkage. Never approve ambiguous, unmapped, unsupported, stale, or mismatched
+evidence.

@@ -390,7 +390,7 @@ def review_mapping(
         str, Field(description="Absolute path to the project directory")
     ] = ".",
 ) -> str:
-    """Return fresh source-bound evidence for one mapping decision."""
+    """Return a human-first decision brief plus fresh source-bound audit evidence."""
 
     try:
         intention_path = os.path.join(os.path.abspath(project_path), INTENTION_DAG_FILE)

@@ -67,15 +67,18 @@ prompts include:
 - “Show me the highest-priority unblocked task.”
 - “Generate the Reality DAG and report traceability drift.”
 - “Reconcile the Intention and Reality DAGs without proposing destructive cleanup.”
-- “Review this unique mapping candidate and ask me to approve the exact evidence.”
+- “Show me a human-readable mapping decision brief for this candidate.”
 
 For MCP calls, pass the absolute target repository as `project_path`. This is especially important
 when the plugin is installed because Codex runs the server from a cached plugin package, not from
 the target repository.
 
 For structural candidates, the plugin separates read-only review from mutation. It must show the
-exact candidate, source location, and evidence digest, then wait for explicit human approval before
-calling `approve_mapping`. Any intervening source or evidence change invalidates that approval.
+human decision brief: intended responsibility and criteria, actual symbol documentation and public
+API, related tests, and unresolved gaps. GUIDs and the digest are audit inputs shown last, not a
+substitute for review. The default decision is defer because a structural name/type match does not
+prove responsibility or behavior. Only an explicit human identity-linkage decision permits
+`approve_mapping`; any intervening intent, source, or displayed evidence change invalidates it.
 
 ## Validate changes
 

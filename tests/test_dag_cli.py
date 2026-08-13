@@ -333,6 +333,8 @@ def test_cli_mapping_review_and_approve_use_the_same_fresh_evidence(tmp_path):
             str(tmp_path),
             "--intent-id",
             intent_id,
+            "--format",
+            "json",
         ],
     )
 
@@ -366,6 +368,47 @@ def test_cli_mapping_review_and_approve_use_the_same_fresh_evidence(tmp_path):
     approval = json.loads(approve_result.output)
     assert approval["postcondition"]["classification"] == "confirmed"
     assert f"# aio-sdlc-node: {intent_id}" in source_path.read_text(encoding="utf-8")
+
+
+def test_cli_mapping_review_defaults_to_a_human_decision_brief(tmp_path):
+    intent_id = "6506870b-b262-4f54-b6e9-43de4a873a55"
+    source_path = tmp_path / "src" / "archiver.py"
+    source_path.parent.mkdir(parents=True)
+    source_path.write_text(
+        'class PRDArchiver:\n    """Archive accepted PRDs."""\n',
+        encoding="utf-8",
+    )
+    (tmp_path / INTENTION_DAG_FILE).parent.mkdir(parents=True)
+    DAGManager(
+        Metadata(name="Mapping CLI", version="1.0"),
+        [
+            Node(
+                id=intent_id,
+                type=NodeType.COMPONENT,
+                name="PRD Archiver",
+                description="Archive accepted PRDs without losing provenance.",
+            )
+        ],
+        [],
+    ).save(str(tmp_path / INTENTION_DAG_FILE))
+
+    result = CliRunner().invoke(
+        cli,
+        [
+            "mapping",
+            "review",
+            "--project-path",
+            str(tmp_path),
+            "--intent-id",
+            intent_id,
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert "Mapping decision: PRD Archiver -> PRDArchiver" in result.output
+    assert "What is intended" in result.output
+    assert "Default: DEFER" in result.output
+    assert "Audit metadata" in result.output
 
 
 def test_cli_diff_is_safe_by_default_and_legacy_is_explicit(sample_dag_file, tmp_path):
