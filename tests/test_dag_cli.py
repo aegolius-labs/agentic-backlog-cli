@@ -1,4 +1,5 @@
 import json
+from uuid import NAMESPACE_DNS, uuid5
 
 import pytest
 from click.testing import CliRunner
@@ -309,6 +310,62 @@ def test_cli_reconcile_refuses_to_overwrite_versioned_state(
     assert state_file.read_bytes() == before_state
 
 
+def test_cli_mapping_review_and_approve_use_the_same_fresh_evidence(tmp_path):
+    intent_id = "6506870b-b262-4f54-b6e9-43de4a873a55"
+    source_path = tmp_path / "src" / "archiver.py"
+    source_path.parent.mkdir(parents=True)
+    source_path.write_text("class PRDArchiver:\n    pass\n", encoding="utf-8")
+    DAGManager(
+        Metadata(name="Mapping CLI", version="1.0"),
+        [Node(id=intent_id, type=NodeType.COMPONENT, name="PRD Archiver")],
+        [],
+    ).save(str(tmp_path / "intention-dag.yaml"))
+    runner = CliRunner()
+
+    review_result = runner.invoke(
+        cli,
+        [
+            "mapping",
+            "review",
+            "--project-path",
+            str(tmp_path),
+            "--intent-id",
+            intent_id,
+        ],
+    )
+
+    assert review_result.exit_code == 0
+    review = json.loads(review_result.output)
+    candidate_id = review["candidates"][0]["reality"]["id"]
+
+    approve_result = runner.invoke(
+        cli,
+        [
+            "mapping",
+            "approve",
+            "--project-path",
+            str(tmp_path),
+            "--intent-id",
+            intent_id,
+            "--candidate-reality-id",
+            candidate_id,
+            "--evidence-digest",
+            review["evidence_digest"],
+            "--approved-by",
+            "Felix",
+            "--approved-at",
+            "2026-08-07T21:30:00+00:00",
+            "--rationale",
+            "Reviewed exact CLI evidence.",
+        ],
+    )
+
+    assert approve_result.exit_code == 0
+    approval = json.loads(approve_result.output)
+    assert approval["postcondition"]["classification"] == "confirmed"
+    assert f"# aio-sdlc-node: {intent_id}" in source_path.read_text(encoding="utf-8")
+
+
 def test_cli_diff_is_safe_by_default_and_legacy_is_explicit(sample_dag_file, tmp_path):
     reality_file = tmp_path / "empty-reality.yaml"
     DAGManager(Metadata(name="Reality", version="1.0"), [], []).save(str(reality_file))
@@ -345,3 +402,35 @@ def test_cli_diff_is_safe_by_default_and_legacy_is_explicit(sample_dag_file, tmp
     assert legacy_result.exit_code == 0
     legacy = json.loads(legacy_result.output)
     assert "Create System 'System 1'" in legacy["nodes"]
+
+
+def test_cli_generate_reality_rejects_system_identity_marker_without_output_loss(
+    tmp_path,
+):
+    project = tmp_path / "project"
+    project.mkdir()
+    system_id = str(uuid5(NAMESPACE_DNS, "system_root"))
+    (project / "collision.py").write_text(
+        f"# aio-sdlc-node: {system_id}\nclass Collision:\n    pass\n",
+        encoding="utf-8",
+    )
+    output = tmp_path / "reality-dag.yaml"
+    original = b"existing output must remain byte-identical\n"
+    output.write_bytes(original)
+
+    result = CliRunner().invoke(
+        cli,
+        [
+            "generate-reality",
+            "--dir",
+            str(project),
+            "--system",
+            "system_root",
+            "--output",
+            str(output),
+        ],
+    )
+
+    assert result.exit_code == 1
+    assert "source marker collides with existing identity" in result.output
+    assert output.read_bytes() == original

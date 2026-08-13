@@ -1,5 +1,6 @@
 import json
 import sys
+from pathlib import Path
 
 import click
 
@@ -8,6 +9,7 @@ from aio_agentic_sdlc.dag_models import Edge, EdgeType, Node, NodeType
 from aio_agentic_sdlc.diffing_engine import DiffingEngine, DiffPolicy
 from aio_agentic_sdlc.intent_ir import IntentIR
 from aio_agentic_sdlc.intent_store import create_intent_node_file, update_intent_file
+from aio_agentic_sdlc.mapping import MappingApproval, MappingEngine
 from aio_agentic_sdlc.reality_dag_generator import RealityDAGGenerator
 from aio_agentic_sdlc.reconciliation import (
     ReconciliationEngine,
@@ -164,6 +166,87 @@ def intent_set(file, node_id, payload_file, expected_revision):
         click.echo(f"Intent IR for node '{node_id}' saved at revision {revision}.")
     except Exception as e:
         click.secho(f"Error setting Intent IR: {str(e)}", err=True, fg="red")
+        sys.exit(1)
+
+
+@cli.group("mapping")
+def mapping():
+    """Review and explicitly approve source-bound identity mappings."""
+
+
+@mapping.command("review")
+@click.option(
+    "--project-path",
+    required=True,
+    type=click.Path(exists=True, file_okay=False),
+    help="Absolute path to the project directory.",
+)
+@click.option("--intent-id", required=True, help="Canonical Intention node GUID.")
+def mapping_review(project_path, intent_id):
+    """Render fresh source-bound evidence for one mapping decision."""
+
+    try:
+        engine = MappingEngine(project_path, Path(project_path) / "intention-dag.yaml")
+        click.echo(json.dumps(engine.review(intent_id), indent=2))
+    except Exception as e:
+        click.secho(f"Error reviewing mapping: {str(e)}", err=True, fg="red")
+        sys.exit(1)
+
+
+@mapping.command("approve")
+@click.option(
+    "--project-path",
+    required=True,
+    type=click.Path(exists=True, file_okay=False),
+    help="Absolute path to the project directory.",
+)
+@click.option("--intent-id", required=True, help="Canonical Intention node GUID.")
+@click.option(
+    "--candidate-reality-id",
+    required=True,
+    help="Reality candidate GUID from the exact mapping review.",
+)
+@click.option(
+    "--evidence-digest",
+    required=True,
+    help="Evidence digest from the exact mapping review.",
+)
+@click.option("--approved-by", required=True, help="Identity of the approver.")
+@click.option(
+    "--approved-at",
+    required=True,
+    help="Timezone-aware ISO-8601 approval timestamp.",
+)
+@click.option("--rationale", required=True, help="Reason for approving this mapping.")
+def mapping_approve(
+    project_path,
+    intent_id,
+    candidate_reality_id,
+    evidence_digest,
+    approved_by,
+    approved_at,
+    rationale,
+):
+    """Approve exactly one fresh candidate and persist verified source evidence."""
+
+    try:
+        engine = MappingEngine(project_path, Path(project_path) / "intention-dag.yaml")
+        approval = MappingApproval.model_validate(
+            {
+                "approved_by": approved_by,
+                "approved_at": approved_at,
+                "rationale": rationale,
+            }
+        )
+        result = engine.approve(
+            intent_id,
+            candidate_reality_id,
+            evidence_digest,
+            approval,
+        )
+        click.echo(json.dumps(result, indent=2))
+    except Exception as e:
+        click.secho(f"Error approving mapping: {str(e)}", err=True, fg="red")
         sys.exit(1)
 
 

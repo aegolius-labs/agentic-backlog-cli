@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "decision": {
+    "intent_id": "6506870b-b262-4f54-b6e9-43de4a873a55",
+    "candidate_reality_id": "ac41eaca-b3f9-55fc-850a-a633ffc6b723",
+    "source_path": "src/aio_agentic_sdlc/archiver.py",
+    "symbol_kind": "class",
+    "symbol_name": "PRDArchiver",
+    "pre_approval_source_sha256": "cdd5b44b21809aa5c94f6577b7302f2455e131ae8d9c9c3853c7f30487e90022",
+    "evidence_digest": "b822c46ff78c9fac9717f904f769a80af67e265b243ac951d72673e78c20bca9",
+    "approved_by": "Felix",
+    "approved_at": "2026-08-10T10:12:30.970663-04:00",
+    "rationale": "Felix approved PRDArchiver as the implementation identity of the PRD Archiver component; behavioral completeness remains separately reviewable."
+  },
+  "postcondition": {
+    "classification": "confirmed",
+    "reality_id": "6506870b-b262-4f54-b6e9-43de4a873a55",
+    "reality_type": "component",
+    "reality_name": "PRDArchiver",
+    "source_definition_line": 7,
+    "source_marker_line": 6,
+    "post_approval_source_sha256": "95bd272d02fe5518d45ad8192b9f6a7fb63b087a3bcf519ca0ac6849a7b3476c"
+  },
+  "canonical_reconciliation": {
+    "intention_nodes": 59,
+    "reality_nodes": 508,
+    "confirmed": 3,
+    "candidate": 5,
+    "ambiguous": 0,
+    "unmapped": 51,
+    "unclassified_reality": 505
+  },
+  "input_provenance": {
+    "intention_dag_sha256": "3f54bddc136c4473ae912b1c7f25afd0086b61894787a3156a949d66190cee0f",
+    "reality_dag_sha256": "e85fb5c2f8c590a632b0ceda0229b10a244f393f73e6064f48fde6e9690972de",
+    "source_sha256": "95bd272d02fe5518d45ad8192b9f6a7fb63b087a3bcf519ca0ac6849a7b3476c"
+  }
+}

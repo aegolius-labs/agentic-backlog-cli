@@ -16,6 +16,8 @@ Tool names may be namespaced by the Codex host. Match them by the operation name
 | Validate GUID links | `validate_traceability` | Use the Python API if MCP is unavailable |
 | Generate Reality DAG | `generate_reality` | `uv run dag-tool generate-reality ...` |
 | Reconcile DAG identity evidence | `reconcile_dags` | `uv run dag-tool reconcile ...` |
+| Review a source mapping | `review_mapping` | `uv run dag-tool mapping review ...` |
+| Approve an exact reviewed mapping | `approve_mapping` | `uv run dag-tool mapping approve ...` |
 | Create intent node | `create_intent_node` | `uv run dag-tool intent create-node ...` |
 | Revise Intent IR | `set_intent` | `uv run dag-tool intent set ...` |
 | Validate Intent IR | `validate_intent` | `uv run dag-tool validate-intent --file ...` |
@@ -27,3 +29,8 @@ root so its containment checks apply to the target repository instead of the MCP
 
 Treat warnings and string results beginning with `Error:` as failed operations. Re-read state after
 a write before claiming success. Do not fall back to manual edits for protected state.
+
+Mapping is a two-step approval gate. Run `review_mapping` immediately before presenting a decision,
+show the exact intent, Reality candidate, source path and evidence digest, and call `approve_mapping`
+only after an authorized human explicitly accepts that exact evidence. Never approve ambiguous,
+unmapped, unsupported, stale, or mismatched evidence.

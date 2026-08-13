@@ -1,5 +1,10 @@
 import os
+import subprocess
+import sys
 import tempfile
+from pathlib import Path
+
+import pytest
 
 from aio_agentic_sdlc.dag_models import EdgeType, NodeType
 from aio_agentic_sdlc.reality_dag_generator import RealityDAGGenerator
@@ -173,6 +178,99 @@ class UserModel:
         # We need to make sure the edge is also updated? Wait, _id_to_uuid handles everything.
         # But for classes, it prepends the parent ID.
         assert generator._id_to_uuid(f"{expected_uuid}.UserModel") in node_ids
+
+
+def test_reality_generator_definition_guid_does_not_replace_module_identity():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        expected_uuid = "2e8a1562-7e77-4402-992f-f461e8c7161f"
+        file_content = f"""# aio-sdlc-node: {expected_uuid}
+@registered
+class UserModel:
+    pass
+"""
+        source_path = os.path.join(tmpdir, "main.py")
+        with open(source_path, "w", encoding="utf-8") as handle:
+            handle.write(file_content)
+
+        generator = RealityDAGGenerator(root_dir=tmpdir, system_name="TestSystem")
+        dag = generator.generate()
+
+        module_id = generator._id_to_uuid("main")
+        assert module_id in dag.nodes
+        assert dag.nodes[module_id].type == NodeType.MODULE
+        assert expected_uuid in dag.nodes
+        assert dag.nodes[expected_uuid].name == "UserModel"
+        assert (
+            generator.source_locations[expected_uuid][0].as_dict()["marker_line"] == 1
+        )
+
+
+def test_reality_generator_rejects_duplicate_canonical_source_markers(tmp_path):
+    marker = "6506870b-b262-4f54-b6e9-43de4a873a55"
+    (tmp_path / "one.py").write_text(
+        f"# aio-sdlc-node: {marker}\nclass One:\n    pass\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "two.py").write_text(
+        f"# aio-sdlc-node: {marker.upper()}\nclass Two:\n    pass\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(
+        ValueError, match="source marker collides with existing identity"
+    ):
+        RealityDAGGenerator(str(tmp_path), "Duplicate marker test").generate()
+
+
+def test_reality_generator_skips_nonstructural_expression_trees(tmp_path):
+    path_expression = " / ".join(f'Path("segment-{index}")' for index in range(2_000))
+    (tmp_path / "large_expression.py").write_text(
+        f"CONFIG_PATH = {path_expression}\n\nclass AfterExpression:\n    pass\n",
+        encoding="utf-8",
+    )
+
+    generated = RealityDAGGenerator(str(tmp_path), "Expression test").generate()
+
+    assert any(node.name == "AfterExpression" for node in generated.nodes.values())
+
+
+def test_reality_generator_excludes_framework_state_directories(tmp_path):
+    (tmp_path / "source.py").write_text(
+        "class IncludedSource:\n    pass\n",
+        encoding="utf-8",
+    )
+    for state_directory in (".aio-agentic-sdlc", ".aio-sdlc"):
+        state_path = tmp_path / state_directory
+        state_path.mkdir()
+        (state_path / "archived.py").write_text(
+            "class ExcludedFrameworkState:\n    pass\n",
+            encoding="utf-8",
+        )
+
+    generated = RealityDAGGenerator(str(tmp_path), "State exclusion test").generate()
+    names = {node.name for node in generated.nodes.values()}
+
+    assert "IncludedSource" in names
+    assert "ExcludedFrameworkState" not in names
+
+
+def test_reality_generator_parses_project_source_without_native_crash():
+    project_root = Path(__file__).resolve().parents[1]
+    command = (
+        "from aio_agentic_sdlc.reality_dag_generator import RealityDAGGenerator; "
+        f"RealityDAGGenerator({str(project_root / 'src')!r}, 'Self scan').generate()"
+    )
+
+    completed = subprocess.run(
+        [sys.executable, "-c", command],
+        cwd=project_root,
+        capture_output=True,
+        text=True,
+        timeout=30,
+        check=False,
+    )
+
+    assert completed.returncode == 0, completed.stderr
 
 
 def test_reality_generator_agent_guid_extraction():

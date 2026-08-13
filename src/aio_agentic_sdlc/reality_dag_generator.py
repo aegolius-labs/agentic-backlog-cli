@@ -5,6 +5,15 @@ from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.dag_models import Edge, EdgeType, Metadata, NodeType
 from aio_agentic_sdlc.dag_models import Node as DAGNode
 from aio_agentic_sdlc.parsers.factory import ParserFactory
+from aio_agentic_sdlc.source_locations import SourceLocation
+
+IGNORED_DIRECTORIES = {
+    ".aio-agentic-sdlc",
+    ".aio-sdlc",
+    ".git",
+    ".venv",
+    "__pycache__",
+}
 
 
 class RealityDAGGenerator:
@@ -18,6 +27,7 @@ class RealityDAGGenerator:
         self.system_name = system_name
         self.nodes: Dict[str, DAGNode] = {}
         self.edges: List[Edge] = []
+        self.source_locations: Dict[str, List[SourceLocation]] = {}
 
         self.parser_factory = ParserFactory()
 
@@ -47,8 +57,29 @@ class RealityDAGGenerator:
         domain: str = None,
         description: str = None,
         attributes: Dict[str, Any] = None,
+        source_location: SourceLocation = None,
+        explicit_identity: bool = False,
     ):
         uid = self._id_to_uuid(id)
+        if explicit_identity and uid in self.nodes:
+            existing_locations = self.source_locations.get(uid, [])
+            if source_location not in existing_locations:
+                existing = (
+                    ", ".join(
+                        f"{location.path}:{location.marker_line}"
+                        for location in existing_locations
+                    )
+                    or f"existing {self.nodes[uid].type.value} node"
+                )
+                current = (
+                    f"{source_location.path}:{source_location.marker_line}"
+                    if source_location is not None
+                    else "unknown source"
+                )
+                raise ValueError(
+                    f"canonical source marker collides with existing identity {uid}: "
+                    f"{existing} and {current}"
+                )
         if uid not in self.nodes:
             self.nodes[uid] = DAGNode(
                 id=uid,
@@ -58,6 +89,18 @@ class RealityDAGGenerator:
                 description=description,
                 attributes=attributes,
             )
+        if source_location is not None:
+            locations = self.source_locations.setdefault(uid, [])
+            if source_location not in locations:
+                locations.append(source_location)
+                locations.sort(
+                    key=lambda location: (
+                        location.path,
+                        location.marker_line,
+                        location.symbol_kind,
+                    )
+                )
+        return uid
 
     def _add_edge(
         self, source: str, target: str, edge_type: EdgeType, description: str = None
@@ -85,16 +128,16 @@ class RealityDAGGenerator:
         module_path, _ = os.path.splitext(rel_path)
         return module_path.replace(os.sep, ".")
 
+    def _source_path(self, file_path: str) -> str:
+        return os.path.relpath(file_path, self.root_dir).replace(os.sep, "/")
+
     def generate(self) -> DAGManager:
         for root, dirs, files in os.walk(self.root_dir):
-            if ".venv" in dirs:
-                dirs.remove(".venv")
-            if "__pycache__" in dirs:
-                dirs.remove("__pycache__")
-            if ".git" in dirs:
-                dirs.remove(".git")
+            dirs[:] = sorted(
+                directory for directory in dirs if directory not in IGNORED_DIRECTORIES
+            )
 
-            for file in files:
+            for file in sorted(files):
                 _, ext = os.path.splitext(file)
                 parser = self.parser_factory.get_parser(ext)
                 if parser:
