@@ -169,13 +169,19 @@ Promote one unique Python class or function candidate only through an explicit t
 
 ```bash
 uv run dag-tool mapping review --project-path /absolute/project --intent-id <guid>
+# Machine consumers can request the complete report explicitly:
+uv run dag-tool mapping review --project-path /absolute/project --intent-id <guid> --format json
 uv run dag-tool mapping approve --project-path /absolute/project --intent-id <guid> \
   --candidate-reality-id <reviewed-guid> --evidence-digest <reviewed-digest> \
   --approved-by <identity> --approved-at <timezone-aware-iso8601> \
   --rationale "Why this exact source symbol implements the intent"
 ```
 
-Review regenerates Reality in memory and binds the candidate to its exact source path, symbol,
-line, and SHA-256 without changing canonical state. Approval repeats that review under a dedicated
-lock, rejects stale or ambiguous evidence, atomically inserts the canonical marker and audit
-receipt, and rolls back unless a fresh scan confirms the intended GUID at the same symbol.
+Review regenerates Reality in memory and defaults to a human decision brief. The brief puts the
+intended responsibility, acceptance criteria, relationships, implementation documentation, public
+API, and related tests ahead of GUIDs and hashes. Related tests are references, not proof; mapping
+approval links source identity and does not approve the Intent IR or claim behavioral completion.
+The machine report and its digest bind the reviewed intent semantics and the exact source evidence
+without changing canonical state. Approval repeats that review under a dedicated lock, rejects
+stale or ambiguous evidence, atomically inserts the canonical marker and audit receipt, and rolls
+back unless a fresh scan confirms the intended GUID at the same symbol.

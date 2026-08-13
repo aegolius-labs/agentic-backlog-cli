@@ -608,6 +608,10 @@ nodes:
   type: module
   name: mapping.py
   description: Module src.aio_agentic_sdlc.mapping
+- id: af738342-309b-5d5a-b940-ff6b5cb50a7b
+  type: component
+  name: render_mapping_review
+  description: Render a mapping report as a human decision brief with audit data last.
 - id: 6a32e581-a47a-59f8-acb8-6b59a5020cfa
   type: component
   name: MappingError
@@ -702,7 +706,7 @@ nodes:
 - id: 93cc7cb1-efa6-5648-9b4c-1214e0602884
   type: component
   name: review_mapping
-  description: Return fresh source-bound evidence for one mapping decision.
+  description: Return a human-first decision brief plus fresh source-bound audit evidence.
 - id: ec1e27bd-46ff-5749-9218-3e302db760a9
   type: component
   name: approve_mapping
@@ -1273,6 +1277,10 @@ nodes:
   type: component
   name: test_cli_mapping_review_and_approve_use_the_same_fresh_evidence
   description: Function test_cli_mapping_review_and_approve_use_the_same_fresh_evidence
+- id: 832ab3f1-e3f9-59ec-a7cb-67c714fe36e2
+  type: component
+  name: test_cli_mapping_review_defaults_to_a_human_decision_brief
+  description: Function test_cli_mapping_review_defaults_to_a_human_decision_brief
 - id: 9ce05651-500c-5f75-9c1c-5b2b6cd17dc4
   type: component
   name: test_cli_diff_is_safe_by_default_and_legacy_is_explicit
@@ -1756,6 +1764,18 @@ nodes:
   type: component
   name: test_mapping_review_binds_fresh_candidate_to_exact_source_without_mutation
   description: Function test_mapping_review_binds_fresh_candidate_to_exact_source_without_mutation
+- id: a5a7567d-ff6c-54cf-bbd2-e369fa66f403
+  type: component
+  name: test_mapping_review_is_a_human_decision_brief_not_an_id_table
+  description: Function test_mapping_review_is_a_human_decision_brief_not_an_id_table
+- id: d0a7bfd6-3163-512f-b414-c87849929296
+  type: component
+  name: test_mapping_digest_binds_the_reviewed_intent_semantics
+  description: Function test_mapping_digest_binds_the_reviewed_intent_semantics
+- id: 5fce6668-1bc5-57dc-92d3-d543cf13010d
+  type: component
+  name: test_mapping_review_bounds_related_test_evidence
+  description: Function test_mapping_review_bounds_related_test_evidence
 - id: 49bb24d8-7a77-5a4b-b2f5-84ccf7e89a58
   type: component
   name: test_mapping_approval_atomically_marks_and_confirms_exact_python_symbol
@@ -2822,6 +2842,9 @@ edges:
   target: db87f8e5-dca8-5952-91f6-454eec0f1a34
   type: contains
 - source: db87f8e5-dca8-5952-91f6-454eec0f1a34
+  target: af738342-309b-5d5a-b940-ff6b5cb50a7b
+  type: contains
+- source: db87f8e5-dca8-5952-91f6-454eec0f1a34
   target: 6a32e581-a47a-59f8-acb8-6b59a5020cfa
   type: contains
 - source: db87f8e5-dca8-5952-91f6-454eec0f1a34
@@ -3302,6 +3325,9 @@ edges:
   target: e9194825-1bcd-5dda-95a6-ff249ad728d1
   type: contains
 - source: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
+  target: 832ab3f1-e3f9-59ec-a7cb-67c714fe36e2
+  type: contains
+- source: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
   target: 9ce05651-500c-5f75-9c1c-5b2b6cd17dc4
   type: contains
 - source: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
@@ -3666,6 +3692,15 @@ edges:
   type: contains
 - source: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
   target: 607f9d02-4c5a-5f83-a8f3-a1edba192337
+  type: contains
+- source: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
+  target: a5a7567d-ff6c-54cf-bbd2-e369fa66f403
+  type: contains
+- source: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
+  target: d0a7bfd6-3163-512f-b414-c87849929296
+  type: contains
+- source: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
+  target: 5fce6668-1bc5-57dc-92d3-d543cf13010d
   type: contains
 - source: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
   target: 49bb24d8-7a77-5a4b-b2f5-84ccf7e89a58

@@ -17,7 +17,11 @@ from aio_agentic_sdlc.diffing_engine import DiffingEngine, DiffPolicy
 from aio_agentic_sdlc.intent_ir import IntentIR
 from aio_agentic_sdlc.intent_migration import LegacyIntentMigrator
 from aio_agentic_sdlc.intent_store import create_intent_node_file, update_intent_file
-from aio_agentic_sdlc.mapping import MappingApproval, MappingEngine
+from aio_agentic_sdlc.mapping import (
+    MappingApproval,
+    MappingEngine,
+    render_mapping_review,
+)
 from aio_agentic_sdlc.reality_dag_generator import RealityDAGGenerator
 from aio_agentic_sdlc.reconciliation import (
     ReconciliationEngine,
@@ -368,12 +372,24 @@ def mapping():
     help="Absolute path to the project directory.",
 )
 @click.option("--intent-id", required=True, help="Canonical Intention node GUID.")
-def mapping_review(project_path, intent_id):
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["human", "json"], case_sensitive=False),
+    default="human",
+    show_default=True,
+    help="Render a decision brief for people or the complete machine report.",
+)
+def mapping_review(project_path, intent_id, output_format):
     """Render fresh source-bound evidence for one mapping decision."""
 
     try:
         engine = MappingEngine(project_path, Path(project_path) / INTENTION_DAG_FILE)
-        click.echo(json.dumps(engine.review(intent_id), indent=2))
+        report = engine.review(intent_id)
+        if output_format == "json":
+            click.echo(json.dumps(report, indent=2))
+        else:
+            click.echo(render_mapping_review(report))
     except Exception as e:
         click.secho(f"Error reviewing mapping: {str(e)}", err=True, fg="red")
         sys.exit(1)
