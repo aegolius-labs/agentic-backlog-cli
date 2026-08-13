@@ -11,9 +11,23 @@ IGNORED_DIRECTORIES = {
     ".aio-agentic-sdlc",
     ".aio-sdlc",  # Deprecated state directory; exclude during migration cleanup.
     ".git",
+    ".mypy_cache",
+    ".nox",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".tox",
     ".venv",
     "__pycache__",
+    "build",
+    "dist",
+    "htmlcov",
+    "node_modules",
 }
+
+
+def _is_ignored_directory(directory: str) -> bool:
+    normalized = directory.casefold()
+    return normalized in IGNORED_DIRECTORIES or normalized.endswith(".egg-info")
 
 
 class RealityDAGGenerator:
@@ -134,7 +148,7 @@ class RealityDAGGenerator:
     def generate(self) -> DAGManager:
         for root, dirs, files in os.walk(self.root_dir):
             dirs[:] = sorted(
-                directory for directory in dirs if directory not in IGNORED_DIRECTORIES
+                directory for directory in dirs if not _is_ignored_directory(directory)
             )
 
             for file in sorted(files):

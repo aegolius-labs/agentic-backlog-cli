@@ -14,6 +14,7 @@ from uuid import UUID
 
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.dag_models import Node, NodeType
+from aio_agentic_sdlc.dag_store import guarded_file_path
 
 REPORT_SCHEMA_VERSION = 1
 DEFAULT_MAX_ITEMS = 100
@@ -61,18 +62,17 @@ def _canonical_guid_index(
     return index
 
 
-def write_reconciliation_report(
-    report: dict[str, Any],
+def validate_reconciliation_report_output(
     output: str | Path,
     *,
     protected_paths: tuple[str | Path, ...] = (),
-) -> None:
-    """Atomically persist one derived reconciliation report."""
+) -> Path:
+    """Resolve a report target and reject protected framework state aliases."""
 
-    target = Path(output).resolve()
+    target = guarded_file_path(output, create_parent=True)
     target_identity = os.path.normcase(str(target))
     protected_identities = {
-        os.path.normcase(str(Path(path).resolve())) for path in protected_paths
+        os.path.normcase(os.path.abspath(os.fspath(path))) for path in protected_paths
     }
     if (
         target.name.casefold() in PROTECTED_STATE_FILENAMES
@@ -81,7 +81,22 @@ def write_reconciliation_report(
         raise ValueError(
             f"Refusing to overwrite protected framework state with a report: {target}"
         )
-    target.parent.mkdir(parents=True, exist_ok=True)
+    return target
+
+
+def write_reconciliation_report(
+    report: dict[str, Any],
+    output: str | Path,
+    *,
+    protected_paths: tuple[str | Path, ...] = (),
+) -> None:
+    """Atomically persist one derived reconciliation report."""
+
+    target = validate_reconciliation_report_output(
+        output,
+        protected_paths=protected_paths,
+    )
+    target = guarded_file_path(target)
     descriptor, temporary = tempfile.mkstemp(
         dir=target.parent,
         prefix=f".{target.name}.",

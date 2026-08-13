@@ -2,16 +2,9 @@
 
 from pathlib import Path
 
-from filelock import FileLock
-
-from .dag_manager import DAGManager
 from .dag_models import Node
+from .dag_store import mutate_dag_file
 from .intent_ir import IntentIR
-
-
-def _lock_for(dag_path: Path) -> FileLock:
-    dag_path.parent.mkdir(parents=True, exist_ok=True)
-    return FileLock(dag_path.parent / f".{dag_path.name}.lock", timeout=10)
 
 
 def create_intent_node_file(filepath: str | Path, node: Node) -> int:
@@ -24,12 +17,11 @@ def create_intent_node_file(filepath: str | Path, node: Node) -> int:
     ):
         raise ValueError("new canonical intent node must contain exactly revision 1")
 
-    dag_path = Path(filepath).resolve()
-    with _lock_for(dag_path):
-        manager = DAGManager.load(str(dag_path))
+    def create(manager):
         manager.add_node(node)
-        manager.save(str(dag_path))
         return node.intent.revision_history[-1].revision
+
+    return mutate_dag_file(filepath, create)
 
 
 def update_intent_file(
@@ -43,9 +35,7 @@ def update_intent_file(
     if expected_revision < 0:
         raise ValueError("expected_revision must be zero or greater")
 
-    dag_path = Path(filepath).resolve()
-    with _lock_for(dag_path):
-        manager = DAGManager.load(str(dag_path))
+    def update(manager):
         node = manager.get_node(node_id)
         current = node.intent
         current_revision = current.revision_history[-1].revision if current else 0
@@ -78,5 +68,6 @@ def update_intent_file(
                 )
 
         manager.update_node(node_id, intent=intent)
-        manager.save(str(dag_path))
         return intent.revision_history[-1].revision
+
+    return mutate_dag_file(filepath, update)

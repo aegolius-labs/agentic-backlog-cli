@@ -20,6 +20,9 @@ Tool names may be namespaced by the Codex host. Match them by the operation name
 | Approve an exact reviewed mapping | `approve_mapping` | `uv run dag-tool mapping approve ...` |
 | Create intent node | `create_intent_node` | `uv run dag-tool intent create-node ...` |
 | Revise Intent IR | `set_intent` | `uv run dag-tool intent set ...` |
+| Inventory legacy intent | Not yet exposed | `uv run dag-tool intent inventory ...` |
+| Plan legacy Intent IR migration | Not yet exposed | `uv run dag-tool intent plan-migration ...` |
+| Apply legacy Intent IR migration | Not yet exposed | `uv run dag-tool intent apply-migration ...` |
 | Validate Intent IR | `validate_intent` | `uv run dag-tool validate-intent --file ...` |
 | Review Intent IR | `review_intent` | `uv run dag-tool intent-summary --file ...` |
 | Promote accepted spec | `promote_spec` | No manual-move fallback |

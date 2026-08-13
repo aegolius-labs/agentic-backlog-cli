@@ -502,49 +502,149 @@ def migrate_state_cmd(args):
 
 def migrate_ids_cmd(args):
     import os
+    import tempfile
     import uuid
+    from contextlib import ExitStack
 
     import yaml
 
-    id_map = {}
+    from .dag_manager import DAGManager
+    from .dag_models import Edge, Metadata, Node
+    from .dag_store import dag_file_lock
 
-    def migrate_file(filepath):
-        if not os.path.exists(filepath):
-            return
-        print(f"Migrating {filepath}...")
-        with open(filepath, "r", encoding="utf-8") as f:
-            data = yaml.safe_load(f) or {}
+    targets = [
+        (filepath, os.path.abspath(filepath))
+        for filepath in (INTENTION_DAG_FILE, REALITY_DAG_FILE)
+        if os.path.exists(filepath)
+    ]
+    if not targets:
+        print("Migration complete.")
+        return
 
-        nodes = data.get("nodes", [])
-        edges = data.get("edges", [])
+    with ExitStack() as locks:
+        guarded_targets = [
+            (label, str(locks.enter_context(dag_file_lock(target))))
+            for label, target in targets
+        ]
+        documents = []
+        for label, target in guarded_targets:
+            with open(target, "rb") as handle:
+                original = handle.read()
+            with open(target, "r", encoding="utf-8") as handle:
+                data = yaml.safe_load(handle) or {}
+            nodes = data.get("nodes", [])
+            edges = data.get("edges", [])
+            raw_ids = [str(node.get("id", "")) for node in nodes]
+            duplicates = sorted(
+                node_id for node_id in set(raw_ids) if raw_ids.count(node_id) > 1
+            )
+            if duplicates:
+                raise ValueError(
+                    f"{label} contains duplicate node IDs before migration: "
+                    + ", ".join(duplicates)
+                )
+            documents.append((label, target, original, data, nodes, edges))
 
-        migrated_count = 0
-        for node in nodes:
-            old_id = str(node.get("id", ""))
+        id_map = {}
+        migrated_documents = []
+        for label, target, original, data, nodes, edges in documents:
+            print(f"Migrating {label}...")
+
+            migrated_count = 0
+            for node in nodes:
+                old_id = str(node.get("id", ""))
+                try:
+                    uuid.UUID(old_id)
+                except ValueError:
+                    if old_id not in id_map:
+                        id_map[old_id] = str(uuid.uuid4())
+                    node["id"] = id_map[old_id]
+                    migrated_count += 1
+
+            for edge in edges:
+                old_source = str(edge.get("source", ""))
+                old_target = str(edge.get("target", ""))
+                if old_source in id_map:
+                    edge["source"] = id_map[old_source]
+                if old_target in id_map:
+                    edge["target"] = id_map[old_target]
+
+            migrated_ids = [str(node.get("id", "")) for node in nodes]
+            duplicates = sorted(
+                node_id
+                for node_id in set(migrated_ids)
+                if migrated_ids.count(node_id) > 1
+            )
+            if duplicates:
+                raise ValueError(
+                    f"{label} contains duplicate node IDs after migration: "
+                    + ", ".join(duplicates)
+                )
+
+            descriptor, temporary = tempfile.mkstemp(
+                dir=os.path.dirname(target) or ".",
+                prefix=f".{os.path.basename(target)}.",
+                suffix=".tmp",
+            )
             try:
-                # check if already a valid UUID
-                uuid.UUID(old_id)
-            except ValueError:
-                # generate a new UUID
-                if old_id not in id_map:
-                    id_map[old_id] = str(uuid.uuid4())
-                node["id"] = id_map[old_id]
-                migrated_count += 1
+                with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+                    yaml.dump(data, handle, sort_keys=False, default_flow_style=False)
+                    handle.flush()
+                    os.fsync(handle.fileno())
+                DAGManager(
+                    metadata=Metadata.model_validate(data.get("metadata", {})),
+                    nodes=[Node.model_validate(node) for node in nodes],
+                    edges=[Edge.model_validate(edge) for edge in edges],
+                ).validate()
+                migrated_documents.append(
+                    (label, target, temporary, migrated_count, original)
+                )
+            except Exception:
+                if os.path.exists(temporary):
+                    os.unlink(temporary)
+                raise
 
-        for edge in edges:
-            old_source = str(edge.get("source", ""))
-            old_target = str(edge.get("target", ""))
-            if old_source in id_map:
-                edge["source"] = id_map[old_source]
-            if old_target in id_map:
-                edge["target"] = id_map[old_target]
-
-        with open(filepath, "w", encoding="utf-8") as f:
-            yaml.dump(data, f, sort_keys=False, default_flow_style=False)
-        print(f"Migrated {migrated_count} node IDs in {filepath}.")
-
-    migrate_file(INTENTION_DAG_FILE)
-    migrate_file(REALITY_DAG_FILE)
+        replaced = []
+        try:
+            for (
+                label,
+                target,
+                temporary,
+                migrated_count,
+                original,
+            ) in migrated_documents:
+                os.replace(temporary, target)
+                replaced.append((target, original))
+                print(f"Migrated {migrated_count} node IDs in {label}.")
+        except Exception as write_error:
+            rollback_errors = []
+            for target, original in reversed(replaced):
+                descriptor, rollback = tempfile.mkstemp(
+                    dir=os.path.dirname(target) or ".",
+                    prefix=f".{os.path.basename(target)}.rollback.",
+                    suffix=".tmp",
+                )
+                try:
+                    with os.fdopen(descriptor, "wb") as handle:
+                        handle.write(original)
+                        handle.flush()
+                        os.fsync(handle.fileno())
+                    os.replace(rollback, target)
+                except Exception as rollback_error:
+                    rollback_errors.append(f"{target}: {rollback_error}")
+                finally:
+                    if os.path.exists(rollback):
+                        os.unlink(rollback)
+            if rollback_errors:
+                raise RuntimeError(
+                    "DAG ID migration failed and rollback was incomplete: "
+                    + "; ".join(rollback_errors)
+                ) from write_error
+            raise
+        finally:
+            for _label, _target, temporary, _count, _original in migrated_documents:
+                if os.path.exists(temporary):
+                    os.unlink(temporary)
     print("Migration complete.")
 
 
