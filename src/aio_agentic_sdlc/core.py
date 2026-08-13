@@ -459,6 +459,8 @@ def remove_item(name, project_path="."):
     save_backlog(data, project_path, operation="backlog.remove")
 
 
+# aio-sdlc-mapping-approval: {"approved_at":"2026-08-13T19:29:14.286017-04:00","approved_by":"Felix","candidate_reality_id":"4332ee05-cded-51dc-b884-7249af9d97cd","evidence_digest":"785fb78003c07acecef12413f387caffdf6eb17b2676b55ee734a51006195c08","intent_id":"685b1d12-3eed-48f6-9fa8-b8ec88a5587f","rationale":"Approved the TraceabilityValidator source identity; responsibility and validate API match, without claiming behavioral verification.","schema_version":1,"source_path":"src/aio_agentic_sdlc/core.py","source_sha256":"89b340f7032a84e0c9e7f032814ee15441ed06d4e4409e8d3d790ed6585faa2d","symbol_kind":"class","symbol_name":"TraceabilityValidator"}
+# aio-sdlc-node: 685b1d12-3eed-48f6-9fa8-b8ec88a5587f
 class TraceabilityValidator:
     def __init__(
         self,

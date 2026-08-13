@@ -226,15 +226,15 @@ nodes:
   type: component
   name: remove_item
   description: Function remove_item
-- id: 4332ee05-cded-51dc-b884-7249af9d97cd
+- id: 685b1d12-3eed-48f6-9fa8-b8ec88a5587f
   type: component
   name: TraceabilityValidator
   description: Class TraceabilityValidator
-- id: 6bf977ee-c94d-5750-acca-d8c0b707edf0
+- id: 5a7a7605-59ec-53a2-950b-6fa1a6262bdb
   type: component
   name: __init__
   description: Function __init__
-- id: d53a9141-bdd1-55ab-8340-1dddaac885ec
+- id: 08ffd22c-95b2-59da-b865-f91919682f56
   type: component
   name: validate
   description: Function validate
@@ -490,17 +490,17 @@ nodes:
   type: component
   name: legacy_structural
   description: Function legacy_structural
-- id: 6199cd62-9332-5ad1-b458-18bd2e865da1
+- id: fa35fa8a-b6b5-40ca-9080-b31421117e37
   type: component
   name: DiffingEngine
   description: "\r\n    Computes the difference between an Intention DAG and a Reality\
     \ DAG,\r\n    generating a backlog of tasks required to reconcile Reality with\
     \ Intention.\r\n    "
-- id: 0c16f2bc-7c68-5ad9-bd22-b4223d083f1e
+- id: 502fdf74-dcf2-53ca-b801-b2cb869c5a7d
   type: component
   name: __init__
   description: Function __init__
-- id: d183433d-01cb-57e1-b566-02da520084e6
+- id: 49ec4886-cacf-50a5-ba6b-061df8eb6cf6
   type: component
   name: calculate_diff
   description: Calculate a bounded safe plan unless legacy behavior is explicit.
@@ -769,16 +769,16 @@ nodes:
   type: module
   name: reality_dag_generator.py
   description: Module src.aio_agentic_sdlc.reality_dag_generator
-- id: 5f9d3dc7-cd7e-5402-86cd-356a4b6846fb
+- id: 0fea8fea-9a23-404b-a16b-a9c9c3990e1b
   type: component
   name: RealityDAGGenerator
   description: "\r\n    Generates a Reality DAG by statically analyzing source code.\r\
     \n    Implements a tree-sitter parser to be stack-agnostic.\r\n    "
-- id: d484d25c-d3d6-5215-93bb-76543a0e7867
+- id: 4662e823-2b21-5db2-9196-4300236f9f5b
   type: component
   name: __init__
   description: Function __init__
-- id: 2f305d49-796d-553c-b67c-daf04ff09189
+- id: 43ee63d6-5d85-5c61-b96a-427f3a33ef1e
   type: component
   name: generate
   description: Function generate
@@ -984,15 +984,15 @@ nodes:
   type: module
   name: factory.py
   description: Module src.aio_agentic_sdlc.parsers.factory
-- id: a7278b66-0ac6-5e6b-91d7-0604d42cc40f
+- id: d0307d83-371e-4bb6-925d-84a4b70beb6b
   type: component
   name: ParserFactory
   description: Class ParserFactory
-- id: f7ec265d-59e9-5d8d-bd47-5c91bc4cd357
+- id: ad263b92-52de-552d-a9a0-befb5824af65
   type: component
   name: __init__
   description: Function __init__
-- id: 17e3ea75-f350-5468-9ebd-98f215f4a196
+- id: c61fa53d-46a9-51d5-901f-ac840eb46369
   type: component
   name: get_parser
   description: Function get_parser
@@ -1012,15 +1012,15 @@ nodes:
   type: module
   name: python_parser.py
   description: Module src.aio_agentic_sdlc.parsers.python_parser
-- id: 68d91d09-7a15-5e5c-8387-68ac2ec30139
+- id: 9865715b-99a5-4dcb-ba92-90b03cc3cf1c
   type: component
   name: TreeSitterParser
   description: Class TreeSitterParser
-- id: a7b81d98-2450-55f8-98f8-6f92d6136a23
+- id: 92d83e86-d4e3-56da-9fc2-9f4513baa910
   type: component
   name: __init__
   description: Function __init__
-- id: 01382c12-efbb-5d74-8ce4-04ee5ace65a5
+- id: 297c9311-ffe7-5ff3-b4f7-9e6ecea0aaa2
   type: component
   name: parse
   description: Function parse
@@ -2560,13 +2560,13 @@ edges:
   target: 08949c1f-e697-5962-9aaf-919f16b1d857
   type: contains
 - source: dda24752-8c90-5617-8ee2-4727bb22232f
-  target: 4332ee05-cded-51dc-b884-7249af9d97cd
+  target: 685b1d12-3eed-48f6-9fa8-b8ec88a5587f
   type: contains
-- source: 4332ee05-cded-51dc-b884-7249af9d97cd
-  target: 6bf977ee-c94d-5750-acca-d8c0b707edf0
+- source: 685b1d12-3eed-48f6-9fa8-b8ec88a5587f
+  target: 5a7a7605-59ec-53a2-950b-6fa1a6262bdb
   type: contains
-- source: 4332ee05-cded-51dc-b884-7249af9d97cd
-  target: d53a9141-bdd1-55ab-8340-1dddaac885ec
+- source: 685b1d12-3eed-48f6-9fa8-b8ec88a5587f
+  target: 08ffd22c-95b2-59da-b865-f91919682f56
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 51038e11-df2c-549d-b731-bd99dd919ed5
@@ -2755,13 +2755,13 @@ edges:
   target: d4666098-add5-5c06-a75b-56d4561d8fec
   type: contains
 - source: 193b8ecb-ff6a-5c43-aa4d-ed19e677d282
-  target: 6199cd62-9332-5ad1-b458-18bd2e865da1
+  target: fa35fa8a-b6b5-40ca-9080-b31421117e37
   type: contains
-- source: 6199cd62-9332-5ad1-b458-18bd2e865da1
-  target: 0c16f2bc-7c68-5ad9-bd22-b4223d083f1e
+- source: fa35fa8a-b6b5-40ca-9080-b31421117e37
+  target: 502fdf74-dcf2-53ca-b801-b2cb869c5a7d
   type: contains
-- source: 6199cd62-9332-5ad1-b458-18bd2e865da1
-  target: d183433d-01cb-57e1-b566-02da520084e6
+- source: fa35fa8a-b6b5-40ca-9080-b31421117e37
+  target: 49ec4886-cacf-50a5-ba6b-061df8eb6cf6
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 03ab3d9a-beb1-5a32-b3f4-5efdddeee956
@@ -2953,13 +2953,13 @@ edges:
   target: 1dbef474-b42c-50ba-81a6-fcf97002ad6c
   type: contains
 - source: 1dbef474-b42c-50ba-81a6-fcf97002ad6c
-  target: 5f9d3dc7-cd7e-5402-86cd-356a4b6846fb
+  target: 0fea8fea-9a23-404b-a16b-a9c9c3990e1b
   type: contains
-- source: 5f9d3dc7-cd7e-5402-86cd-356a4b6846fb
-  target: d484d25c-d3d6-5215-93bb-76543a0e7867
+- source: 0fea8fea-9a23-404b-a16b-a9c9c3990e1b
+  target: 4662e823-2b21-5db2-9196-4300236f9f5b
   type: contains
-- source: 5f9d3dc7-cd7e-5402-86cd-356a4b6846fb
-  target: 2f305d49-796d-553c-b67c-daf04ff09189
+- source: 0fea8fea-9a23-404b-a16b-a9c9c3990e1b
+  target: 43ee63d6-5d85-5c61-b96a-427f3a33ef1e
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 9015c8a3-fd14-5598-916d-d03fcf41e415
@@ -3106,13 +3106,13 @@ edges:
   target: e9b84b03-d3bc-543e-a3c2-161f583768a4
   type: contains
 - source: e9b84b03-d3bc-543e-a3c2-161f583768a4
-  target: a7278b66-0ac6-5e6b-91d7-0604d42cc40f
+  target: d0307d83-371e-4bb6-925d-84a4b70beb6b
   type: contains
-- source: a7278b66-0ac6-5e6b-91d7-0604d42cc40f
-  target: f7ec265d-59e9-5d8d-bd47-5c91bc4cd357
+- source: d0307d83-371e-4bb6-925d-84a4b70beb6b
+  target: ad263b92-52de-552d-a9a0-befb5824af65
   type: contains
-- source: a7278b66-0ac6-5e6b-91d7-0604d42cc40f
-  target: 17e3ea75-f350-5468-9ebd-98f215f4a196
+- source: d0307d83-371e-4bb6-925d-84a4b70beb6b
+  target: c61fa53d-46a9-51d5-901f-ac840eb46369
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: e3b72ae9-9e2d-5a12-9614-34f892a0e932
@@ -3127,13 +3127,13 @@ edges:
   target: 4271a927-f51e-512e-b272-45fa54fbb3d3
   type: contains
 - source: 4271a927-f51e-512e-b272-45fa54fbb3d3
-  target: 68d91d09-7a15-5e5c-8387-68ac2ec30139
+  target: 9865715b-99a5-4dcb-ba92-90b03cc3cf1c
   type: contains
-- source: 68d91d09-7a15-5e5c-8387-68ac2ec30139
-  target: a7b81d98-2450-55f8-98f8-6f92d6136a23
+- source: 9865715b-99a5-4dcb-ba92-90b03cc3cf1c
+  target: 92d83e86-d4e3-56da-9fc2-9f4513baa910
   type: contains
-- source: 68d91d09-7a15-5e5c-8387-68ac2ec30139
-  target: 01382c12-efbb-5d74-8ce4-04ee5ace65a5
+- source: 9865715b-99a5-4dcb-ba92-90b03cc3cf1c
+  target: 297c9311-ffe7-5ff3-b4f7-9e6ecea0aaa2
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 77759c7c-420b-572a-a765-65c3d3479dd5
