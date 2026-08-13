@@ -111,11 +111,22 @@ validates every payload before mutation, and atomically applies the complete tra
 intent-summary` provides a human-readable review surface without exposing raw graph YAML. The
 schema decision and migration tradeoffs are recorded in [ADR 0002](adr/0002-intent-ir-v1.md).
 
+Migration provenance hashes the validated DAG content model with canonical JSON, not raw YAML
+bytes. Equivalent line endings therefore retain one source identity across platforms. Inventory
+and planning hold the same per-DAG lock as apply, Intent mutation, structural node/edge commands,
+and legacy ID migration, so each artifact and write derives from one coherent snapshot. If the DAG
+commit succeeds but optional result-report persistence fails, the CLI reports the committed result
+inline instead of claiming the migration failed.
+
 Intent IR creation and revision are serialized by a lock beside the canonical DAG under
 `.aio-agentic-sdlc/`. Callers provide the
 current node revision; stale writers fail instead of overwriting newer interpretation. Revisions
 must preserve the complete existing history and append exactly one next entry. DAG replacement is
 atomic, so a failed final replace leaves the prior canonical file intact.
+
+Reality generation excludes framework state, VCS data, dependency directories, caches, and common
+build outputs such as `build/`, `dist/`, and `*.egg-info`. These deterministic boundaries prevent a
+normal package build from duplicating source observations and changing the canonical Reality DAG.
 
 ### Evidence-gated reconciliation
 

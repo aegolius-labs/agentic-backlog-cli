@@ -9,10 +9,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from filelock import FileLock
-
 from .dag_manager import DAGManager
 from .dag_models import Edge, Node
+from .dag_store import dag_file_lock, guarded_dag_path
 from .intent_ir import (
     AcceptanceCriterion,
     Ambiguity,
@@ -69,11 +68,25 @@ class LegacyIntentMigrator:
         if not self.dag_path.exists():
             raise ValueError(f"Canonical Intention DAG does not exist: {self.dag_path}")
 
-    def _source_bytes(self) -> bytes:
-        return self.dag_path.read_bytes()
-
     def _manager(self) -> DAGManager:
-        return DAGManager.load(str(self.dag_path))
+        return DAGManager.load(str(guarded_dag_path(self.dag_path)))
+
+    @staticmethod
+    def _dag_content_sha256(manager: DAGManager) -> str:
+        """Hash validated DAG content independently of checkout serialization."""
+
+        payload = {
+            "metadata": manager.metadata.model_dump(mode="json", exclude_none=True),
+            "nodes": [
+                node.model_dump(mode="json", exclude_none=True)
+                for node in manager.nodes.values()
+            ],
+            "edges": [
+                edge.model_dump(mode="json", exclude_none=True)
+                for edge in manager.edges
+            ],
+        }
+        return _sha256(_canonical_json(payload))
 
     @staticmethod
     def _legacy_nodes(manager: DAGManager) -> list[Node]:
@@ -104,9 +117,7 @@ class LegacyIntentMigrator:
         }
         return _sha256(_canonical_json(payload))
 
-    def inventory(self, *, max_items: int = DEFAULT_MAX_ITEMS) -> dict[str, Any]:
-        """Return complete totals with bounded, deterministic legacy-node detail."""
-
+    def _inventory_locked(self, *, max_items: int) -> dict[str, Any]:
         if max_items < 0:
             raise ValueError("max_items must be zero or greater")
         manager = self._manager()
@@ -116,7 +127,7 @@ class LegacyIntentMigrator:
             "schema_version": MIGRATION_SCHEMA_VERSION,
             "source": {
                 "path": INTENTION_DAG_FILE,
-                "sha256": _sha256(self._source_bytes()),
+                "sha256": self._dag_content_sha256(manager),
             },
             "summary": {
                 "total_nodes": len(manager.nodes),
@@ -141,6 +152,12 @@ class LegacyIntentMigrator:
                 for node in returned
             ],
         }
+
+    def inventory(self, *, max_items: int = DEFAULT_MAX_ITEMS) -> dict[str, Any]:
+        """Return complete totals with bounded, deterministic legacy-node detail."""
+
+        with dag_file_lock(self.dag_path):
+            return self._inventory_locked(max_items=max_items)
 
     def _document_title_index(self) -> dict[str, list[Provenance]]:
         """Index exact document titles once without inferring from body mentions."""
@@ -329,7 +346,7 @@ class LegacyIntentMigrator:
             ),
         )
 
-    def plan(
+    def _plan_locked(
         self,
         *,
         recorded_at: datetime,
@@ -341,7 +358,7 @@ class LegacyIntentMigrator:
         manager = self._manager()
         legacy = self._legacy_nodes(manager)
         document_index = self._document_title_index()
-        source_hash = _sha256(self._source_bytes())
+        source_hash = self._dag_content_sha256(manager)
         items = []
         for node in legacy:
             intent = self._compile_intent(
@@ -377,6 +394,22 @@ class LegacyIntentMigrator:
         plan["plan_sha256"] = _sha256(_canonical_json(plan))
         return plan
 
+    def plan(
+        self,
+        *,
+        recorded_at: datetime,
+        actor: str,
+        generator_version: str,
+    ) -> dict[str, Any]:
+        """Compile a coherent plan while excluding concurrent DAG writers."""
+
+        with dag_file_lock(self.dag_path):
+            return self._plan_locked(
+                recorded_at=recorded_at,
+                actor=actor,
+                generator_version=generator_version,
+            )
+
     @staticmethod
     def _validate_plan_digest(plan: dict[str, Any]) -> None:
         supplied = plan.get("plan_sha256")
@@ -398,19 +431,13 @@ class LegacyIntentMigrator:
                 "migration plan does not target the canonical Intention DAG"
             )
 
-        lock = FileLock(
-            self.dag_path.parent / f".{self.dag_path.name}.lock",
-            timeout=10,
-        )
-        with lock:
-            before = self._source_bytes()
-            before_hash = _sha256(before)
+        with dag_file_lock(self.dag_path):
+            manager = self._manager()
+            before_hash = self._dag_content_sha256(manager)
             if before_hash != source.get("sha256"):
                 raise ValueError(
                     "stale migration plan: canonical Intention DAG has changed"
                 )
-
-            manager = self._manager()
             try:
                 generated_at = datetime.fromisoformat(plan["generated_at"])
                 actor = plan["actor"]
@@ -419,7 +446,7 @@ class LegacyIntentMigrator:
                 raise ValueError(
                     "migration plan compiler inputs are invalid"
                 ) from error
-            expected_plan = self.plan(
+            expected_plan = self._plan_locked(
                 recorded_at=generated_at,
                 actor=actor,
                 generator_version=generator_version,
@@ -458,9 +485,9 @@ class LegacyIntentMigrator:
             for node, intent in validated:
                 manager.update_node(node.id, intent=intent)
             manager.validate_intent_ir(require_all=True)
-            manager.save(str(self.dag_path))
+            manager.save(str(guarded_dag_path(self.dag_path)))
 
-            after_hash = _sha256(self._source_bytes())
+            after_hash = self._dag_content_sha256(manager)
             return {
                 "schema_version": MIGRATION_SCHEMA_VERSION,
                 "plan_sha256": plan["plan_sha256"],

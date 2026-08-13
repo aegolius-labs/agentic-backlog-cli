@@ -1,0 +1,72 @@
+"""Serialized mutation helpers for canonical DAG files."""
+
+import os
+import stat
+from collections.abc import Callable
+from contextlib import contextmanager
+from pathlib import Path
+from typing import Iterator, TypeVar
+
+from filelock import FileLock
+
+from .dag_manager import DAGManager
+
+T = TypeVar("T")
+
+
+def _is_link_like(path: Path) -> bool:
+    if path.is_symlink():
+        return True
+    attributes = getattr(os.lstat(path), "st_file_attributes", 0)
+    return bool(attributes & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0))
+
+
+def guarded_dag_path(
+    filepath: str | Path,
+    *,
+    create_parent: bool = False,
+) -> Path:
+    """Return one absolute, non-following path after rejecting redirection."""
+
+    dag_path = Path(os.path.abspath(os.fspath(filepath)))
+    for parent in reversed(dag_path.parents):
+        if os.path.lexists(parent):
+            if _is_link_like(parent) or not parent.is_dir():
+                raise ValueError(f"DAG parent must be a real directory: {parent}")
+        elif create_parent:
+            parent.mkdir()
+        else:
+            raise ValueError(f"DAG parent does not exist: {parent}")
+    if os.path.lexists(dag_path) and (
+        _is_link_like(dag_path) or not dag_path.is_file()
+    ):
+        raise ValueError(f"DAG path must be a regular file: {dag_path}")
+    return dag_path
+
+
+@contextmanager
+def dag_file_lock(filepath: str | Path) -> Iterator[Path]:
+    """Lock one exact non-following DAG path and revalidate it under lock."""
+
+    dag_path = guarded_dag_path(filepath, create_parent=True)
+    lock_path = guarded_dag_path(
+        dag_path.parent / f".{dag_path.name}.lock",
+        create_parent=True,
+    )
+    with FileLock(lock_path, timeout=10):
+        yield guarded_dag_path(dag_path)
+
+
+def mutate_dag_file(
+    filepath: str | Path,
+    mutation: Callable[[DAGManager], T],
+) -> T:
+    """Load, mutate, validate through the callback, and atomically save under one lock."""
+
+    with dag_file_lock(filepath) as dag_path:
+        guarded_dag_path(dag_path)
+        manager = DAGManager.load(str(dag_path))
+        result = mutation(manager)
+        guarded_dag_path(dag_path)
+        manager.save(str(dag_path))
+        return result

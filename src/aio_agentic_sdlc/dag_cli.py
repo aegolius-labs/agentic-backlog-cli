@@ -8,6 +8,11 @@ import click
 
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.dag_models import Edge, EdgeType, Node, NodeType
+from aio_agentic_sdlc.dag_store import (
+    dag_file_lock,
+    guarded_dag_path,
+    mutate_dag_file,
+)
 from aio_agentic_sdlc.diffing_engine import DiffingEngine, DiffPolicy
 from aio_agentic_sdlc.intent_ir import IntentIR
 from aio_agentic_sdlc.intent_migration import LegacyIntentMigrator
@@ -324,12 +329,22 @@ def intent_apply_migration(project_path, plan_file, output):
             plan = json.load(handle)
         result = LegacyIntentMigrator(project_path).apply(plan)
         if output:
-            _write_intent_migration_artifact(
-                result,
-                output,
-                project_path,
-                extra_protected_paths=(plan_file,),
-            )
+            try:
+                _write_intent_migration_artifact(
+                    result,
+                    output,
+                    project_path,
+                    extra_protected_paths=(plan_file,),
+                )
+            except Exception as error:
+                click.secho(
+                    "Legacy Intent IR migration committed successfully, but result "
+                    f"evidence could not be saved to {output}: {error}",
+                    err=True,
+                    fg="yellow",
+                )
+                click.echo(json.dumps(result, indent=2))
+                return
             click.echo(f"Legacy Intent IR migration result saved to {output}.")
         else:
             click.echo(json.dumps(result, indent=2))
@@ -550,9 +565,10 @@ def reconcile(intention, reality, max_items, max_candidates, output):
 def generate_reality(dir, system, output):
     """Generates a Reality DAG by statically analyzing source code in the given directory."""
     try:
-        generator = RealityDAGGenerator(root_dir=dir, system_name=system)
-        reality_dag = generator.generate()
-        reality_dag.save(output)
+        with dag_file_lock(output) as guarded_output:
+            generator = RealityDAGGenerator(root_dir=dir, system_name=system)
+            reality_dag = generator.generate()
+            reality_dag.save(str(guarded_dag_path(guarded_output)))
         click.echo(f"Reality DAG generated and saved to {output}.")
     except Exception as e:
         click.secho(f"Error generating reality DAG: {str(e)}", err=True, fg="red")
@@ -585,7 +601,6 @@ def node():
 def node_add(file, id, type, name, domain, description):
     """Add a new node."""
     try:
-        manager = DAGManager.load(file)
         node_obj = Node(
             id=id,
             type=NodeType(type),
@@ -593,8 +608,7 @@ def node_add(file, id, type, name, domain, description):
             domain=domain,
             description=description,
         )
-        manager.add_node(node_obj)
-        manager.save(file)
+        mutate_dag_file(file, lambda manager: manager.add_node(node_obj))
         click.echo(f"Node '{id}' added successfully.")
     except Exception as e:
         click.secho(f"Error adding node: {str(e)}", err=True, fg="red")
@@ -615,9 +629,15 @@ def node_add(file, id, type, name, domain, description):
 def node_update(file, id, name, domain, description):
     """Update an existing node."""
     try:
-        manager = DAGManager.load(file)
-        manager.update_node(id, name=name, domain=domain, description=description)
-        manager.save(file)
+        mutate_dag_file(
+            file,
+            lambda manager: manager.update_node(
+                id,
+                name=name,
+                domain=domain,
+                description=description,
+            ),
+        )
         click.echo(f"Node '{id}' updated successfully.")
     except Exception as e:
         click.secho(f"Error updating node: {str(e)}", err=True, fg="red")
@@ -635,9 +655,7 @@ def node_update(file, id, name, domain, description):
 def node_remove(file, id):
     """Remove a node."""
     try:
-        manager = DAGManager.load(file)
-        manager.remove_node(id)
-        manager.save(file)
+        mutate_dag_file(file, lambda manager: manager.remove_node(id))
         click.echo(f"Node '{id}' removed successfully.")
     except Exception as e:
         click.secho(f"Error removing node: {str(e)}", err=True, fg="red")
@@ -708,12 +726,10 @@ def edge():
 def edge_add(file, source, target, type, description):
     """Add an edge."""
     try:
-        manager = DAGManager.load(file)
         edge_obj = Edge(
             source=source, target=target, type=EdgeType(type), description=description
         )
-        manager.add_edge(edge_obj)
-        manager.save(file)
+        mutate_dag_file(file, lambda manager: manager.add_edge(edge_obj))
         click.echo(f"Edge {source} -> {target} ({type}) added successfully.")
     except Exception as e:
         click.secho(f"Error adding edge: {str(e)}", err=True, fg="red")
@@ -738,9 +754,10 @@ def edge_add(file, source, target, type, description):
 def edge_remove(file, source, target, type):
     """Remove an edge."""
     try:
-        manager = DAGManager.load(file)
-        manager.remove_edge(source, target, EdgeType(type))
-        manager.save(file)
+        mutate_dag_file(
+            file,
+            lambda manager: manager.remove_edge(source, target, EdgeType(type)),
+        )
         click.echo(f"Edge {source} -> {target} ({type}) removed successfully.")
     except Exception as e:
         click.secho(f"Error removing edge: {str(e)}", err=True, fg="red")

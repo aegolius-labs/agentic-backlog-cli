@@ -254,6 +254,37 @@ def test_reality_generator_excludes_framework_state_directories(tmp_path):
     assert "ExcludedFrameworkState" not in names
 
 
+def test_reality_generator_excludes_reproducibility_noise_directories(tmp_path):
+    (tmp_path / "source.py").write_text(
+        "class IncludedSource:\n    pass\n",
+        encoding="utf-8",
+    )
+    for ignored_directory in (
+        "dist",
+        "build",
+        "node_modules",
+        ".pytest_cache",
+        "package.egg-info",
+    ):
+        ignored_path = tmp_path / ignored_directory
+        ignored_path.mkdir()
+        (ignored_path / "duplicate.py").write_text(
+            "class IgnoredBuildDuplicate:\n    pass\n",
+            encoding="utf-8",
+        )
+
+    before = RealityDAGGenerator(str(tmp_path), "Noise exclusion test").generate()
+    (tmp_path / "dist" / "second.py").write_text(
+        "class AnotherIgnoredDuplicate:\n    pass\n",
+        encoding="utf-8",
+    )
+    after = RealityDAGGenerator(str(tmp_path), "Noise exclusion test").generate()
+
+    assert before.nodes == after.nodes
+    assert before.edges == after.edges
+    assert "IgnoredBuildDuplicate" not in {node.name for node in after.nodes.values()}
+
+
 def test_reality_generator_parses_project_source_without_native_crash():
     project_root = Path(__file__).resolve().parents[1]
     command = (

@@ -502,9 +502,14 @@ def migrate_state_cmd(args):
 
 def migrate_ids_cmd(args):
     import os
+    import tempfile
     import uuid
 
     import yaml
+
+    from .dag_manager import DAGManager
+    from .dag_models import Edge, Metadata, Node
+    from .dag_store import dag_file_lock
 
     id_map = {}
 
@@ -512,35 +517,52 @@ def migrate_ids_cmd(args):
         if not os.path.exists(filepath):
             return
         print(f"Migrating {filepath}...")
-        with open(filepath, "r", encoding="utf-8") as f:
-            data = yaml.safe_load(f) or {}
+        target = os.path.abspath(filepath)
+        with dag_file_lock(target) as guarded_target:
+            target = str(guarded_target)
+            with open(target, "r", encoding="utf-8") as handle:
+                data = yaml.safe_load(handle) or {}
+            nodes = data.get("nodes", [])
+            edges = data.get("edges", [])
 
-        nodes = data.get("nodes", [])
-        edges = data.get("edges", [])
+            migrated_count = 0
+            for node in nodes:
+                old_id = str(node.get("id", ""))
+                try:
+                    uuid.UUID(old_id)
+                except ValueError:
+                    if old_id not in id_map:
+                        id_map[old_id] = str(uuid.uuid4())
+                    node["id"] = id_map[old_id]
+                    migrated_count += 1
 
-        migrated_count = 0
-        for node in nodes:
-            old_id = str(node.get("id", ""))
+            for edge in edges:
+                old_source = str(edge.get("source", ""))
+                old_target = str(edge.get("target", ""))
+                if old_source in id_map:
+                    edge["source"] = id_map[old_source]
+                if old_target in id_map:
+                    edge["target"] = id_map[old_target]
+
+            descriptor, temporary = tempfile.mkstemp(
+                dir=os.path.dirname(target) or ".",
+                prefix=f".{os.path.basename(target)}.",
+                suffix=".tmp",
+            )
             try:
-                # check if already a valid UUID
-                uuid.UUID(old_id)
-            except ValueError:
-                # generate a new UUID
-                if old_id not in id_map:
-                    id_map[old_id] = str(uuid.uuid4())
-                node["id"] = id_map[old_id]
-                migrated_count += 1
-
-        for edge in edges:
-            old_source = str(edge.get("source", ""))
-            old_target = str(edge.get("target", ""))
-            if old_source in id_map:
-                edge["source"] = id_map[old_source]
-            if old_target in id_map:
-                edge["target"] = id_map[old_target]
-
-        with open(filepath, "w", encoding="utf-8") as f:
-            yaml.dump(data, f, sort_keys=False, default_flow_style=False)
+                with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+                    yaml.dump(data, handle, sort_keys=False, default_flow_style=False)
+                    handle.flush()
+                    os.fsync(handle.fileno())
+                DAGManager(
+                    metadata=Metadata(name="ID migration validation", version="1.0"),
+                    nodes=[Node.model_validate(node) for node in nodes],
+                    edges=[Edge.model_validate(edge) for edge in edges],
+                ).validate()
+                os.replace(temporary, target)
+            finally:
+                if os.path.exists(temporary):
+                    os.unlink(temporary)
         print(f"Migrated {migrated_count} node IDs in {filepath}.")
 
     migrate_file(INTENTION_DAG_FILE)

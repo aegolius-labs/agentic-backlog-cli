@@ -1,5 +1,6 @@
 import hashlib
 import json
+import threading
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -84,6 +85,96 @@ def test_inventory_is_bounded_and_reports_complete_coverage(tmp_path):
         "truncated": True,
     }
     assert report["items"] == []
+
+
+def test_content_identity_and_plan_are_equal_for_lf_and_crlf_dags(tmp_path):
+    lf_root = tmp_path / "lf"
+    crlf_root = tmp_path / "crlf"
+    lf_path = _write_project(lf_root)
+    crlf_path = _write_project(crlf_root)
+    crlf_path.write_bytes(crlf_path.read_bytes().replace(b"\n", b"\r\n"))
+
+    lf_migrator = LegacyIntentMigrator(lf_root)
+    crlf_migrator = LegacyIntentMigrator(crlf_root)
+    lf_plan = _plan(lf_migrator)
+    crlf_plan = _plan(crlf_migrator)
+
+    assert lf_path.read_bytes() != crlf_path.read_bytes()
+    assert lf_migrator.inventory()["source"] == crlf_migrator.inventory()["source"]
+    assert lf_plan == crlf_plan
+    assert lf_migrator.apply(lf_plan) == crlf_migrator.apply(crlf_plan)
+
+
+@pytest.mark.parametrize("operation", ["inventory", "plan"])
+def test_read_artifacts_serialize_with_structural_writers(
+    tmp_path,
+    monkeypatch,
+    operation,
+):
+    dag_path = _write_project(tmp_path)
+    migrator = LegacyIntentMigrator(tmp_path)
+    original_legacy_nodes = LegacyIntentMigrator._legacy_nodes
+    original_load = DAGManager.load
+    reader_has_snapshot = threading.Event()
+    release_reader = threading.Event()
+    structural_loaded = threading.Event()
+    outcomes = {}
+
+    def blocked_legacy_nodes(manager):
+        if threading.current_thread().name == "snapshot-reader":
+            reader_has_snapshot.set()
+            assert release_reader.wait(timeout=5)
+        return original_legacy_nodes(manager)
+
+    def observed_load(filepath):
+        if threading.current_thread().name == "structural-writer":
+            structural_loaded.set()
+        return original_load(filepath)
+
+    monkeypatch.setattr(
+        LegacyIntentMigrator,
+        "_legacy_nodes",
+        staticmethod(blocked_legacy_nodes),
+    )
+    monkeypatch.setattr(DAGManager, "load", staticmethod(observed_load))
+
+    def read_artifact():
+        if operation == "inventory":
+            outcomes["artifact"] = migrator.inventory()
+        else:
+            outcomes["artifact"] = _plan(migrator)
+
+    def update_node():
+        outcomes["structural"] = CliRunner().invoke(
+            cli,
+            [
+                "node",
+                "update",
+                "--file",
+                str(dag_path),
+                "--id",
+                LEGACY_ID,
+                "--description",
+                "Concurrent description.",
+            ],
+        )
+
+    reader_thread = threading.Thread(target=read_artifact, name="snapshot-reader")
+    writer_thread = threading.Thread(target=update_node, name="structural-writer")
+    reader_thread.start()
+    assert reader_has_snapshot.wait(timeout=5)
+    writer_thread.start()
+
+    assert not structural_loaded.wait(timeout=0.2)
+    release_reader.set()
+    reader_thread.join(timeout=5)
+    writer_thread.join(timeout=5)
+
+    assert not reader_thread.is_alive()
+    assert not writer_thread.is_alive()
+    assert outcomes["structural"].exit_code == 0, outcomes["structural"].output
+    current = migrator.inventory()["source"]["sha256"]
+    assert outcomes["artifact"]["source"]["sha256"] != current
 
 
 def test_plan_is_deterministic_and_keeps_uncertain_intent_review_required(tmp_path):
@@ -220,6 +311,105 @@ def test_apply_preserves_canonical_dag_when_atomic_replace_fails(tmp_path, monke
     assert dag_path.read_bytes() == before
 
 
+@pytest.mark.parametrize("operation", ["node", "edge"])
+def test_migration_serializes_with_structural_cli_writers(
+    tmp_path,
+    monkeypatch,
+    operation,
+):
+    dag_path = _write_project(tmp_path)
+    migrator = LegacyIntentMigrator(tmp_path)
+    plan = _plan(migrator)
+    original_load = DAGManager.load
+    original_save = DAGManager.save
+    migration_at_save = threading.Event()
+    release_migration = threading.Event()
+    structural_loaded = threading.Event()
+    outcomes = {}
+
+    def observed_load(filepath):
+        if threading.current_thread().name == "structural-writer":
+            structural_loaded.set()
+        return original_load(filepath)
+
+    def blocked_save(manager, filepath):
+        if threading.current_thread().name == "migration-writer":
+            migration_at_save.set()
+            assert release_migration.wait(timeout=5)
+        return original_save(manager, filepath)
+
+    monkeypatch.setattr(DAGManager, "load", staticmethod(observed_load))
+    monkeypatch.setattr(DAGManager, "save", blocked_save)
+
+    def run_migration():
+        try:
+            outcomes["migration"] = migrator.apply(plan)
+        except Exception as error:  # pragma: no cover - assertion reports the error
+            outcomes["migration"] = error
+
+    def run_structural_command():
+        arguments = [
+            "node",
+            "update",
+            "--file",
+            str(dag_path),
+            "--id",
+            LEGACY_ID,
+            "--description",
+            "Updated after serialized migration.",
+        ]
+        if operation == "edge":
+            arguments = [
+                "edge",
+                "add",
+                "--file",
+                str(dag_path),
+                "--source",
+                LEGACY_ID,
+                "--target",
+                EXISTING_ID,
+                "--type",
+                "reads",
+            ]
+        outcomes["structural"] = CliRunner().invoke(cli, arguments)
+
+    migration_thread = threading.Thread(
+        target=run_migration,
+        name="migration-writer",
+    )
+    structural_thread = threading.Thread(
+        target=run_structural_command,
+        name="structural-writer",
+    )
+    migration_thread.start()
+    assert migration_at_save.wait(timeout=5)
+    structural_thread.start()
+
+    assert not structural_loaded.wait(timeout=0.2)
+    release_migration.set()
+    migration_thread.join(timeout=5)
+    structural_thread.join(timeout=5)
+
+    assert not migration_thread.is_alive()
+    assert not structural_thread.is_alive()
+    assert isinstance(outcomes["migration"], dict), outcomes["migration"]
+    assert outcomes["structural"].exit_code == 0, outcomes["structural"].output
+    after = DAGManager.load(str(dag_path))
+    assert after.get_node(LEGACY_ID).intent is not None
+    if operation == "node":
+        assert (
+            after.get_node(LEGACY_ID).description
+            == "Updated after serialized migration."
+        )
+    else:
+        assert any(
+            edge.source == LEGACY_ID
+            and edge.target == EXISTING_ID
+            and edge.type == EdgeType.READS
+            for edge in after.edges
+        )
+
+
 def test_cli_inventory_plan_and_apply_complete_strict_migration(tmp_path):
     dag_path = _write_project(tmp_path)
     changes = tmp_path / ".aio-agentic-sdlc" / "changes" / "migration"
@@ -284,6 +474,48 @@ def test_cli_inventory_plan_and_apply_complete_strict_migration(tmp_path):
     assert (
         json.loads(result_path.read_text(encoding="utf-8"))["strict_validation"] is True
     )
+    DAGManager.load(str(dag_path)).validate_intent_ir(require_all=True)
+
+
+def test_cli_reports_committed_migration_when_result_write_fails(
+    tmp_path,
+    monkeypatch,
+):
+    dag_path = _write_project(tmp_path)
+    plan_path = tmp_path / "migration-plan.json"
+    result_path = tmp_path / "migration-result.json"
+    plan_path.write_text(
+        json.dumps(_plan(LegacyIntentMigrator(tmp_path))),
+        encoding="utf-8",
+    )
+
+    def fail_result_write(*_args, **_kwargs):
+        raise OSError("simulated result persistence failure")
+
+    monkeypatch.setattr(
+        "aio_agentic_sdlc.dag_cli._write_intent_migration_artifact",
+        fail_result_write,
+    )
+
+    result = CliRunner().invoke(
+        cli,
+        [
+            "intent",
+            "apply-migration",
+            "--project-path",
+            str(tmp_path),
+            "--plan-file",
+            str(plan_path),
+            "--output",
+            str(result_path),
+        ],
+    )
+
+    assert result.exit_code == 0, result.output
+    assert "migration committed successfully" in result.output
+    assert "result evidence could not be saved" in result.output
+    assert '"migrated_nodes": 1' in result.output
+    assert not result_path.exists()
     DAGManager.load(str(dag_path)).validate_intent_ir(require_all=True)
 
 

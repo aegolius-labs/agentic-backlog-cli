@@ -138,7 +138,10 @@ The deterministic compiler preserves exact legacy descriptions and relationship 
 does not infer semantic completeness: every migrated payload retains an open ambiguity and the
 `review_required` approval state. Apply is all-or-nothing and rejects stale plans or protected
 output paths before changing canonical state. It also recompiles the expected plan, so editing and
-re-digesting a valid payload cannot bypass the deterministic compiler.
+re-digesting a valid payload cannot bypass the deterministic compiler. Source identities hash the
+validated DAG content model rather than checkout bytes, so equivalent LF and CRLF files share one
+identity. Inventory, planning, migration, single-node Intent updates, structural DAG commands, and
+legacy ID migration coordinate on the same per-DAG lock.
 
 Reconcile identity evidence before creating an execution backlog:
 

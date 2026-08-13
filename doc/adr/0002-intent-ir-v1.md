@@ -44,6 +44,11 @@ Apply recompiles and validates the complete plan under the canonical DAG lock be
 replacement; stale, incomplete, modified, re-digested, or mechanically approved plans fail without
 mutation.
 
+Source and before/after identities hash the validated DAG content model rather than YAML bytes, so
+Git line-ending conversion cannot invalidate equivalent state. Inventory and planning also hold the
+shared per-DAG lock, as do supported Intent, structural, and legacy-ID writers. This prevents
+internally incoherent evidence and stale writers from replacing a completed migration.
+
 ## Consequences
 
 - Human statements and imported sources remain traceable through subsequent agent transformations.
