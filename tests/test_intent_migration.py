@@ -1,5 +1,8 @@
 import hashlib
 import json
+import os
+import shutil
+import subprocess
 import threading
 from datetime import datetime, timezone
 from pathlib import Path
@@ -224,6 +227,38 @@ def test_plan_bounds_duplicate_document_evidence_without_hiding_omissions(tmp_pa
         "2 additional exact-title documents" in ambiguity["question"]
         for ambiguity in item["ambiguities"]
     )
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Windows junction behavior")
+@pytest.mark.parametrize("nested", [False, True])
+def test_plan_rejects_external_document_junctions(tmp_path, nested):
+    _write_project(tmp_path)
+    specs = tmp_path / ".aio-agentic-sdlc" / "specs"
+    external = tmp_path.parent / f"{tmp_path.name}-external-documents-{nested}"
+    external.mkdir()
+    (external / "injected.md").write_text(
+        "# Legacy Worker\n\nExternal mutable intent.\n",
+        encoding="utf-8",
+    )
+    junction = specs / "external" if nested else specs
+    if not nested:
+        shutil.rmtree(specs)
+    completed = subprocess.run(
+        ["cmd", "/c", "mklink", "/J", str(junction), str(external)],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if completed.returncode != 0:
+        shutil.rmtree(external)
+        pytest.skip(f"junction creation unavailable: {completed.stderr}")
+    try:
+        assert not junction.is_symlink()
+        with pytest.raises(ValueError, match="real directory"):
+            _plan(LegacyIntentMigrator(tmp_path))
+    finally:
+        os.rmdir(junction)
+        shutil.rmtree(external)
 
 
 def test_apply_migrates_all_legacy_nodes_atomically_and_preserves_graph(tmp_path):

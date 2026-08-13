@@ -44,6 +44,18 @@ def guarded_file_path(
     return dag_path
 
 
+def guarded_directory_path(directory: str | Path) -> Path:
+    """Return an absolute real directory after rejecting reparse redirection."""
+
+    path = Path(os.path.abspath(os.fspath(directory)))
+    for candidate in (*reversed(path.parents), path):
+        if not os.path.lexists(candidate):
+            raise ValueError(f"Directory does not exist: {candidate}")
+        if _is_link_like(candidate) or not candidate.is_dir():
+            raise ValueError(f"Directory must be a real directory: {candidate}")
+    return path
+
+
 def guarded_dag_path(
     filepath: str | Path,
     *,

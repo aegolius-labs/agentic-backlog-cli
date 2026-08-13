@@ -436,6 +436,10 @@ nodes:
   type: component
   name: guarded_file_path
   description: Return one absolute, non-following path after rejecting redirection.
+- id: 4fd19d48-beb7-5cba-a826-a0ce4157fafd
+  type: component
+  name: guarded_directory_path
+  description: Return an absolute real directory after rejecting reparse redirection.
 - id: aaf238cb-a903-5932-9ab9-5f917d876eb3
   type: component
   name: guarded_dag_path
@@ -1616,6 +1620,10 @@ nodes:
   type: component
   name: test_plan_bounds_duplicate_document_evidence_without_hiding_omissions
   description: Function test_plan_bounds_duplicate_document_evidence_without_hiding_omissions
+- id: 50d34151-56e9-561c-bc5d-40bf969ac3f7
+  type: component
+  name: test_plan_rejects_external_document_junctions
+  description: Function test_plan_rejects_external_document_junctions
 - id: 5e0e0a26-a066-5ccc-9b30-62af6a994be4
   type: component
   name: test_apply_migrates_all_legacy_nodes_atomically_and_preserves_graph
@@ -2688,6 +2696,9 @@ edges:
   target: af950be8-5c9c-5591-9f1a-31d66d4aa96f
   type: contains
 - source: 2f396232-c75e-5a6d-b04b-0fa5f940313b
+  target: 4fd19d48-beb7-5cba-a826-a0ce4157fafd
+  type: contains
+- source: 2f396232-c75e-5a6d-b04b-0fa5f940313b
   target: aaf238cb-a903-5932-9ab9-5f917d876eb3
   type: contains
 - source: 2f396232-c75e-5a6d-b04b-0fa5f940313b
@@ -3550,6 +3561,9 @@ edges:
   type: contains
 - source: 08eab625-a0fb-5b62-9349-bf3b094bbd01
   target: 9defe927-fcac-5e42-9bdc-fed5ddaa9e34
+  type: contains
+- source: 08eab625-a0fb-5b62-9349-bf3b094bbd01
+  target: 50d34151-56e9-561c-bc5d-40bf969ac3f7
   type: contains
 - source: 08eab625-a0fb-5b62-9349-bf3b094bbd01
   target: 5e0e0a26-a066-5ccc-9b30-62af6a994be4

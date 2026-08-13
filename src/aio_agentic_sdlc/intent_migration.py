@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 from datetime import datetime
 from pathlib import Path
@@ -11,7 +12,12 @@ from typing import Any
 
 from .dag_manager import DAGManager
 from .dag_models import Edge, Node
-from .dag_store import dag_file_lock, guarded_dag_path
+from .dag_store import (
+    dag_file_lock,
+    guarded_dag_path,
+    guarded_directory_path,
+    guarded_file_path,
+)
 from .intent_ir import (
     AcceptanceCriterion,
     Ambiguity,
@@ -167,13 +173,19 @@ class LegacyIntentMigrator:
             root = self.project_root / directory
             if not root.exists():
                 continue
-            if root.is_symlink() or not root.is_dir():
-                raise ValueError(f"Legacy document directory is not safe: {root}")
-            for document in sorted(root.rglob("*.md")):
-                if document.is_symlink() or not document.is_file():
-                    raise ValueError(
-                        f"Legacy source document is not a regular file: {document}"
-                    )
+            root = guarded_directory_path(root)
+            documents = []
+            for current_root, directories, filenames in os.walk(root):
+                current = guarded_directory_path(current_root)
+                safe_directories = []
+                for child in sorted(directories):
+                    guarded_directory_path(current / child)
+                    safe_directories.append(child)
+                directories[:] = safe_directories
+                for filename in sorted(filenames):
+                    if filename.casefold().endswith(".md"):
+                        documents.append(guarded_file_path(current / filename))
+            for document in sorted(documents):
                 title_record = self._document_title(
                     document.read_text(encoding="utf-8").splitlines()
                 )
