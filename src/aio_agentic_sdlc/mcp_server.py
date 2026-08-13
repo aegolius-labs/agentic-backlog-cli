@@ -23,6 +23,12 @@ from .intent_store import create_intent_node_file, update_intent_file
 from .mapping import MappingApproval, MappingEngine
 from .reconciliation import ReconciliationEngine
 from .templating_engine import generate_document as generate_document_from_template
+from .workspace import (
+    CHANGES_DIR,
+    INTENTION_DAG_FILE,
+    REALITY_DAG_FILE,
+    SPECS_DIR,
+)
 
 # Create the MCP server instance
 mcp = FastMCP("Agentic Backlog")
@@ -234,12 +240,12 @@ def generate_document(
         ..., description="JSON string containing the data to populate the template"
     ),
     output_filename: str = Field(..., description="Name of the output file"),
-    target_dir: str = Field(
-        ".", description="Directory where the document will be saved"
-    ),
-    project_path: str = Field(
-        ".", description="Absolute path to the project directory"
-    ),
+    target_dir: Annotated[
+        str, Field(description="Directory where the document will be saved")
+    ] = CHANGES_DIR,
+    project_path: Annotated[
+        str, Field(description="Absolute path to the project directory")
+    ] = ".",
 ) -> str:
     """Generate a document from a template using the provided data."""
     try:
@@ -275,7 +281,6 @@ def generate_document(
             template_name,
             data,
             output_path,
-            templates_dir=os.path.join(project_root, "templates"),
         )
         return f"Document successfully generated at {output_path}."
     except Exception as e:
@@ -295,7 +300,7 @@ def check_duplicate_prd(
         description="Cosine distance threshold (lower = more strict similarity, 0.2 means 80% similar)",
     ),
 ) -> str:
-    """Check if the proposed PRD content is semantically similar to any existing PRDs in specs/."""
+    """Check if a proposed PRD is similar to canonical project specs."""
     try:
         from .semantic_dedup import find_duplicate_prds
 
@@ -321,13 +326,13 @@ def check_duplicate_prd(
 def validate_traceability(
     project_path: str = Field(".", description="Absolute path to the project directory")
 ) -> str:
-    """Validate that the specs/ directory aligns with the mathematical DAGs via GUID frontmatter."""
+    """Validate that canonical specs align with both DAGs via GUID frontmatter."""
     try:
         from .core import TraceabilityValidator
 
-        intention_path = os.path.join(project_path, "intention-dag.yaml")
-        reality_path = os.path.join(project_path, "reality-dag.yaml")
-        specs_dir = os.path.join(project_path, "specs")
+        intention_path = os.path.join(project_path, INTENTION_DAG_FILE)
+        reality_path = os.path.join(project_path, REALITY_DAG_FILE)
+        specs_dir = os.path.join(project_path, SPECS_DIR)
         code_dir = os.path.join(project_path, "src")
         validator = TraceabilityValidator(
             intention_path=intention_path,
@@ -367,8 +372,8 @@ def reconcile_dags(
 
     try:
         project_root = os.path.abspath(project_path)
-        intention = DAGManager.load(os.path.join(project_root, "intention-dag.yaml"))
-        reality = DAGManager.load(os.path.join(project_root, "reality-dag.yaml"))
+        intention = DAGManager.load(os.path.join(project_root, INTENTION_DAG_FILE))
+        reality = DAGManager.load(os.path.join(project_root, REALITY_DAG_FILE))
         report = ReconciliationEngine(intention, reality).analyze(
             max_items=max_items,
             max_candidates=max_candidates,
@@ -388,9 +393,7 @@ def review_mapping(
     """Return fresh source-bound evidence for one mapping decision."""
 
     try:
-        intention_path = os.path.join(
-            os.path.abspath(project_path), "intention-dag.yaml"
-        )
+        intention_path = os.path.join(os.path.abspath(project_path), INTENTION_DAG_FILE)
         report = MappingEngine(project_path, intention_path).review(intent_id)
         return json.dumps(report, indent=2)
     except Exception as e:
@@ -418,9 +421,7 @@ def approve_mapping(
     """Approve one fresh candidate and atomically persist verified source evidence."""
 
     try:
-        intention_path = os.path.join(
-            os.path.abspath(project_path), "intention-dag.yaml"
-        )
+        intention_path = os.path.join(os.path.abspath(project_path), INTENTION_DAG_FILE)
         approval = MappingApproval.model_validate(
             {
                 "approved_by": approved_by,
@@ -454,9 +455,7 @@ def set_intent(
 ) -> str:
     """Create or revise one Intent IR payload with optimistic revision protection."""
     try:
-        intention_path = os.path.join(
-            os.path.abspath(project_path), "intention-dag.yaml"
-        )
+        intention_path = os.path.join(os.path.abspath(project_path), INTENTION_DAG_FILE)
         intent = IntentIR.model_validate(json.loads(payload_json))
         revision = update_intent_file(
             intention_path,
@@ -485,9 +484,7 @@ def create_intent_node(
 ) -> str:
     """Atomically create a canonical node with its initial Intent IR payload."""
     try:
-        intention_path = os.path.join(
-            os.path.abspath(project_path), "intention-dag.yaml"
-        )
+        intention_path = os.path.join(os.path.abspath(project_path), INTENTION_DAG_FILE)
         node = Node(
             id=node_id,
             type=NodeType(node_type),
@@ -511,9 +508,7 @@ def validate_intent(
 ) -> str:
     """Validate Intent IR payloads and coverage in the canonical Intention DAG."""
     try:
-        intention_path = os.path.join(
-            os.path.abspath(project_path), "intention-dag.yaml"
-        )
+        intention_path = os.path.join(os.path.abspath(project_path), INTENTION_DAG_FILE)
         manager = DAGManager.load(intention_path)
         manager.validate_intent_ir(require_all=require_all)
         return "Intent IR validation passed."
@@ -530,9 +525,7 @@ def review_intent(
 ) -> str:
     """Render a human-readable review of canonical Intent IR payloads."""
     try:
-        intention_path = os.path.join(
-            os.path.abspath(project_path), "intention-dag.yaml"
-        )
+        intention_path = os.path.join(os.path.abspath(project_path), INTENTION_DAG_FILE)
         return DAGManager.load(intention_path).render_intent_summary(node_id=node_id)
     except Exception as e:
         return f"Error reviewing Intent IR: {str(e)}"
@@ -547,22 +540,22 @@ def promote_spec(
         ".", description="Absolute path to the project directory"
     ),
 ) -> str:
-    """Move a validated micro-spec from changes/ to the canonical specs/ directory."""
+    """Move a validated micro-spec from changes to canonical specs."""
     try:
         import shutil
 
-        changes_dir = os.path.join(project_path, "changes")
-        specs_dir = os.path.join(project_path, "specs")
+        changes_dir = os.path.join(project_path, CHANGES_DIR)
+        specs_dir = os.path.join(project_path, SPECS_DIR)
         os.makedirs(specs_dir, exist_ok=True)
 
         src_path = os.path.join(changes_dir, feature_name)
         dst_path = os.path.join(specs_dir, feature_name)
 
         if not os.path.exists(src_path):
-            return f"Error: Spec '{feature_name}' not found in changes/ directory."
+            return f"Error: Spec '{feature_name}' not found in {CHANGES_DIR}/."
 
         shutil.move(src_path, dst_path)
-        return f"Successfully promoted spec '{feature_name}' to specs/."
+        return f"Successfully promoted spec '{feature_name}' to {SPECS_DIR}/."
     except Exception as e:
         return f"Error promoting spec: {str(e)}"
 
@@ -573,7 +566,7 @@ def generate_reality(
         ".", description="Absolute path to the project directory"
     ),
     output: str = Field(
-        "reality-dag.yaml", description="Output filename for the Reality DAG"
+        REALITY_DAG_FILE, description="Output filename for the Reality DAG"
     ),
     system: str = Field(
         "system_root", description="System root context for DAG generation"

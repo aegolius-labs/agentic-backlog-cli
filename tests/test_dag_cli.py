@@ -7,6 +7,7 @@ from click.testing import CliRunner
 from aio_agentic_sdlc.dag_cli import cli
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.dag_models import Edge, EdgeType, Metadata, Node, NodeType
+from aio_agentic_sdlc.workspace import INTENTION_DAG_FILE
 
 
 @pytest.fixture
@@ -315,11 +316,12 @@ def test_cli_mapping_review_and_approve_use_the_same_fresh_evidence(tmp_path):
     source_path = tmp_path / "src" / "archiver.py"
     source_path.parent.mkdir(parents=True)
     source_path.write_text("class PRDArchiver:\n    pass\n", encoding="utf-8")
+    (tmp_path / INTENTION_DAG_FILE).parent.mkdir(parents=True)
     DAGManager(
         Metadata(name="Mapping CLI", version="1.0"),
         [Node(id=intent_id, type=NodeType.COMPONENT, name="PRD Archiver")],
         [],
-    ).save(str(tmp_path / "intention-dag.yaml"))
+    ).save(str(tmp_path / INTENTION_DAG_FILE))
     runner = CliRunner()
 
     review_result = runner.invoke(

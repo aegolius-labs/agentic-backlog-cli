@@ -15,10 +15,12 @@ from aio_agentic_sdlc.mcp_server import (
     set_intent,
     validate_intent,
 )
+from aio_agentic_sdlc.workspace import INTENTION_DAG_FILE
 from tests.test_intent_ir import NODE_ID, _intent_ir
 
 
 def _write_legacy_dag(path):
+    path.parent.mkdir(parents=True, exist_ok=True)
     DAGManager(
         Metadata(name="Intent", version="1.0"),
         [Node(id=NODE_ID, type=NodeType.COMPONENT, name="Rate limiter")],
@@ -199,7 +201,7 @@ def test_intent_cli_creates_node_with_payload(tmp_path):
 
 
 def test_mcp_intent_tools_use_project_path_and_protected_file(tmp_path):
-    dag_path = tmp_path / "intention-dag.yaml"
+    dag_path = tmp_path / INTENTION_DAG_FILE
     _write_legacy_dag(dag_path)
 
     write_result = set_intent(
@@ -218,7 +220,8 @@ def test_mcp_intent_tools_use_project_path_and_protected_file(tmp_path):
 
 
 def test_mcp_create_intent_node_uses_canonical_project_dag(tmp_path):
-    dag_path = tmp_path / "intention-dag.yaml"
+    dag_path = tmp_path / INTENTION_DAG_FILE
+    dag_path.parent.mkdir(parents=True)
     DAGManager(Metadata(name="Intent", version="1.0"), [], []).save(str(dag_path))
 
     result = create_intent_node(
@@ -236,7 +239,7 @@ def test_mcp_create_intent_node_uses_canonical_project_dag(tmp_path):
 
 
 def test_mcp_set_intent_rejects_invalid_json_without_mutation(tmp_path):
-    dag_path = tmp_path / "intention-dag.yaml"
+    dag_path = tmp_path / INTENTION_DAG_FILE
     _write_legacy_dag(dag_path)
     before = dag_path.read_bytes()
 

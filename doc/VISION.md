@@ -14,6 +14,6 @@ The ultimate "North Star" for this project is to evolve beyond passive task trac
 ## Implications for Architecture
 
 - **In-House Graph Generation:** Relying on third-party tools (like `graphify`) is insufficient if their output cannot map cleanly to our semantic Intention DAG. Both sides of the equation must speak the same structural language.
-- **Local Persistence is Key:** The version-controlled `intention-dag.yaml` is the source of truth for project intent. The Reality DAG and execution backlog are local derivatives with explicitly narrower responsibilities.
+- **Local Persistence is Key:** The version-controlled `.aio-agentic-sdlc/intention-dag.yaml` is the source of truth for project intent. The Reality DAG and execution backlog are local derivatives with explicitly narrower responsibilities.
 - **Hierarchy & Relationships are Fundamental:** Hierarchical types and dependency relationships are not organizational conveniences—they are the critical structural edges required to compute an accurate diff between Intention and Reality.
 - **Remote Projections Are Future Work:** External tracker integrations are currently removed. If reintroduced, they must be one-way projections whose contents cannot override locally derived work.

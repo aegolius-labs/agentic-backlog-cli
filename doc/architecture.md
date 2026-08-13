@@ -1,12 +1,31 @@
-# Agentic Backlog Architecture
+# AIO Agentic SDLC Architecture
 
-This document describes the high-level architecture and data flow of the `aio-agentic-sdlc-cli` tool.
+This document describes the high-level architecture and data flow of the
+`aio-agentic-sdlc` framework.
 
 ## System Overview
 
 > **Note:** Please read [VISION.md](./VISION.md) to understand the foundational North-Star of this project—the Semantic Roadmap Graph—before making architectural changes.
 
 The CLI acts as a deterministic backlog manager using a 3-Dimensional matrix (Impact, Effort, Dependency) to calculate priority scores and topologically sort tasks. All framework state is local. External trackers are not authoritative and synchronization support is intentionally absent.
+
+## Repository layout
+
+The repository root contains only host-platform integration, source, tests, documentation,
+and build configuration. Framework-owned project artifacts share one parent.
+
+| Path | Responsibility |
+| --- | --- |
+| `AGENTS.md` | Repository instructions discovered by Codex from the workspace root. |
+| `.agents/` | Agent definitions, legacy rules, workflows, and marketplace metadata. |
+| `.codex/` | Repository-scoped Codex agent adapters. |
+| `.github/`, `.husky/` | CI and commit-hook integration. |
+| `plugins/` | Distributable Codex plugin. |
+| `src/`, `tests/`, `doc/` | Product code, verification, and durable documentation. |
+| `.aio-agentic-sdlc/` | Canonical DAGs, framework artifacts, and ignored local runtime state. |
+
+`AGENTS.md` must not be moved into `.agents/`: Codex assigns those paths different
+meanings, and repository instruction discovery depends on the root filename.
 
 ```mermaid
 graph TD
@@ -21,20 +40,18 @@ graph TD
     
     subgraph Local Persistence
         CLI --> IntentReview[Intent IR validation and review]
-        IntentReview --> Intent[(intention-dag.yaml)]
-        CLI --> Reality[(reality-dag.yaml)]
+        IntentReview --> Intent[(.aio-agentic-sdlc/intention-dag.yaml)]
+        CLI --> Reality[(.aio-agentic-sdlc/reality-dag.yaml)]
         Intent --> Reconcile[Evidence-gated reconciliation]
         Reality --> Reconcile
         Reconcile --> SafePlan[Bounded review plan]
         SafePlan --> ReadJSON
         CLI --> ReadJSON[load_backlog]
-        ReadJSON --> FileDB[(backlog.json)]
+        ReadJSON --> FileDB[(.aio-agentic-sdlc/backlog.json)]
         CLI --> Lock[Cross-process state lock]
         Lock --> WriteJSON[transactional save_backlog]
         WriteJSON --> FileDB
-        WriteJSON --> Audit[(.aio-sdlc/state-audit.jsonl)]
-        CLI --> BackupManager[_create_backup]
-        BackupManager --> BackupFiles[(Timestamped backups)]
+        WriteJSON --> Audit[(.aio-agentic-sdlc/state-audit.jsonl)]
     end
 
     Detect -->|Reads local environment| Workspace[Local Project Files]
@@ -52,11 +69,31 @@ User invokes a command (e.g., `add`, `update`, `prioritize`, `next`, `status`, `
 
 The local files have distinct responsibilities:
 
-- `intention-dag.yaml` is the durable, version-controlled source of truth for intended behavior and canonical GUIDs.
-- `reality-dag.yaml` is a regenerable observation of the repository. It is evidence, not intent.
-- `backlog.json` is a local, gitignored execution queue derived from the difference between the two DAGs. CLI and MCP backlog mutations operate only on this file.
-- `.aio-sdlc/state-audit.jsonl` is an append-only, gitignored transaction journal used to reconcile interrupted replacements.
+- `.aio-agentic-sdlc/intention-dag.yaml` is the durable, version-controlled source
+  of truth for intended behavior and canonical GUIDs.
+- `.aio-agentic-sdlc/reality-dag.yaml` is a regenerable observation of the repository.
+  It is evidence, not intent.
+- `.aio-agentic-sdlc/backlog.json` is a local, gitignored execution queue derived
+  from the difference between the two DAGs. CLI and MCP backlog mutations operate
+  only on this file.
+- `.aio-agentic-sdlc/state-audit.jsonl` is an append-only, gitignored transaction
+  journal used to reconcile interrupted replacements.
+- `.aio-agentic-sdlc/config.json` stores project-local hierarchy and validation
+  configuration.
+- `.aio-agentic-sdlc/{inbox,changes,specs,archive,research-spikes}/` contains the
+  framework's project artifacts instead of scattering them through the repository root.
 - `.agentic-backlog.json` is a retired generated artifact. Runtime code does not read it; `aio-sdlc migrate-state --retire-legacy` preserves a hash-named copy under ignored operational state before removing it.
+
+Projects upgrading from the former scattered layout must run `aio-sdlc migrate-state`.
+The migration acquires dedicated workspace, state, and mapping locks, validates all recognized legacy inputs before
+moving any of them, and records source/target hashes in `state-audit.jsonl`. It recognizes the old
+root backlog, config, Intention and Reality DAG filenames plus `.aio-sdlc` audit/legacy state. The
+retired GitHub configuration is stripped while local hierarchy and validation settings are
+preserved. A symlink, invalid envelope, or old/new path conflict fails closed; regular state
+commands refuse to hide legacy data and direct the operator to migrate first. Generic host-owned
+directories such as `specs/` and `changes/` are deliberately outside automatic migration. The
+migrator bridges the old and new state and mapping locks, removes known obsolete locks only after release,
+deletes the deprecated directory when empty, and reports unknown entries without removing them.
 
 Framework tools, rather than hand edits, perform state transitions. External issue trackers may be reintroduced later as one-way projections, but they cannot select or replace the authoritative state.
 
@@ -67,7 +104,8 @@ but strict validation requires Intent IR on every node. `dag-tool intent-summary
 human-readable review surface without exposing raw graph YAML. The schema decision and migration
 tradeoffs are recorded in [ADR 0002](adr/0002-intent-ir-v1.md).
 
-Intent IR creation and revision are serialized by a lock under `.aio-sdlc/`. Callers provide the
+Intent IR creation and revision are serialized by a lock beside the canonical DAG under
+`.aio-agentic-sdlc/`. Callers provide the
 current node revision; stale writers fail instead of overwriting newer interpretation. Revisions
 must preserve the complete existing history and append exactly one next entry. DAG replacement is
 atomic, so a failed final replace leaves the prior canonical file intact.
@@ -105,21 +143,26 @@ Report writers reject canonical DAG, backlog, transaction-journal, and lock path
 canonicalizes endpoint GUIDs, deduplicates logical edges, and sorts them before applying limits.
 
 ```powershell
-uv run dag-tool reconcile --intention intention-dag.yaml --reality reality-dag.yaml `
+uv run dag-tool reconcile --intention .aio-agentic-sdlc/intention-dag.yaml `
+  --reality .aio-agentic-sdlc/reality-dag.yaml `
   --max-items 100 --max-candidates 20
-uv run dag-tool diff --intention intention-dag.yaml --reality reality-dag.yaml `
+uv run dag-tool diff --intention .aio-agentic-sdlc/intention-dag.yaml `
+  --reality .aio-agentic-sdlc/reality-dag.yaml `
   --max-tasks 100 --max-candidates 20
-uv run dag-tool diff --intention intention-dag.yaml --reality reality-dag.yaml `
+uv run dag-tool diff --intention .aio-agentic-sdlc/intention-dag.yaml `
+  --reality .aio-agentic-sdlc/reality-dag.yaml `
   --mode legacy-structural
 ```
 
 ### 3. State Loading
 
-The command handler reads the current state from `backlog.json` via `load_backlog()`. If the file does not exist, a schema-versioned empty envelope is returned. Unversioned `items` or `nodes` documents are migrated deterministically in memory; `aio-sdlc migrate-state` explicitly persists the current schema. A schema newer than the installed framework fails closed.
+The command handler reads `.aio-agentic-sdlc/backlog.json` via `load_backlog()`.
+If the file does not exist, a schema-versioned empty envelope is returned. Unversioned
+`items` or `nodes` documents are migrated deterministically in memory;
+`aio-sdlc migrate-state` explicitly persists the current schema. A schema newer than
+the installed framework fails closed.
 
-### 4. State Modification & Backup
-
-For mutating commands, `_create_backup()` is called immediately to create a timestamped backup before any modifications occur. Backups older than 7 days are pruned automatically.
+### 4. Transactional State Modification
 
 Every backlog contains a monotonic `revision`. A cross-process lock covers the
 compare-and-replace transaction, and stale revisions are rejected instead of
@@ -141,7 +184,10 @@ When prioritizing or retrieving the next task, the system performs:
 
 ### 6. State Persistence
 
-The final sorted items are saved to the local `backlog.json` using schema version 1. The `.aio-agentic-sdlc.json` file configures hierarchy and validation behavior; `core.mode` is always `local`. The transaction implementation and its tradeoffs are recorded in [ADR 0001](adr/0001-versioned-local-state.md).
+The final sorted items are saved to `.aio-agentic-sdlc/backlog.json` using schema
+version 1. `.aio-agentic-sdlc/config.json` configures hierarchy and validation
+behavior; `core.mode` is always `local`. The transaction implementation and its
+tradeoffs are recorded in [ADR 0001](adr/0001-versioned-local-state.md).
 
 ## Framework Detection and SDD Reconciliation
 

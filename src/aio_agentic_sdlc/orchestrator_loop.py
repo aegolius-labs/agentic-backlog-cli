@@ -5,16 +5,17 @@ from google.antigravity import Agent, CapabilitiesConfig, LocalAgentConfig
 from aio_agentic_sdlc import core
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.diffing_engine import DiffingEngine
+from aio_agentic_sdlc.workspace import INTENTION_DAG_FILE, REALITY_DAG_FILE
 
 
 def ingest_diff():
     """
     Loads intention/reality DAGs via DAGManager, uses DiffingEngine to calculate the diff,
-    and merges the resulting tasks and edges into the local backlog (backlog.json)
+    and merges the resulting tasks and edges into the local framework backlog
     using core.load_backlog and core.save_backlog, followed by core.prioritize_items.
     """
-    intention_dag = DAGManager.load("intention-dag.yaml")
-    reality_dag = DAGManager.load("reality-dag.yaml")
+    intention_dag = DAGManager.load(INTENTION_DAG_FILE)
+    reality_dag = DAGManager.load(REALITY_DAG_FILE)
 
     diffing_engine = DiffingEngine(intention_dag, reality_dag)
     diff = diffing_engine.calculate_diff()

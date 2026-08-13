@@ -1,0 +1,3827 @@
+metadata:
+  name: system_root
+  version: 1.0.0
+nodes:
+- id: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  type: system
+  name: system_root
+  description: Root project system
+- id: 01972ce1-dba9-54a3-9f75-771d02ad2cec
+  type: agent
+  name: sdlc_architect
+  description: Subagent responsible for software architecture research, component
+    breakdown, generating SDDs, and updating the Intention DAG.
+- id: c5136308-b1db-530b-99f3-6c1956c46d5e
+  type: agent
+  name: sdlc_cartographer
+  description: Subagent responsible for invoking the Reality DAG Generator and calculating
+    the Backlog Diff using the framework CLI tools.
+- id: 0e159810-cde1-5fb7-9250-9e1e63b47898
+  type: agent
+  name: sdlc_devops
+  description: Subagent responsible for strict VCS operations, selective staging,
+    Conventional Commits, Conventional Branches, and Pull Request generation.
+- id: e45f0d86-76ad-5d0f-a05e-150921499094
+  type: agent
+  name: sdlc_implementer
+  description: Subagent responsible for executing code changes using Test-Driven Development
+    based on Architect plans.
+- id: 3dc0533b-0263-5cf9-aef5-46b0afef9161
+  type: agent
+  name: sdlc_intake
+  description: Acts as a product manager. Distills user requirements into formal Product
+    Requirement Documents (PRDs) under .aio-agentic-sdlc/specs/<feature-name>/.
+- id: 6d9e067b-64b4-5188-9e71-6b66a981676b
+  type: agent
+  name: sdlc_linter
+  description: Subagent responsible for static analysis, code formatting, security
+    checks, and linting.
+- id: fe0d8f57-f8d2-5d80-9680-e2f44c137f0a
+  type: agent
+  name: sdlc_orchestrator
+  description: The central Orchestrator agent that manages the Software Development
+    Life Cycle, delegating work to specialized subagents.
+- id: bdffa5b3-fa12-54cf-99c0-a567938595f5
+  type: agent
+  name: sdlc_qa
+  description: Subagent responsible for comprehensive testing, fuzzing, and adversarial
+    code validation.
+- id: bdf19ef6-c810-53c0-8562-914d4bc3b507
+  type: agent
+  name: sdlc_researcher
+  description: Subagent responsible for deep technical and product viability research,
+    acting as a Research Swarm Orchestrator.
+- id: 1f2db192-e092-5b9f-b281-878f83be11a1
+  type: agent
+  name: sdlc_scribe
+  description: Subagent responsible for updating user-facing documentation (README,
+    CONTRIBUTING, docs/) to align with reality before delivery.
+- id: 391a970e-235c-5c2e-9563-704be8eea2dc
+  type: module
+  name: __init__.py
+  description: Module src.aio_agentic_sdlc.__init__
+- id: 7e96ebb9-baca-5acc-9c69-605df0a7d51f
+  type: module
+  name: archiver.py
+  description: Module src.aio_agentic_sdlc.archiver
+- id: 6506870b-b262-4f54-b6e9-43de4a873a55
+  type: component
+  name: PRDArchiver
+  description: Class PRDArchiver
+- id: be58456d-4614-56c4-b978-12df360a4420
+  type: component
+  name: __init__
+  description: Function __init__
+- id: dfb4466f-fa2d-53d5-9fd2-6993d425e519
+  type: component
+  name: archive
+  description: "\r\n        Moves a file to the archive directory.\r\n        If a\
+    \ file with the same name exists, it appends a timestamp to prevent overwriting.\r\
+    \n        Returns the new path of the archived file.\r\n        "
+- id: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
+  type: module
+  name: cli.py
+  description: Module src.aio_agentic_sdlc.cli
+- id: 195ac99f-003a-56d4-8367-ddaaa3b90f44
+  type: component
+  name: init_cmd
+  description: Function init_cmd
+- id: b8ca9ec5-256e-5445-9785-9e2bec5e75a1
+  type: component
+  name: add_cmd
+  description: Function add_cmd
+- id: 830497fa-76b9-52e0-b926-bbdf7cd74f38
+  type: component
+  name: update_cmd
+  description: Function update_cmd
+- id: 5055b359-19e0-5468-a06e-c374dbbc0282
+  type: component
+  name: prioritize_cmd
+  description: Function prioritize_cmd
+- id: 8836ec02-e54e-5caa-8b11-cb60b718097e
+  type: component
+  name: export_cmd
+  description: Function export_cmd
+- id: 3fac676c-413a-5817-8427-49ce1beb6b44
+  type: component
+  name: status_cmd
+  description: Function status_cmd
+- id: 78ed9163-987c-5da4-9a31-c7f37c938fed
+  type: component
+  name: block_cmd
+  description: Function block_cmd
+- id: d34c9145-dfef-5edc-98a0-2cb9105e1574
+  type: component
+  name: unblock_cmd
+  description: Function unblock_cmd
+- id: 18d883a5-8761-5f46-8997-cba9c6566e38
+  type: component
+  name: remove_cmd
+  description: Function remove_cmd
+- id: 2e18ad74-77e7-5ead-9e33-d19552b9d86f
+  type: component
+  name: next_cmd
+  description: Function next_cmd
+- id: 5000f46c-c485-585e-8908-17ef0299f3aa
+  type: component
+  name: plan_cmd
+  description: Function plan_cmd
+- id: 460cc297-75fe-5c44-86f2-6d7aab7bd975
+  type: component
+  name: apply_cmd
+  description: Function apply_cmd
+- id: b0179b46-154b-5188-b8ba-c3de4407ac92
+  type: component
+  name: migrate_state_cmd
+  description: Function migrate_state_cmd
+- id: a4b1cc77-0b97-547f-9d3e-0925f72982ac
+  type: component
+  name: migrate_ids_cmd
+  description: Function migrate_ids_cmd
+- id: 2e6bd533-369f-5cd8-90cd-89b90fe9d973
+  type: component
+  name: main
+  description: Function main
+- id: 1b601f4c-40b3-5895-a9cb-445be5577970
+  type: module
+  name: config.py
+  description: Module src.aio_agentic_sdlc.config
+- id: fa9bcd5f-af33-536a-83e0-8283551d7957
+  type: component
+  name: load_config
+  description: Function load_config
+- id: 58a3e307-eeb2-5cb7-947a-2124b7870493
+  type: component
+  name: save_config
+  description: Function save_config
+- id: dda24752-8c90-5617-8ee2-4727bb22232f
+  type: module
+  name: core.py
+  description: Module src.aio_agentic_sdlc.core
+- id: f075b9e0-f4cb-528a-b05b-0b3a679257c8
+  type: component
+  name: validate_hierarchy
+  description: Function validate_hierarchy
+- id: 2f0aeffc-5a56-59f2-a8d9-b235a945afdd
+  type: component
+  name: load_backlog
+  description: Function load_backlog
+- id: 6fa8e638-6df9-5c5a-9eb0-23b2253620d9
+  type: component
+  name: save_backlog
+  description: Function save_backlog
+- id: 4a882d86-8c0a-5bbf-b7b1-f3951b767e48
+  type: component
+  name: get_edges
+  description: Function get_edges
+- id: 291e3287-75aa-5af5-bd7e-146ef4a417a8
+  type: component
+  name: get_requires
+  description: Function get_requires
+- id: d2b82959-ed25-5aff-880d-0aeac611bcf0
+  type: component
+  name: set_requires
+  description: Function set_requires
+- id: 46a5c65f-490e-5f9d-8a3e-3b5c9556eacd
+  type: component
+  name: get_parent
+  description: Function get_parent
+- id: 84e0dd20-7029-5420-8ccf-2a282762ee43
+  type: component
+  name: set_parent
+  description: Function set_parent
+- id: 1c315831-f474-5846-92cb-c674a75a1972
+  type: component
+  name: ensure_dependencies
+  description: Function ensure_dependencies
+- id: 4bd0b49f-e803-5c60-ad6a-748d1d853a50
+  type: component
+  name: prioritize_items
+  description: Function prioritize_items
+- id: 43a7b4d2-1d7b-5f7d-b216-ee2e0694921e
+  type: component
+  name: get_next_item
+  description: Function get_next_item
+- id: 19ec3ffc-ed29-51ca-886f-c90fd1874216
+  type: component
+  name: add_item
+  description: Function add_item
+- id: 7bb08a69-dab6-5b62-b7cf-53bbf251ad8a
+  type: component
+  name: update_item
+  description: Function update_item
+- id: 5332080c-2077-569e-b305-fcb0bbf258e8
+  type: component
+  name: set_status
+  description: Function set_status
+- id: 4df334df-d21f-595c-a8db-ee3734926fd2
+  type: component
+  name: add_blocker
+  description: Function add_blocker
+- id: 6df510af-eac7-5001-aaee-9434b12f4eef
+  type: component
+  name: remove_blocker
+  description: Function remove_blocker
+- id: 08949c1f-e697-5962-9aaf-919f16b1d857
+  type: component
+  name: remove_item
+  description: Function remove_item
+- id: 4332ee05-cded-51dc-b884-7249af9d97cd
+  type: component
+  name: TraceabilityValidator
+  description: Class TraceabilityValidator
+- id: 6bf977ee-c94d-5750-acca-d8c0b707edf0
+  type: component
+  name: __init__
+  description: Function __init__
+- id: d53a9141-bdd1-55ab-8340-1dddaac885ec
+  type: component
+  name: validate
+  description: Function validate
+- id: 51038e11-df2c-549d-b731-bd99dd919ed5
+  type: module
+  name: dag_cli.py
+  description: Module src.aio_agentic_sdlc.dag_cli
+- id: a15e2b3b-0a4e-5d04-9c5a-e8cb9092f6f3
+  type: component
+  name: cli
+  description: CLI tool for managing DAG state files safely.
+- id: 134ec7e9-0379-5027-bc3f-3b6addecffe3
+  type: component
+  name: validate
+  description: Validates the structure and constraints of the DAG file.
+- id: 62d9aa92-3b61-593d-89b6-6307d3b9a092
+  type: component
+  name: validate_intent
+  description: Validate the Intent IR payloads and coverage of an Intention DAG.
+- id: 83f1a4a0-b8a4-5f52-83d7-999c06fb1ef2
+  type: component
+  name: intent_summary
+  description: Render a human-readable Intent IR review without raw YAML.
+- id: ff0e3348-2bc1-5e22-a358-580b392b8f4c
+  type: component
+  name: intent
+  description: Create or revise protected Intent IR payloads.
+- id: 459707f4-d4d8-57dd-ba73-6f99a29010e2
+  type: component
+  name: intent_create_node
+  description: Atomically create one canonical node with its initial Intent IR.
+- id: eecf7ebe-dbd5-5b94-b7e2-c9979bb55136
+  type: component
+  name: intent_set
+  description: Create or revise Intent IR using optimistic revision protection.
+- id: eb4faf78-202c-583f-9e3c-20664c39f163
+  type: component
+  name: mapping
+  description: Review and explicitly approve source-bound identity mappings.
+- id: 3c021686-6291-51ac-a516-43e858cd8565
+  type: component
+  name: mapping_review
+  description: Render fresh source-bound evidence for one mapping decision.
+- id: 483bcd48-3e11-5f55-a5c6-d3df8e89b4f5
+  type: component
+  name: mapping_approve
+  description: Approve exactly one fresh candidate and persist verified source evidence.
+- id: 4c72f245-723a-5df9-b165-9fd5b704c735
+  type: component
+  name: diff
+  description: Calculates the diff between Intention DAG and Reality DAG.
+- id: 2b77c80b-27d1-5b82-b03c-3d3c7333d62b
+  type: component
+  name: reconcile
+  description: Render a bounded, read-only reconciliation evidence report.
+- id: 0ed46e46-0115-5f0f-91cc-5e79007a6add
+  type: component
+  name: generate_reality
+  description: Generates a Reality DAG by statically analyzing source code in the
+    given directory.
+- id: 6ad8ed0e-94a3-59e8-9838-830626388670
+  type: component
+  name: node
+  description: Node manipulation commands.
+- id: a5baca28-6c2a-5364-8cdc-a40d247c0dd1
+  type: component
+  name: node_add
+  description: Add a new node.
+- id: 2bb272b6-e5d3-59e0-93f3-2742c08a9080
+  type: component
+  name: node_update
+  description: Update an existing node.
+- id: cf4e9aba-ea4e-5053-9adb-dfed53cdb08e
+  type: component
+  name: node_remove
+  description: Remove a node.
+- id: 8a5e8860-5cc7-5c1a-8df5-379790182f9d
+  type: component
+  name: node_list
+  description: List nodes.
+- id: 3955d36a-5b09-5258-968e-bb8988706986
+  type: component
+  name: edge
+  description: Edge manipulation commands.
+- id: 4fc8b2eb-faaf-596f-ac1a-a589bee54535
+  type: component
+  name: edge_add
+  description: Add an edge.
+- id: 9933b843-51ec-5a9c-b197-522873bb2b09
+  type: component
+  name: edge_remove
+  description: Remove an edge.
+- id: 32cbe30e-0414-5b27-a71a-77c392f4b4e9
+  type: module
+  name: dag_manager.py
+  description: Module src.aio_agentic_sdlc.dag_manager
+- id: 412c6407-f59f-5d49-973d-945454bb23e3
+  type: component
+  name: DAGManager
+  description: Class DAGManager
+- id: 3b2de36e-ca66-57b0-bf91-b474580eb60c
+  type: component
+  name: __init__
+  description: Function __init__
+- id: 9ba32a08-6f9f-5d04-bcaa-8e975837cef9
+  type: component
+  name: load
+  description: Function load
+- id: 2102fa27-6ec6-541b-9881-0c7fb95f18f9
+  type: component
+  name: save
+  description: Function save
+- id: f7228c92-96b1-588d-bfa7-4c62438238b6
+  type: component
+  name: validate
+  description: Function validate
+- id: b785926e-a308-5d74-a31c-25ade7ca7bf2
+  type: component
+  name: validate_intent_ir
+  description: Validate Intent IR coverage in addition to the base DAG constraints.
+- id: 0d739ffd-fe16-56dd-9440-edcc1a67c577
+  type: component
+  name: render_intent_summary
+  description: Render an auditable Intent IR review without exposing raw DAG YAML.
+- id: 1cb51dcb-a876-53f9-aeec-b12af6dbda74
+  type: component
+  name: add_node
+  description: Function add_node
+- id: ed6d021d-9b37-5030-b58c-ad09bfa41164
+  type: component
+  name: update_node
+  description: Function update_node
+- id: 8f46e25d-7f21-5437-a95c-4f1f6f7d0da3
+  type: component
+  name: remove_node
+  description: Function remove_node
+- id: 661897ac-332d-5eb0-aaad-0aa4201796a6
+  type: component
+  name: get_node
+  description: Function get_node
+- id: 9ef72273-8852-5e99-8b75-96e478e4be10
+  type: component
+  name: find_nodes
+  description: Function find_nodes
+- id: 88a3f8c7-7de3-57ca-8d59-4a59b4e0547a
+  type: component
+  name: add_edge
+  description: Function add_edge
+- id: ee82a9a1-6c0f-51ba-b324-3bbada55921f
+  type: component
+  name: remove_edge
+  description: Function remove_edge
+- id: 9230f5df-9a51-551a-b613-84b0fac8a398
+  type: component
+  name: get_edges
+  description: Function get_edges
+- id: c3a8c1de-4d0c-5324-b5fc-6eb826953c7e
+  type: module
+  name: dag_models.py
+  description: Module src.aio_agentic_sdlc.dag_models
+- id: c3ed5e8f-8a17-5b24-b14f-e0a44f3763c2
+  type: component
+  name: NodeType
+  description: Class NodeType
+- id: 1b8ebfe0-b537-535d-a559-2337a35bc5f9
+  type: component
+  name: EdgeType
+  description: Class EdgeType
+- id: b9fc84c4-be34-5e5b-8f60-ea5a3943ee6f
+  type: entity
+  name: Metadata
+  description: Class Metadata
+- id: 43f31eee-cc05-5b5a-a0f7-b9597ffa5623
+  type: entity
+  name: Node
+  description: Class Node
+- id: 8860e218-5a9a-5560-9e40-9df912a1282a
+  type: entity
+  name: Edge
+  description: Class Edge
+- id: c3695b6b-abf2-537d-9ed0-0f9df0dfc354
+  type: module
+  name: detect.py
+  description: Module src.aio_agentic_sdlc.detect
+- id: 1439a387-5fac-5026-8cb9-d879e62efccb
+  type: component
+  name: detect_frameworks
+  description: Analyze the current working directory to detect the tech stack.
+- id: bcc62278-0533-561f-bd0a-4357b34e876c
+  type: component
+  name: seed_from_openspec
+  description: Parse tasks.md from Open-Spec into backlog items.
+- id: 5d246f57-dc0d-51d5-b855-df74fd119e47
+  type: component
+  name: seed_from_speckit
+  description: Parse Spec-Kit Markdown into backlog items.
+- id: dc01d5ee-931b-586b-8dac-6f821a02bb95
+  type: component
+  name: generate_seed_backlog
+  description: Generate a dictionary of seed items based on detected frameworks and
+    specs.
+- id: 193b8ecb-ff6a-5c43-aa4d-ed19e677d282
+  type: module
+  name: diffing_engine.py
+  description: Module src.aio_agentic_sdlc.diffing_engine
+- id: 014d3f5d-595e-5582-aeb5-2ead9d6ba95f
+  type: component
+  name: DiffPolicy
+  description: Select safe reconciliation planning or explicit legacy structural behavior.
+- id: 56da859d-16e5-5d8f-ab78-9cd08a202723
+  type: component
+  name: safe
+  description: Function safe
+- id: d4666098-add5-5c06-a75b-56d4561d8fec
+  type: component
+  name: legacy_structural
+  description: Function legacy_structural
+- id: 6199cd62-9332-5ad1-b458-18bd2e865da1
+  type: component
+  name: DiffingEngine
+  description: "\r\n    Computes the difference between an Intention DAG and a Reality\
+    \ DAG,\r\n    generating a backlog of tasks required to reconcile Reality with\
+    \ Intention.\r\n    "
+- id: 0c16f2bc-7c68-5ad9-bd22-b4223d083f1e
+  type: component
+  name: __init__
+  description: Function __init__
+- id: d183433d-01cb-57e1-b566-02da520084e6
+  type: component
+  name: calculate_diff
+  description: Calculate a bounded safe plan unless legacy behavior is explicit.
+- id: 03ab3d9a-beb1-5a32-b3f4-5efdddeee956
+  type: module
+  name: intent_ir.py
+  description: Module src.aio_agentic_sdlc.intent_ir
+- id: 14d0034e-f619-58e4-afab-20fdd764240c
+  type: entity
+  name: IntentModel
+  description: Strict base model for the stable Intent IR contract.
+- id: 63f3d428-f9d4-5183-b085-9806661fb55d
+  type: component
+  name: ProvenanceType
+  description: Class ProvenanceType
+- id: b24a8fca-8fa6-5b8a-9056-28c7f9ecfd23
+  type: component
+  name: AmbiguityStatus
+  description: Class AmbiguityStatus
+- id: 452e5fcb-6194-5580-ad3d-c946688b6089
+  type: component
+  name: ApprovalState
+  description: Class ApprovalState
+- id: 14e9edee-fd26-5142-9cdc-998626c1682b
+  type: component
+  name: Provenance
+  description: Class Provenance
+- id: da7f9e29-a637-5a01-b05f-2c312bf58ff9
+  type: component
+  name: Ambiguity
+  description: Class Ambiguity
+- id: 8ee60fc5-88e6-5e6d-b832-b5e5f37e35e1
+  type: component
+  name: require_resolution_when_resolved
+  description: Function require_resolution_when_resolved
+- id: d86ca145-1dc3-54e5-9758-706d79d71dc3
+  type: component
+  name: AcceptanceCriterion
+  description: Class AcceptanceCriterion
+- id: 83de9d12-feba-5b31-a2e5-9b1ea9f869b3
+  type: component
+  name: IntentRevision
+  description: Class IntentRevision
+- id: ac513063-fcdc-5ca6-bce7-418130a52602
+  type: component
+  name: require_timezone_aware_timestamp
+  description: Function require_timezone_aware_timestamp
+- id: b5348027-f430-535c-87ee-784c414b036f
+  type: component
+  name: Approval
+  description: Class Approval
+- id: 9a44e5c7-e9f8-552a-a1c6-03f978c3d775
+  type: component
+  name: require_timezone_aware_timestamp
+  description: Function require_timezone_aware_timestamp
+- id: 194020aa-bb6b-5a4b-90d8-c8dcd6d98a7b
+  type: component
+  name: require_approval_audit_fields
+  description: Function require_approval_audit_fields
+- id: 4e7e0f73-3eae-5f42-866a-a1d999e70a85
+  type: component
+  name: IntentIR
+  description: Canonical Intent IR v1 payload attached to an Intention DAG node.
+- id: d9ff483d-1f84-5eec-9be6-5d7c286090ab
+  type: component
+  name: validate_revision_history
+  description: Function validate_revision_history
+- id: 214466a1-8303-573d-abd3-6c91afc5783e
+  type: module
+  name: intent_store.py
+  description: Module src.aio_agentic_sdlc.intent_store
+- id: 84123bb2-31f6-550b-add9-315c748a5364
+  type: component
+  name: create_intent_node_file
+  description: Atomically create one canonical DAG node with validated Intent IR.
+- id: d0b7ad9d-9cfe-5ba9-aef9-dd0d41928561
+  type: component
+  name: update_intent_file
+  description: Create or revise one node's Intent IR without rewriting audit history.
+- id: db87f8e5-dca8-5952-91f6-454eec0f1a34
+  type: module
+  name: mapping.py
+  description: Module src.aio_agentic_sdlc.mapping
+- id: 6a32e581-a47a-59f8-acb8-6b59a5020cfa
+  type: component
+  name: MappingError
+  description: Raised when mapping evidence cannot be safely approved.
+- id: 407dbabf-8298-554b-a0e7-5be2c9162a1e
+  type: entity
+  name: MappingApproval
+  description: Explicit human approval fields stored in the source receipt.
+- id: 10e8ca84-bd3d-5f86-87a8-a7dc364d9db5
+  type: component
+  name: require_timezone_aware_timestamp
+  description: Function require_timezone_aware_timestamp
+- id: 6317643a-a8fc-5026-b373-9330004bc90d
+  type: component
+  name: MappingEngine
+  description: Review and approve one exact, fresh structural mapping candidate.
+- id: 1de97e3f-03eb-5463-abe4-646fa112aa44
+  type: component
+  name: __init__
+  description: Function __init__
+- id: eaf40f28-a4a7-503c-904e-6584d498e113
+  type: component
+  name: review
+  description: Return fresh source-bound evidence without mutating project state.
+- id: a2a30d01-4de7-5dee-bca7-ef3a5f806538
+  type: component
+  name: approve
+  description: Atomically persist one approved candidate as verified source evidence.
+- id: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  type: module
+  name: mcp_server.py
+  description: Module src.aio_agentic_sdlc.mcp_server
+- id: 8c0e4daf-dba6-5a8a-ba9a-02a88a4b50de
+  type: component
+  name: read_current_backlog
+  description: Read the complete prioritized project backlog as JSON from the current
+    working directory.
+- id: 9b7ae2b8-d6ba-5c3f-aa1e-92cf59f454a8
+  type: component
+  name: read_hierarchy_rules
+  description: Read the validation mode and graph hierarchy rules.
+- id: 30418993-ffbb-5948-8125-37accdf8c793
+  type: component
+  name: pick_next_task_prompt
+  description: Prompt the agent to pick the next workable task from the backlog.
+- id: 27d349fa-4905-512c-a307-eacc951c8bf3
+  type: component
+  name: get_next_task
+  description: Find and return the highest-priority workable task from the backlog.
+- id: f8033945-8431-5720-8cdb-f0b052272279
+  type: component
+  name: add_task
+  description: Add a new task to the project backlog.
+- id: b87c464d-ef41-52bf-b370-d9d28a4ee0e7
+  type: component
+  name: update_task
+  description: Update an existing task in the project backlog.
+- id: 94518999-2f9a-50f7-b73b-cf035a7e1d38
+  type: component
+  name: update_task_status
+  description: Quickly update the status of an existing task.
+- id: 20f7b4b4-56fd-590e-998a-16777d30f8c6
+  type: component
+  name: remove_task
+  description: Remove a task entirely from the backlog.
+- id: 6150938a-425a-507d-ad46-efc4994295c0
+  type: component
+  name: prioritize_backlog
+  description: Force an immediate topological sort and priority re-calculation of
+    the backlog.
+- id: f9401341-57c3-5fe1-9737-2265f006ee5c
+  type: component
+  name: block_task
+  description: Add a blocker to a task, preventing it from being worked on.
+- id: de46d3a7-8d56-5a59-b4cd-52abbbdb82bc
+  type: component
+  name: generate_document
+  description: Generate a document from a template using the provided data.
+- id: 02702c9c-f095-5993-ac3a-6223c055b941
+  type: component
+  name: check_duplicate_prd
+  description: Check if a proposed PRD is similar to canonical project specs.
+- id: 6dfd771b-0f2d-56bf-9ce9-714b1f7f3887
+  type: component
+  name: validate_traceability
+  description: Validate that canonical specs align with both DAGs via GUID frontmatter.
+- id: a938fadb-83a2-54ff-a2fc-4faa73191a6e
+  type: component
+  name: reconcile_dags
+  description: Classify Intention/Reality identity evidence without mutating project
+    state.
+- id: 93cc7cb1-efa6-5648-9b4c-1214e0602884
+  type: component
+  name: review_mapping
+  description: Return fresh source-bound evidence for one mapping decision.
+- id: ec1e27bd-46ff-5749-9218-3e302db760a9
+  type: component
+  name: approve_mapping
+  description: Approve one fresh candidate and atomically persist verified source
+    evidence.
+- id: 0e2977b9-3646-5467-94a9-f1d6f8a17052
+  type: component
+  name: set_intent
+  description: Create or revise one Intent IR payload with optimistic revision protection.
+- id: 379b1768-a910-5fa8-a879-28fece4a3dcc
+  type: component
+  name: create_intent_node
+  description: Atomically create a canonical node with its initial Intent IR payload.
+- id: 69438715-a4a3-5f13-8f5c-7d2a9b08ace4
+  type: component
+  name: validate_intent
+  description: Validate Intent IR payloads and coverage in the canonical Intention
+    DAG.
+- id: 869f4f9e-cfef-5819-b456-2bff82979318
+  type: component
+  name: review_intent
+  description: Render a human-readable review of canonical Intent IR payloads.
+- id: afd197bc-17a5-5220-a429-9351b8417e9d
+  type: component
+  name: promote_spec
+  description: Move a validated micro-spec from changes to canonical specs.
+- id: 47a75c78-9576-5a40-bf45-eb1af4114e09
+  type: component
+  name: generate_reality
+  description: Scan the codebase and update the Reality DAG via dag-tool.
+- id: f5e29b19-f15e-58aa-9438-30e772912751
+  type: component
+  name: main
+  description: Function main
+- id: 654e7846-a5b4-5627-af8a-6045142b4851
+  type: module
+  name: orchestrator_loop.py
+  description: Module src.aio_agentic_sdlc.orchestrator_loop
+- id: 2ebf00ef-c11d-501f-add4-f86a1df8be8a
+  type: component
+  name: ingest_diff
+  description: "\r\n    Loads intention/reality DAGs via DAGManager, uses DiffingEngine\
+    \ to calculate the diff,\r\n    and merges the resulting tasks and edges into\
+    \ the local framework backlog\r\n    using core.load_backlog and core.save_backlog,\
+    \ followed by core.prioritize_items.\r\n    "
+- id: aa788b5d-b918-5414-b688-a1db5fda7ea4
+  type: component
+  name: execute_task_with_agent
+  description: "\r\n    Instantiates the Agent using LocalAgentConfig. Configures\
+    \ system_instructions\r\n    for the 'sdlc_orchestrator' role, applies CapabilitiesConfig,\
+    \ and streams\r\n    the chat response for the task provided.\r\n    "
+- id: 47757762-ac3c-582e-a93a-0bee49c1de94
+  type: component
+  name: main_loop
+  description: "\r\n    1. Invokes ingest_diff().\r\n    2. Fetches the highest-priority\
+    \ unblocked task via core.get_next_item().\r\n    3. Sets task status to 'In Progress'\
+    \ via core.set_status().\r\n    4. Awaits execute_task_with_agent(task).\r\n \
+    \   5. Marks status 'Completed' (or 'Blocked' on failure).\r\n    "
+- id: 1dbef474-b42c-50ba-81a6-fcf97002ad6c
+  type: module
+  name: reality_dag_generator.py
+  description: Module src.aio_agentic_sdlc.reality_dag_generator
+- id: 5f9d3dc7-cd7e-5402-86cd-356a4b6846fb
+  type: component
+  name: RealityDAGGenerator
+  description: "\r\n    Generates a Reality DAG by statically analyzing source code.\r\
+    \n    Implements a tree-sitter parser to be stack-agnostic.\r\n    "
+- id: d484d25c-d3d6-5215-93bb-76543a0e7867
+  type: component
+  name: __init__
+  description: Function __init__
+- id: 2f305d49-796d-553c-b67c-daf04ff09189
+  type: component
+  name: generate
+  description: Function generate
+- id: 9015c8a3-fd14-5598-916d-d03fcf41e415
+  type: module
+  name: reconciliation.py
+  description: Module 9015c8a3-fd14-5598-916d-d03fcf41e415
+- id: a913cfa4-0b24-59ed-bed0-483c531138e3
+  type: component
+  name: normalize_node_name
+  description: Return a conservative comparison key without inferring semantics.
+- id: bf419a61-02eb-5269-9274-a3e643e46ab4
+  type: component
+  name: write_reconciliation_report
+  description: Atomically persist one derived reconciliation report.
+- id: f7415c6c-dee2-5149-a87b-57a4e19d1cbf
+  type: component
+  name: ReconciliationEngine
+  description: Classify deterministic identity evidence without mutating either DAG.
+- id: b49bf431-c08c-536f-a772-b3babe3a1e3a
+  type: component
+  name: __init__
+  description: Function __init__
+- id: 9e5d1e31-36dc-56a2-a15a-37a11bf2745e
+  type: component
+  name: iter_intent_records
+  description: Yield deterministic, bounded intent records without retaining them
+    all.
+- id: 5016b6a2-c0bb-567f-976e-416e36de3356
+  type: component
+  name: analyze
+  description: Return a bounded report while retaining complete classification totals.
+- id: 5e164b78-a596-57a3-8ce3-c1cdd590ec67
+  type: module
+  name: semantic_dedup.py
+  description: Module src.aio_agentic_sdlc.semantic_dedup
+- id: 27d4b108-db4e-5e0b-8ab3-20ce969a9e9b
+  type: component
+  name: get_model
+  description: Function get_model
+- id: 9615e392-aee7-5f1e-b01d-0a49d97cd062
+  type: component
+  name: get_db
+  description: Function get_db
+- id: fbf875e6-7c1b-5d5c-8687-a4cc20342dbe
+  type: component
+  name: sync_documents
+  description: Scan canonical specs and update embeddings for changed Markdown files.
+- id: 78731c65-6497-566e-9df6-ee22d88861c8
+  type: component
+  name: find_duplicate_prds
+  description: "\r\n    Search for similar PRDs.\r\n    Returns a list of matching\
+    \ documents.\r\n    Note: threshold is cosine distance (0 to 2). Smaller is more\
+    \ similar.\r\n    Distance of 0.2 means 0.8 cosine similarity.\r\n    "
+- id: bc9340ac-838c-5761-bd32-d04ca334c376
+  type: module
+  name: source_locations.py
+  description: Module src.aio_agentic_sdlc.source_locations
+- id: 53949030-6417-5f37-a5b2-aa5b78833dd3
+  type: component
+  name: SourceLocation
+  description: Class SourceLocation
+- id: d8f4749a-0278-5d59-8e0d-cabcb8f96161
+  type: component
+  name: as_dict
+  description: Function as_dict
+- id: c1d5d3f5-9bf5-5de5-aff0-e04a35728545
+  type: module
+  name: source_markers.py
+  description: Module src.aio_agentic_sdlc.source_markers
+- id: eead12e1-3524-5e23-99c1-c23c44e35eba
+  type: component
+  name: canonical_node_marker
+  description: Return a canonical UUID only when the entire comment is a valid marker.
+- id: 828c3a86-8c8c-59a9-b76b-194ea93baad6
+  type: component
+  name: iter_canonical_node_markers
+  description: Yield canonical UUIDs from valid Python source-marker comment lines.
+- id: f71e0f60-3a1d-54d4-ac81-403f66de42c7
+  type: module
+  name: state.py
+  description: Module src.aio_agentic_sdlc.state
+- id: 0c8a6b20-4822-57d7-be3f-8342e6623d3a
+  type: component
+  name: BacklogStateError
+  description: Base error for invalid or unrecoverable local backlog state.
+- id: 1f20b5f6-2dc3-5786-b5d5-244e710c87a5
+  type: component
+  name: UnsupportedBacklogSchema
+  description: Raised when a backlog was produced by a newer framework version.
+- id: 53b6fcea-970d-5fb7-940a-412bbf48025e
+  type: component
+  name: BacklogRecoveryError
+  description: Raised when an incomplete transaction cannot be reconciled safely.
+- id: c4f18dbe-70e5-5b56-9837-a61977231d7d
+  type: component
+  name: BacklogConflictError
+  description: Raised when a writer attempts to replace a newer backlog revision.
+- id: 6eef87c3-fd7e-5ef8-9efd-46026aa2e5cf
+  type: component
+  name: recover_incomplete_transactions
+  description: Reconcile prepared transactions against the current backlog hash.
+- id: c799e44e-62a1-5775-8bb2-ee8f180d4c6f
+  type: component
+  name: migrate_backlog_data
+  description: Return a validated copy migrated to the current schema version.
+- id: 25dd94d4-55e5-56f8-9d0a-3b616b8cd844
+  type: component
+  name: load_backlog
+  description: Function load_backlog
+- id: 4ccffb18-3908-5c7d-9be0-a2826d069185
+  type: component
+  name: save_backlog
+  description: Atomically replace backlog state with a recoverable audit transaction.
+- id: 0e78e571-e133-5e84-acf8-8d29677e6e00
+  type: component
+  name: migrate_backlog
+  description: Persist an existing backlog using the current schema and audit contract.
+- id: 659aa8cf-1159-53aa-b360-39a665d09294
+  type: component
+  name: retire_legacy_backlog
+  description: Archive and remove the obsolete generated `.agentic-backlog.json`.
+- id: bcf289fc-073a-5a5c-9e95-c8da5d4d1f1d
+  type: module
+  name: templating_engine.py
+  description: Module src.aio_agentic_sdlc.templating_engine
+- id: d76c9ca8-4548-5c54-95cc-86bb437c3acb
+  type: component
+  name: get_package_templates_dir
+  description: Return the templates bundled with the installed framework package.
+- id: 370f8b4f-0766-5ffa-a93f-948947910c79
+  type: component
+  name: generate_document
+  description: "\r\n    Generates a document from a Jinja2 template and writes it\
+    \ to output_path.\r\n\r\n    Args:\r\n        template_name: The name of the template\
+    \ file in the templates/ directory.\r\n        data: A dictionary of data to populate\
+    \ the template.\r\n        output_path: The path where the generated document\
+    \ will be saved.\r\n        templates_dir: Optional explicit template directory.\
+    \ When omitted, use the templates\r\n            bundled with the installed framework\
+    \ package.\r\n\r\n    Returns:\r\n        The content of the generated document.\r\
+    \n    "
+- id: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
+  type: module
+  name: workspace.py
+  description: Module src.aio_agentic_sdlc.workspace
+- id: 0b472f99-e8b6-5cf8-9a44-c0238dd3cdd0
+  type: component
+  name: WorkspaceMigrationError
+  description: Raised when legacy framework state cannot be migrated safely.
+- id: 488d725f-5f60-5a3f-a9ca-0cdd54c24682
+  type: component
+  name: WorkspaceMigrationRequired
+  description: Raised when a command would silently ignore a legacy workspace.
+- id: 4ac67159-aa34-5ebf-b95e-74ce9c2185bd
+  type: component
+  name: WorkspaceMigrationConflict
+  description: Raised when both legacy and canonical paths contain state.
+- id: c1d46915-cf2c-5755-b1aa-c136a6f6bc3a
+  type: component
+  name: workspace_path
+  description: Return a path inside the canonical project-local framework workspace.
+- id: b91f06f9-2899-5a9a-81db-70a2499d4c28
+  type: component
+  name: ensure_workspace
+  description: Create the canonical framework workspace and operational directories.
+- id: 7ac2310a-050b-5ea8-b231-7672e93de8fc
+  type: component
+  name: workspace_file_path
+  description: Return a canonical workspace file path after rejecting link redirection.
+- id: 6661fc18-c1f5-50bc-82a8-3a1e538e6b09
+  type: component
+  name: workspace_migration_lock
+  description: Return the cross-process lock that gates layout checks and migration.
+- id: e913faf0-2611-55f3-a209-ac71af115bf0
+  type: component
+  name: require_current_workspace
+  description: Fail before normal commands can ignore state in a legacy layout.
+- id: 6086dfc0-7bba-5abd-a6a8-954c0dce042c
+  type: component
+  name: migrate_legacy_workspace
+  description: Move known legacy artifacts into the canonical workspace, or fail closed.
+- id: bf62376c-c574-5242-91e9-5048f4183d45
+  type: module
+  name: __init__.py
+  description: Module src.aio_agentic_sdlc.parsers.__init__
+- id: 227d2797-c5fe-58b1-93ef-b0be257e77dd
+  type: module
+  name: base.py
+  description: Module src.aio_agentic_sdlc.parsers.base
+- id: e8c24523-1c9c-5af8-9d3d-f825e9e95a46
+  type: component
+  name: BaseFileParser
+  description: Class BaseFileParser
+- id: 5ab60629-6592-5751-bbb7-a6361f3482d6
+  type: component
+  name: parse
+  description: Function parse
+- id: e9b84b03-d3bc-543e-a3c2-161f583768a4
+  type: module
+  name: factory.py
+  description: Module src.aio_agentic_sdlc.parsers.factory
+- id: a7278b66-0ac6-5e6b-91d7-0604d42cc40f
+  type: component
+  name: ParserFactory
+  description: Class ParserFactory
+- id: f7ec265d-59e9-5d8d-bd47-5c91bc4cd357
+  type: component
+  name: __init__
+  description: Function __init__
+- id: 17e3ea75-f350-5468-9ebd-98f215f4a196
+  type: component
+  name: get_parser
+  description: Function get_parser
+- id: e3b72ae9-9e2d-5a12-9614-34f892a0e932
+  type: module
+  name: markdown_parser.py
+  description: Module src.aio_agentic_sdlc.parsers.markdown_parser
+- id: a4114ac7-09b1-5a58-ae83-45acdaff1884
+  type: component
+  name: MarkdownAgentParser
+  description: Class MarkdownAgentParser
+- id: ef8a8a73-e433-57d9-8065-f3b7b8627114
+  type: component
+  name: parse
+  description: Function parse
+- id: 4271a927-f51e-512e-b272-45fa54fbb3d3
+  type: module
+  name: python_parser.py
+  description: Module src.aio_agentic_sdlc.parsers.python_parser
+- id: 68d91d09-7a15-5e5c-8387-68ac2ec30139
+  type: component
+  name: TreeSitterParser
+  description: Class TreeSitterParser
+- id: a7b81d98-2450-55f8-98f8-6f92d6136a23
+  type: component
+  name: __init__
+  description: Function __init__
+- id: 01382c12-efbb-5d74-8ce4-04ee5ace65a5
+  type: component
+  name: parse
+  description: Function parse
+- id: 77759c7c-420b-572a-a765-65c3d3479dd5
+  type: module
+  name: visitors.py
+  description: Module src.aio_agentic_sdlc.parsers.visitors
+- id: f940e565-358a-54d9-b22d-2d3dc93382ed
+  type: component
+  name: TreeSitterVisitor
+  description: Class TreeSitterVisitor
+- id: b2c9b52c-3eb0-59be-a79d-57fd478111cb
+  type: component
+  name: __init__
+  description: Function __init__
+- id: 1f196eb5-db49-5594-a60f-671f0350e77d
+  type: component
+  name: visit
+  description: Function visit
+- id: 4078ec42-8c14-589d-a261-870f8fed2284
+  type: component
+  name: visit_decorated_definition
+  description: Function visit_decorated_definition
+- id: 003cc972-7a3b-54e2-af38-26ce8f54dd07
+  type: component
+  name: visit_class_definition
+  description: Function visit_class_definition
+- id: af759edf-5b26-5c59-a4ff-11f5909f2744
+  type: component
+  name: visit_function_definition
+  description: Function visit_function_definition
+- id: 38bea82c-9eee-5138-b71f-427670a8e1c2
+  type: component
+  name: visit_import_statement
+  description: Function visit_import_statement
+- id: 13ff4d02-e93c-5cae-b42a-528a248a5907
+  type: component
+  name: visit_import_from_statement
+  description: Function visit_import_from_statement
+- id: 16d66432-6381-537d-bff9-e8b1562f8de4
+  type: module
+  name: markdown_parser.py
+  description: Module src.utils.markdown_parser
+- id: 037c26cb-574d-5946-9ca3-14b082668762
+  type: component
+  name: extract_h2
+  description: "\r\n    Reads a markdown file and returns a list of strings containing\
+    \ all H2 headers (lines starting with '## ').\r\n    "
+- id: 6d7fe7c8-dd7a-5a13-be7d-19c74a01fb6a
+  type: module
+  name: __init__.py
+  description: Module tests.__init__
+- id: b6b90cff-6b0e-55b1-b287-ff8d8daa4cf0
+  type: module
+  name: test_adversarial.py
+  description: Module tests.test_adversarial
+- id: df00097b-3436-52ad-bea6-38785fcff7ef
+  type: component
+  name: test_archive_dir_is_file
+  description: Function test_archive_dir_is_file
+- id: de7f81c0-85af-55e8-9c47-370e954299ea
+  type: component
+  name: test_archive_file_is_broken_symlink
+  description: Function test_archive_file_is_broken_symlink
+- id: 2a0a0310-15be-5143-8a35-cfcfdf126782
+  type: module
+  name: test_archiver.py
+  description: Module tests.test_archiver
+- id: 8e9e2363-7acf-5e15-aa7f-b643f5678a4a
+  type: component
+  name: temp_workspace
+  description: Function temp_workspace
+- id: 4c0eac62-7b6e-5ab5-9749-8093c3de6574
+  type: component
+  name: test_archive_creates_archive_dir
+  description: Function test_archive_creates_archive_dir
+- id: cfd5dcff-8d19-5059-bebe-2230fa719d31
+  type: component
+  name: test_archive_name_collision
+  description: Function test_archive_name_collision
+- id: dd94a0e7-a58f-5b59-ba81-8d7151447de8
+  type: component
+  name: test_archive_file_not_found
+  description: Function test_archive_file_not_found
+- id: 3bc44cbe-f1a4-56ee-a58e-3130a88a1733
+  type: component
+  name: test_archive_dir_is_a_file
+  description: Function test_archive_dir_is_a_file
+- id: 9f84f6d6-5a79-55b6-a577-19621bd21cec
+  type: module
+  name: test_archiver_adversarial.py
+  description: Module tests.test_archiver_adversarial
+- id: 8a96372c-b452-5c23-bc49-819bdd27f85f
+  type: module
+  name: test_blockers.py
+  description: Module tests.test_blockers
+- id: c50cce26-fa8c-501c-9c5e-9bedfbffb300
+  type: component
+  name: clean_backlog
+  description: Function clean_backlog
+- id: b168cf88-0c31-5c51-a97f-5c479066f82d
+  type: component
+  name: TestBlockerBackwardCompat
+  description: Class TestBlockerBackwardCompat
+- id: 6911c426-3f08-5f8f-995a-e1504ba2610c
+  type: component
+  name: test_missing_blockers_defaults_to_empty
+  description: Function test_missing_blockers_defaults_to_empty
+- id: 29af1434-0fb8-5646-941b-7ac27404d819
+  type: component
+  name: TestBlockerScoring
+  description: Class TestBlockerScoring
+- id: 6334ed52-774c-50f4-96ba-5bba0c68d622
+  type: component
+  name: test_blocked_item_retains_score
+  description: Blockers flag items as unworkable but do NOT change math.
+- id: 11238375-0914-56b9-b548-b1e2f88e5fbc
+  type: component
+  name: test_blocked_item_auto_status
+  description: During prioritize, items with blockers auto-set to Blocked.
+- id: 4fdf1cf6-b141-5e39-b446-d43897c4d401
+  type: component
+  name: test_unblocked_item_reverts_status
+  description: During prioritize, Blocked items with no blockers revert to New.
+- id: 105ff938-5035-5a4e-9c13-e8ba56df729e
+  type: component
+  name: TestBlockCmd
+  description: Class TestBlockCmd
+- id: 521b3c39-6b65-5af8-833f-24d9565f6c70
+  type: component
+  name: test_block_adds_blocker_and_sets_status
+  description: Function test_block_adds_blocker_and_sets_status
+- id: 18ed3160-c324-51fd-a190-4f1e796d7318
+  type: component
+  name: test_block_no_duplicate
+  description: Function test_block_no_duplicate
+- id: 893c1927-0c26-5682-aefc-088c51111ee2
+  type: component
+  name: test_block_missing_item
+  description: Function test_block_missing_item
+- id: 6cf8351c-2a8c-5b15-b87e-744ba804560a
+  type: component
+  name: TestUnblockCmd
+  description: Class TestUnblockCmd
+- id: ac3abd0a-0495-5c83-8197-1f4496046694
+  type: component
+  name: test_unblock_removes_blocker
+  description: Function test_unblock_removes_blocker
+- id: ccd9ed47-e600-5e38-b0b2-60cd0fd7ddcd
+  type: component
+  name: test_unblock_last_reverts_status
+  description: Function test_unblock_last_reverts_status
+- id: c7b4f207-4a8b-5a2d-80c6-a5ed0559ed5b
+  type: component
+  name: test_unblock_missing_item
+  description: Function test_unblock_missing_item
+- id: 0b13dfa7-537a-587a-bcad-ae36747fa5c9
+  type: module
+  name: test_cli.py
+  description: Module tests.test_cli
+- id: 56c66c21-c5ce-58fe-8ccb-e64abe2cc5ab
+  type: component
+  name: test_cli_plan
+  description: Function test_cli_plan
+- id: 5b870e14-0ee6-5d94-a36c-6e7e719b9b45
+  type: endpoint
+  name: test_plan_cmd_with_inbox_files
+  description: Function test_plan_cmd_with_inbox_files
+- id: 88beb28a-57b8-5b3f-a14c-d0356282d66f
+  type: endpoint
+  name: test_plan_cmd_without_inbox_files
+  description: Function test_plan_cmd_without_inbox_files
+- id: dd5345e0-b0a7-5f18-b792-b928856a5a8b
+  type: component
+  name: test_cli_apply
+  description: Function test_cli_apply
+- id: f8bef23f-17b8-58a4-95f7-1653f6e4c6cd
+  type: module
+  name: test_codex_plugin.py
+  description: Module tests.test_codex_plugin
+- id: 58a423fd-786f-58ce-b10a-73815f079cfe
+  type: component
+  name: test_codex_plugin_manifest_and_marketplace_are_wired
+  description: Function test_codex_plugin_manifest_and_marketplace_are_wired
+- id: 3a9ca90d-2a80-563b-90f1-fb0d1da38e4c
+  type: component
+  name: test_codex_plugin_mcp_uses_the_portable_uv_launcher
+  description: Function test_codex_plugin_mcp_uses_the_portable_uv_launcher
+- id: 25cdfa0f-5d12-5f70-8100-f7e3c2b24268
+  type: component
+  name: test_codex_skill_has_valid_metadata_and_role_references
+  description: Function test_codex_skill_has_valid_metadata_and_role_references
+- id: e60aa3fc-6709-53a7-aa41-d2974cb543c2
+  type: component
+  name: test_codex_skill_routes_intent_ir_through_protected_tools
+  description: Function test_codex_skill_routes_intent_ir_through_protected_tools
+- id: 1c07436a-39e8-55f5-a363-5262b6c373cb
+  type: component
+  name: test_project_scoped_codex_agents_map_every_sdlc_role
+  description: Function test_project_scoped_codex_agents_map_every_sdlc_role
+- id: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
+  type: module
+  name: test_dag_cli.py
+  description: Module tests.test_dag_cli
+- id: fe16cb7b-db41-5314-8cbd-c28de692ec18
+  type: component
+  name: sample_dag_file
+  description: Function sample_dag_file
+- id: 1ac3c0fc-933d-526c-bd92-39bbed745d5e
+  type: component
+  name: test_cli_validate
+  description: Function test_cli_validate
+- id: e639c56f-f276-5fc7-890c-49797276985a
+  type: component
+  name: test_cli_node_add
+  description: Function test_cli_node_add
+- id: 5baf7d05-a0df-5e13-82f0-156a44ca68bc
+  type: component
+  name: test_cli_node_update
+  description: Function test_cli_node_update
+- id: 945544f5-4817-56df-bb7c-dfb6053d4f84
+  type: component
+  name: test_cli_node_remove
+  description: Function test_cli_node_remove
+- id: db52e587-d512-5d72-8a6e-eff521d44767
+  type: component
+  name: test_cli_node_list
+  description: Function test_cli_node_list
+- id: 598e31c4-c725-580e-b20b-7e9bd08fa784
+  type: component
+  name: test_cli_edge_add
+  description: Function test_cli_edge_add
+- id: 6c6cff86-b612-5f8d-9634-289b4655d874
+  type: component
+  name: test_cli_edge_remove
+  description: Function test_cli_edge_remove
+- id: 6053d8a7-3dd0-5235-b10b-133abf806dbf
+  type: component
+  name: test_cli_reconcile_returns_bounded_read_only_report
+  description: Function test_cli_reconcile_returns_bounded_read_only_report
+- id: e7f83e89-dfc0-5c43-bf0e-23533fe2d987
+  type: component
+  name: test_cli_reconcile_can_write_a_reproducible_report_artifact
+  description: Function test_cli_reconcile_can_write_a_reproducible_report_artifact
+- id: ae33a850-0f70-58ad-8ec0-267098ec05dc
+  type: component
+  name: test_cli_reconcile_refuses_to_overwrite_input_dags
+  description: Function test_cli_reconcile_refuses_to_overwrite_input_dags
+- id: 0d512ec6-874a-5d29-8297-d192372a0b26
+  type: component
+  name: test_cli_reconcile_refuses_to_overwrite_versioned_state
+  description: Function test_cli_reconcile_refuses_to_overwrite_versioned_state
+- id: e9194825-1bcd-5dda-95a6-ff249ad728d1
+  type: component
+  name: test_cli_mapping_review_and_approve_use_the_same_fresh_evidence
+  description: Function test_cli_mapping_review_and_approve_use_the_same_fresh_evidence
+- id: 9ce05651-500c-5f75-9c1c-5b2b6cd17dc4
+  type: component
+  name: test_cli_diff_is_safe_by_default_and_legacy_is_explicit
+  description: Function test_cli_diff_is_safe_by_default_and_legacy_is_explicit
+- id: f32f9c8e-c4f7-5f2b-955c-dd6909998280
+  type: component
+  name: test_cli_generate_reality_rejects_system_identity_marker_without_output_loss
+  description: Function test_cli_generate_reality_rejects_system_identity_marker_without_output_loss
+- id: 8b385454-109c-58ae-9b05-a2e90c009ea8
+  type: module
+  name: test_dag_manager.py
+  description: Module tests.test_dag_manager
+- id: 482c5ac5-2dad-5759-9271-fef5bac6f89c
+  type: component
+  name: test_dag_manager_initialization
+  description: Function test_dag_manager_initialization
+- id: e7dd6066-5fbc-5dcf-8eb1-899a4abe55f2
+  type: component
+  name: test_dag_manager_add_node
+  description: Function test_dag_manager_add_node
+- id: 2b9ae0b4-cba6-5990-9798-416f5cd948f4
+  type: component
+  name: test_dag_manager_remove_node
+  description: Function test_dag_manager_remove_node
+- id: 40b99d39-fa76-5b8a-a2db-45e0d92c9964
+  type: component
+  name: test_dag_manager_update_node
+  description: Function test_dag_manager_update_node
+- id: d6943fe1-7b16-503d-a71a-9dd3d89d21a9
+  type: component
+  name: test_dag_manager_add_edge
+  description: Function test_dag_manager_add_edge
+- id: fe355bb8-f11c-5f98-949a-febbf5daf83f
+  type: component
+  name: test_dag_manager_remove_edge
+  description: Function test_dag_manager_remove_edge
+- id: 1b54c5ba-5851-52c7-a613-c32cbf23d5a7
+  type: component
+  name: test_cycle_detection
+  description: Function test_cycle_detection
+- id: c5cc8a30-94ef-57e5-8590-42095d457c9b
+  type: component
+  name: test_find_nodes
+  description: Function test_find_nodes
+- id: bc644a99-9a32-5c73-9d3f-fe9a1f4ff135
+  type: module
+  name: test_dependency_contract.py
+  description: Module tests.test_dependency_contract
+- id: 1d0f4a6f-61aa-5fe4-9e26-c89634484036
+  type: component
+  name: test_mcp_dependency_excludes_the_unsupported_v2_api
+  description: Function test_mcp_dependency_excludes_the_unsupported_v2_api
+- id: ba4ab388-6a80-5b3b-b658-cd9d4bb3f5f8
+  type: module
+  name: test_detect.py
+  description: Module tests.test_detect
+- id: 52c6fcf9-b237-5c70-b7a4-364ddbbf4cf4
+  type: component
+  name: TestDetectFrameworks
+  description: Class TestDetectFrameworks
+- id: 196fbaa6-81e7-5195-ba5e-99e7f270c23c
+  type: component
+  name: test_detect_python
+  description: Function test_detect_python
+- id: e2e56b5c-7ec9-58e9-ab2a-4f8a76bff5f5
+  type: component
+  name: test_detect_python_uv
+  description: Function test_detect_python_uv
+- id: 34b57440-e0a3-5df8-94bb-7b2f81c6718a
+  type: component
+  name: test_detect_python_uv_lock
+  description: Function test_detect_python_uv_lock
+- id: 18987c1e-22bc-5aba-b29b-44296b3281a1
+  type: component
+  name: test_detect_node_npm
+  description: Function test_detect_node_npm
+- id: b019e60b-d446-5124-8ace-4344bf47ec81
+  type: component
+  name: test_detect_node_yarn
+  description: Function test_detect_node_yarn
+- id: 4a5b8cc4-88e6-52e5-a0b1-c502f968c31b
+  type: component
+  name: test_detect_rust
+  description: Function test_detect_rust
+- id: a4ed46ab-d143-5c19-8d70-a58856f601ae
+  type: component
+  name: test_detect_multiple
+  description: Function test_detect_multiple
+- id: f70c52cb-bb16-5ac1-8d18-df87613dafa8
+  type: component
+  name: TestGenerateSeedBacklog
+  description: Class TestGenerateSeedBacklog
+- id: fe7f8f8b-af5c-5bcb-b70e-f40ff71bd2b9
+  type: component
+  name: test_generate_universal
+  description: Function test_generate_universal
+- id: 9c05f3ed-f246-51ee-bf97-354b009bd1b9
+  type: component
+  name: test_generate_python
+  description: Function test_generate_python
+- id: d82d04d4-363b-5298-872d-8b12416c40fc
+  type: component
+  name: test_generate_node
+  description: Function test_generate_node
+- id: 1655aa1a-2a2a-5a69-a441-665774b256a1
+  type: component
+  name: test_generate_rust
+  description: Function test_generate_rust
+- id: 77847b8f-a54b-5d6b-b163-b1c6309da020
+  type: component
+  name: test_generate_openspec
+  description: Function test_generate_openspec
+- id: 6ba66ff9-8f5e-56f3-a95a-81109f8d0da1
+  type: component
+  name: test_generate_speckit
+  description: Function test_generate_speckit
+- id: 1f8dc6cf-2d15-59c1-aaad-0fe5144e2ab6
+  type: component
+  name: TestInitCmdIntegration
+  description: Class TestInitCmdIntegration
+- id: bca646a2-c5dc-5c56-8336-5c778f0e838b
+  type: component
+  name: clean_backlog
+  description: Function clean_backlog
+- id: 15faaf7c-18b9-5aa9-831a-b32f07a20f8d
+  type: component
+  name: test_init_empty
+  description: Function test_init_empty
+- id: ecf0b911-15ec-57e3-963d-8eda3ccbe6bd
+  type: component
+  name: test_init_with_detection
+  description: Function test_init_with_detection
+- id: 470b519d-906b-5b0c-ab28-45c0915e3e4e
+  type: module
+  name: test_diffing_engine.py
+  description: Module tests.test_diffing_engine
+- id: 4cabd05f-38b9-51eb-830a-644e8ab23f73
+  type: component
+  name: create_sample_dag
+  description: Function create_sample_dag
+- id: 3fb0a300-2fc9-5d94-99e5-ce4845cee45c
+  type: component
+  name: create_legacy_engine
+  description: Exercise the compatibility algorithm explicitly; safe mode is tested
+    separately.
+- id: bfb654f5-1e3d-54b6-ba06-ec291991eaec
+  type: component
+  name: test_missing_node
+  description: Function test_missing_node
+- id: fb2e00a3-c5e2-56e1-9522-af249c1a8795
+  type: component
+  name: test_extraneous_node
+  description: Function test_extraneous_node
+- id: 72843ab5-e72d-5b52-bd46-f43bbb70f4ea
+  type: component
+  name: test_drift_node
+  description: Function test_drift_node
+- id: 56843600-abcc-58cc-9e55-489c78c9cd42
+  type: component
+  name: test_missing_edge
+  description: Function test_missing_edge
+- id: a6aad213-315f-50d3-9e98-ff063356253b
+  type: component
+  name: test_missing_edge_with_missing_nodes
+  description: Function test_missing_edge_with_missing_nodes
+- id: d9567c2f-8bd9-5ca7-ac17-9e18cb4233c5
+  type: component
+  name: test_extraneous_edge
+  description: Function test_extraneous_edge
+- id: ffd13441-9370-5702-8dd0-d5f42ff77545
+  type: component
+  name: test_unmapped_node_with_no_parents
+  description: Function test_unmapped_node_with_no_parents
+- id: 6e9024b1-c07f-5e32-a3e5-4305264fe3c3
+  type: component
+  name: test_unmapped_node_with_unmapped_parent
+  description: Function test_unmapped_node_with_unmapped_parent
+- id: 91687f0d-9337-54b0-a7a4-f4502c89631c
+  type: component
+  name: test_unmapped_node_with_mapped_parent
+  description: Function test_unmapped_node_with_mapped_parent
+- id: 88125128-cc8d-54f8-9798-bdb06aba9769
+  type: component
+  name: test_unmapped_node_with_mapped_grandparent
+  description: Function test_unmapped_node_with_mapped_grandparent
+- id: 522cc4a4-81fc-5e8e-b176-f90b51e7efe2
+  type: component
+  name: test_circular_dependency_resiliency
+  description: Function test_circular_dependency_resiliency
+- id: 6a2d84d3-1259-5016-b5ea-82b90183905c
+  type: module
+  name: test_functional_bug.py
+  description: Module tests.test_functional_bug
+- id: c963a71c-aa12-5d19-8634-f480b5b585b8
+  type: endpoint
+  name: test_cli_unconditional_archival_edge_case
+  description: Function test_cli_unconditional_archival_edge_case
+- id: 7f6f0ca3-5e2c-54b1-8334-9829e34152e2
+  type: module
+  name: test_guid_extractor_adversarial.py
+  description: Module tests.test_guid_extractor_adversarial
+- id: bd1801d9-8dc5-5005-9203-5d1a5a16a4ea
+  type: component
+  name: test_python_malformed_hex_uuid_crash
+  description: Function test_python_malformed_hex_uuid_crash
+- id: 55603daf-5845-5523-91d4-2a66ba45c24f
+  type: component
+  name: test_markdown_invalid_uuid_crash
+  description: Function test_markdown_invalid_uuid_crash
+- id: 566f025c-8865-59e6-8b26-65ec98ca28f3
+  type: component
+  name: test_markdown_integer_uuid_crash
+  description: Function test_markdown_integer_uuid_crash
+- id: def5f46c-9492-58bf-830d-0bef09e1b4e4
+  type: module
+  name: test_guid_validation_adversarial.py
+  description: Module tests.test_guid_validation_adversarial
+- id: e6505b81-1f78-580d-a94d-535df16500f3
+  type: component
+  name: test_node_id_strict_uuid
+  description: Function test_node_id_strict_uuid
+- id: 7ebe98a5-2c9d-5ca1-861d-036f9ee21dd0
+  type: component
+  name: test_edge_source_target_strict_uuid
+  description: Function test_edge_source_target_strict_uuid
+- id: e98f7b5a-6918-5dab-ae61-de83861a6f64
+  type: module
+  name: test_intake_adversarial.py
+  description: Module tests.test_intake_adversarial
+- id: 84bb2a44-de9d-5498-9e8a-bf606517b52e
+  type: component
+  name: test_intake_agent_adversarial_security
+  description: Function test_intake_agent_adversarial_security
+- id: 5d8d9e09-0b89-5c48-b718-1b86b155d300
+  type: module
+  name: test_intake_agent.py
+  description: Module tests.test_intake_agent
+- id: 16a2cae7-a929-5464-a303-e8ede4eec73a
+  type: component
+  name: test_intake_agent_prompt_contains_deduplication
+  description: Function test_intake_agent_prompt_contains_deduplication
+- id: f8e35e99-63af-57cf-9055-66ed9a2a42c1
+  type: component
+  name: test_intake_agent_deduplication_mock_behavior
+  description: "\r\n    Simulates the intake agent receiving a duplicate request and\
+    \ verifies\r\n    it loads configuration properly and behaves as expected via\
+    \ a mocked Agent.\r\n    "
+- id: 58608c3e-4108-5f19-b87d-f07956cd195c
+  type: module
+  name: test_intent_ir.py
+  description: Module tests.test_intent_ir
+- id: ae6b567e-86a1-5cf6-9ac8-fded8b3193ae
+  type: component
+  name: test_intent_ir_round_trips_through_dag_yaml
+  description: Function test_intent_ir_round_trips_through_dag_yaml
+- id: 57377f37-2e28-5dcb-aa42-6f8c4c2b329b
+  type: component
+  name: test_intent_ir_rejects_incomplete_or_invalid_core_fields
+  description: Function test_intent_ir_rejects_incomplete_or_invalid_core_fields
+- id: 2081188b-5e49-5038-b859-1471c0aa72ea
+  type: component
+  name: test_intent_ir_rejects_non_increasing_revision_history
+  description: Function test_intent_ir_rejects_non_increasing_revision_history
+- id: 5441ec78-5b83-55ff-9ae9-c26db1b9f958
+  type: component
+  name: test_intent_revision_requires_timezone_aware_timestamp
+  description: Function test_intent_revision_requires_timezone_aware_timestamp
+- id: 1f0858cf-7277-58c6-bbac-cdce03baf568
+  type: component
+  name: test_intent_ir_rejects_duplicate_acceptance_criterion_ids
+  description: Function test_intent_ir_rejects_duplicate_acceptance_criterion_ids
+- id: 0c026709-faeb-5559-b6a4-ebe5949c2def
+  type: component
+  name: test_acceptance_criterion_rejects_blank_evidence_reference
+  description: Function test_acceptance_criterion_rejects_blank_evidence_reference
+- id: acdcaa8f-f75a-5185-8e82-f6add8f39170
+  type: component
+  name: test_resolved_ambiguity_requires_resolution
+  description: Function test_resolved_ambiguity_requires_resolution
+- id: e528c0b8-a3fd-5ab7-a6e0-13598d876541
+  type: component
+  name: test_approved_intent_requires_approval_audit_fields
+  description: Function test_approved_intent_requires_approval_audit_fields
+- id: f69b30fe-006c-5e47-8731-a47804456233
+  type: component
+  name: test_approved_intent_requires_timezone_aware_approval_timestamp
+  description: Function test_approved_intent_requires_timezone_aware_approval_timestamp
+- id: fa1fe169-e96d-5f32-b781-096ac3828520
+  type: component
+  name: test_strict_intent_validation_reports_nodes_without_intent
+  description: Function test_strict_intent_validation_reports_nodes_without_intent
+- id: 80855d1c-4ba6-5a62-8def-e46fad168982
+  type: component
+  name: test_node_updates_revalidate_intent_ir
+  description: Function test_node_updates_revalidate_intent_ir
+- id: debe243b-99e1-5bae-8586-59eae1d1bbff
+  type: component
+  name: test_intent_summary_is_reviewable_without_raw_yaml
+  description: Function test_intent_summary_is_reviewable_without_raw_yaml
+- id: a5acbbee-4a36-5133-a2e3-784f907b4730
+  type: component
+  name: test_intent_cli_validates_and_summarizes
+  description: Function test_intent_cli_validates_and_summarizes
+- id: 6b957405-800a-5af4-8323-cc9a81061f2b
+  type: module
+  name: test_intent_mutation.py
+  description: Module tests.test_intent_mutation
+- id: 0f519f09-c7d6-57ac-a441-f63cf11536ba
+  type: component
+  name: test_update_intent_file_creates_and_revises_with_expected_revision
+  description: Function test_update_intent_file_creates_and_revises_with_expected_revision
+- id: 8fb81fbe-8cab-59f8-9858-f70f0ca2114a
+  type: component
+  name: test_create_intent_node_file_adds_node_and_payload_atomically
+  description: Function test_create_intent_node_file_adds_node_and_payload_atomically
+- id: 8ba78a12-0c68-5df4-ad16-0dc110be419b
+  type: component
+  name: test_create_intent_node_file_requires_intent_payload
+  description: Function test_create_intent_node_file_requires_intent_payload
+- id: cfc544e2-9d89-51a5-9ca2-6820452053f8
+  type: component
+  name: test_create_intent_node_file_requires_exactly_initial_revision
+  description: Function test_create_intent_node_file_requires_exactly_initial_revision
+- id: 1f2303aa-b094-5eae-9195-580a6052bd88
+  type: component
+  name: test_update_intent_file_rejects_stale_writer
+  description: Function test_update_intent_file_rejects_stale_writer
+- id: c115718b-816c-5fca-bc5e-2305a0096441
+  type: component
+  name: test_update_intent_file_rejects_history_rewrite
+  description: Function test_update_intent_file_rejects_history_rewrite
+- id: f7ac69d4-edc4-5aa5-8634-14d2afe58daf
+  type: component
+  name: test_update_intent_file_preserves_original_on_replace_failure
+  description: Function test_update_intent_file_preserves_original_on_replace_failure
+- id: 1d1ec987-c467-53ab-a486-9bb22357fcef
+  type: component
+  name: test_intent_cli_sets_payload_from_json_file
+  description: Function test_intent_cli_sets_payload_from_json_file
+- id: f2408acd-9a0e-5189-a192-65bf4ef809b7
+  type: component
+  name: test_intent_cli_creates_node_with_payload
+  description: Function test_intent_cli_creates_node_with_payload
+- id: e869864c-5e49-5ffd-ab1b-42b62549ab62
+  type: component
+  name: test_mcp_intent_tools_use_project_path_and_protected_file
+  description: Function test_mcp_intent_tools_use_project_path_and_protected_file
+- id: 14ceeddf-0f1b-5792-9398-33792fb158ae
+  type: component
+  name: test_mcp_create_intent_node_uses_canonical_project_dag
+  description: Function test_mcp_create_intent_node_uses_canonical_project_dag
+- id: 6d8e9fa4-cca4-5057-962a-e17c10b61836
+  type: component
+  name: test_mcp_set_intent_rejects_invalid_json_without_mutation
+  description: Function test_mcp_set_intent_rejects_invalid_json_without_mutation
+- id: c1552c03-0124-5c46-9234-fbfdf964fd5d
+  type: module
+  name: test_local_authority.py
+  description: Module tests.test_local_authority
+- id: c45ff811-6b49-59aa-8fbf-bdbda819c74b
+  type: component
+  name: test_cli_has_no_github_sync_surface
+  description: Function test_cli_has_no_github_sync_surface
+- id: 3f1f1d2d-cb00-5519-9bff-abe3f3456bbb
+  type: component
+  name: test_init_rejects_removed_github_option
+  description: Function test_init_rejects_removed_github_option
+- id: de2dd1c6-7b30-574e-9086-a169912d212e
+  type: component
+  name: test_legacy_github_config_cannot_redirect_backlog_operations
+  description: Function test_legacy_github_config_cannot_redirect_backlog_operations
+- id: 6dda4b49-8c38-591d-a3e1-d1be627b50e9
+  type: component
+  name: test_init_records_local_as_the_only_mode
+  description: Function test_init_records_local_as_the_only_mode
+- id: d11b0dcd-8c4e-5464-856c-3f99573c259c
+  type: component
+  name: test_failed_backlog_write_preserves_previous_state
+  description: Function test_failed_backlog_write_preserves_previous_state
+- id: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
+  type: module
+  name: test_mapping.py
+  description: Module tests.test_mapping
+- id: 607f9d02-4c5a-5f83-a8f3-a1edba192337
+  type: component
+  name: test_mapping_review_binds_fresh_candidate_to_exact_source_without_mutation
+  description: Function test_mapping_review_binds_fresh_candidate_to_exact_source_without_mutation
+- id: 49bb24d8-7a77-5a4b-b2f5-84ccf7e89a58
+  type: component
+  name: test_mapping_approval_atomically_marks_and_confirms_exact_python_symbol
+  description: Function test_mapping_approval_atomically_marks_and_confirms_exact_python_symbol
+- id: 41270516-9ff9-55bd-8455-a677d19ee39d
+  type: component
+  name: test_mapping_approval_waits_for_workspace_migration_lock
+  description: Function test_mapping_approval_waits_for_workspace_migration_lock
+- id: e5d9c81a-f55b-5840-8688-9b3445c592b3
+  type: component
+  name: test_mapping_marker_precedes_decorators_and_preserves_crlf
+  description: Function test_mapping_marker_precedes_decorators_and_preserves_crlf
+- id: f298a1f9-3a8a-5a93-a239-ea17b8048062
+  type: component
+  name: test_mapping_approval_rejects_stale_evidence_without_rewriting_source
+  description: Function test_mapping_approval_rejects_stale_evidence_without_rewriting_source
+- id: 54588a4b-724e-50b7-95ec-48922ee0557d
+  type: component
+  name: test_mapping_approval_rejects_non_candidates_without_mutation
+  description: Function test_mapping_approval_rejects_non_candidates_without_mutation
+- id: 85fcb345-fa22-5b99-af1c-ddd49e5c6cd7
+  type: component
+  name: test_mapping_approval_rejects_candidate_or_digest_mismatch
+  description: Function test_mapping_approval_rejects_candidate_or_digest_mismatch
+- id: 20e0c37e-feb8-5a26-a465-e1e09dba80d1
+  type: component
+  name: test_mapping_approval_rolls_back_original_bytes_when_verification_fails
+  description: Function test_mapping_approval_rolls_back_original_bytes_when_verification_fails
+- id: a11bcbea-2b42-5708-9540-71b1eedba171
+  type: component
+  name: test_mapping_review_rejects_source_symlink_that_escapes_project
+  description: Function test_mapping_review_rejects_source_symlink_that_escapes_project
+- id: 0f66e8c4-8f30-51d7-8a78-04603ffc6a96
+  type: component
+  name: test_mapping_approval_rejects_hidden_duplicate_canonical_marker
+  description: Function test_mapping_approval_rejects_hidden_duplicate_canonical_marker
+- id: ab384f07-9992-5747-bc1f-4c0f9fb86a1e
+  type: component
+  name: test_mapping_review_blocks_one_candidate_with_multiple_source_definitions
+  description: Function test_mapping_review_blocks_one_candidate_with_multiple_source_definitions
+- id: c2d990f9-0096-5cb7-80ea-8ced3320caa4
+  type: component
+  name: test_mapping_approval_requires_nonempty_audit_fields_and_timezone
+  description: Function test_mapping_approval_requires_nonempty_audit_fields_and_timezone
+- id: c2ff5cd1-a00b-5918-a85f-fdfaa06beef0
+  type: module
+  name: test_markdown_parser.py
+  description: Module tests.test_markdown_parser
+- id: f742f545-d90a-5a6a-b2bd-e8a355206050
+  type: component
+  name: test_extract_h2_with_valid_markdown
+  description: Function test_extract_h2_with_valid_markdown
+- id: bbab37d4-301f-5b40-abcc-f639d8f51f10
+  type: component
+  name: test_extract_h2_no_h2_headers
+  description: Function test_extract_h2_no_h2_headers
+- id: bf11dfed-7855-5d96-b061-f88ffcba8671
+  type: component
+  name: test_extract_h2_empty_file
+  description: Function test_extract_h2_empty_file
+- id: c9b38431-7b50-5af2-b1e4-21e321e5a2f6
+  type: component
+  name: test_extract_h2_file_not_found
+  description: Function test_extract_h2_file_not_found
+- id: 5b3a04ac-053e-5b70-a7c0-395880ff103f
+  type: module
+  name: test_markdown_parser_adversarial.py
+  description: Module tests.test_markdown_parser_adversarial
+- id: e477a9b0-eaf9-5509-bf84-cdfa78355c4d
+  type: component
+  name: test_markdown_parser_realistic_agent_file
+  description: Function test_markdown_parser_realistic_agent_file
+- id: be111a39-518d-5a75-9d7a-3a929e1bf72f
+  type: module
+  name: test_markdown_parser_encoding_adversarial.py
+  description: Module tests.test_markdown_parser_encoding_adversarial
+- id: ba403fa7-8e34-5d64-8150-0856018ce2fe
+  type: component
+  name: test_markdown_parser_invalid_encoding
+  description: Function test_markdown_parser_invalid_encoding
+- id: bc84de34-c0ea-5215-a086-c3b4d2eac880
+  type: module
+  name: test_mcp_adversarial.py
+  description: Module tests.test_mcp_adversarial
+- id: 85a1ff9a-5afe-54d4-a044-247686c170e9
+  type: component
+  name: test_mcp_arbitrary_file_write_vulnerability
+  description: Function test_mcp_arbitrary_file_write_vulnerability
+- id: 300b5e69-1e98-5b6b-8aa0-4b84713d76da
+  type: module
+  name: test_mcp_server.py
+  description: Module tests.test_mcp_server
+- id: 0606fdad-9caf-569e-adf7-0622f9a6ee0a
+  type: component
+  name: test_mcp_generate_document
+  description: Function test_mcp_generate_document
+- id: 571dd9db-e9ec-5b92-9e20-d6262054ac14
+  type: component
+  name: test_mcp_generate_document_error
+  description: Function test_mcp_generate_document_error
+- id: 5b22d651-5205-5065-ae8a-f44594ac3ef6
+  type: component
+  name: test_mcp_generate_document_uses_explicit_project_path
+  description: Function test_mcp_generate_document_uses_explicit_project_path
+- id: 41630ef8-a557-5f04-b37f-7de2baac240e
+  type: component
+  name: test_mcp_generate_document_defaults_to_framework_changes
+  description: Function test_mcp_generate_document_defaults_to_framework_changes
+- id: 0562a648-29c2-578c-bd36-90bc2e3ea221
+  type: component
+  name: test_mcp_reconcile_dags_returns_the_same_evidence_report
+  description: Function test_mcp_reconcile_dags_returns_the_same_evidence_report
+- id: 88c3cb2c-8920-5b1f-b2fc-83ca5864101e
+  type: component
+  name: test_mcp_mapping_review_and_approval_use_source_bound_evidence
+  description: Function test_mcp_mapping_review_and_approval_use_source_bound_evidence
+- id: c89cf80c-c223-536d-9d0e-235dbd48443c
+  type: module
+  name: test_migrate_ids_adversarial.py
+  description: Module tests.test_migrate_ids_adversarial
+- id: 0241c54b-6b96-55d2-a55c-dd039443b228
+  type: component
+  name: DummyArgs
+  description: Class DummyArgs
+- id: 234a139c-3147-50f2-bb10-fa938abb7598
+  type: component
+  name: test_migrate_ids_maintains_cross_file_consistency
+  description: Function test_migrate_ids_maintains_cross_file_consistency
+- id: e23fede4-ba23-565d-b7ef-92a61bd55bca
+  type: module
+  name: test_next.py
+  description: Module tests.test_next
+- id: 9168376b-1331-568e-b1df-f2a8cbc35a71
+  type: component
+  name: clean_backlog
+  description: Function clean_backlog
+- id: 1372b175-e4f2-5c8f-aba9-a0e38fb1ce52
+  type: component
+  name: TestNextCmd
+  description: Class TestNextCmd
+- id: a923d909-a548-5ec6-9b56-de3792eaa368
+  type: component
+  name: test_next_empty
+  description: Function test_next_empty
+- id: c1039db9-ea4e-5c75-be32-2f47af934f9b
+  type: component
+  name: test_next_simple
+  description: Function test_next_simple
+- id: c89dbf3d-99b5-5619-997e-779d545913a9
+  type: component
+  name: test_next_skips_completed
+  description: Function test_next_skips_completed
+- id: facdd4e1-4cae-5e31-a2e4-ff14791c35ac
+  type: component
+  name: test_next_skips_blocked
+  description: Function test_next_skips_blocked
+- id: 1c2afa24-9a0b-5e8b-8704-0b11edb10be1
+  type: component
+  name: test_next_all_unworkable
+  description: Function test_next_all_unworkable
+- id: d662b00c-3ccd-50c2-b2ee-ae2f6969a9f2
+  type: component
+  name: test_next_human_format
+  description: Function test_next_human_format
+- id: d86ce102-6f13-5a54-9197-b59144c9720b
+  type: module
+  name: test_orchestrator_loop.py
+  description: Module tests.test_orchestrator_loop
+- id: 29eba330-5804-5fb8-911d-fa751de9182c
+  type: component
+  name: mock_dag_manager
+  description: Function mock_dag_manager
+- id: 30f070d7-a39a-593a-b98c-54e4a91c9f50
+  type: component
+  name: mock_diffing_engine
+  description: Function mock_diffing_engine
+- id: f02b2555-f42b-570d-8d7c-25bcd263c71a
+  type: component
+  name: mock_core
+  description: Function mock_core
+- id: e3d3c8fb-a5f1-5f2f-8213-7e40febf1b38
+  type: component
+  name: mock_agent
+  description: Function mock_agent
+- id: c10f0b08-b80d-5182-9fab-7a79677c627f
+  type: component
+  name: test_ingest_diff
+  description: Function test_ingest_diff
+- id: 6f236d8d-8b1b-558f-8dbb-66cbb7b1854a
+  type: component
+  name: test_ingest_diff_empty
+  description: Function test_ingest_diff_empty
+- id: 5fa60525-ec00-5e90-b6b7-bd74014f6422
+  type: component
+  name: test_ingest_diff_overlapping_updates
+  description: Function test_ingest_diff_overlapping_updates
+- id: 696ec9e0-9f59-5aab-bc9e-8d335daa2d1b
+  type: component
+  name: test_ingest_diff_malformed_mocks
+  description: Function test_ingest_diff_malformed_mocks
+- id: dc005c4e-26c6-5f1a-8bd4-455b2e211b91
+  type: component
+  name: test_execute_task_with_agent
+  description: Function test_execute_task_with_agent
+- id: d367ec29-9b1a-5a91-a888-90eb76bc81d9
+  type: component
+  name: test_main_loop
+  description: Function test_main_loop
+- id: 3bdd1c69-abb3-5797-96c0-36519363a63d
+  type: component
+  name: test_main_loop_failure
+  description: Function test_main_loop_failure
+- id: 346fe91e-beb6-5a33-bbda-8e52e4213394
+  type: component
+  name: test_main_loop_malformed_task
+  description: Function test_main_loop_malformed_task
+- id: f733181c-4b30-51a2-82d0-363dc94473bd
+  type: module
+  name: test_prioritize.py
+  description: Module tests.test_prioritize
+- id: 491e575d-8984-5c63-9c7b-dfd616bb39ef
+  type: component
+  name: clean_backlog
+  description: Run every test inside a temporary directory so backlog.json is isolated.
+- id: f6fce8d4-4527-5807-87e8-65540abd7277
+  type: component
+  name: TestSingleItem
+  description: Class TestSingleItem
+- id: aefcc095-4be7-54a7-b471-f4335bcfb6f7
+  type: component
+  name: test_single_item_scores
+  description: Function test_single_item_scores
+- id: 896d7138-66bb-5e7f-831c-4d85430eef4c
+  type: component
+  name: TestLinearChain
+  description: "A \u2192 B \u2192 C  (C requires B, B requires A)."
+- id: 68f8e973-2535-5a21-b55b-3111d1889751
+  type: component
+  name: test_order_and_scores
+  description: Function test_order_and_scores
+- id: 5e691e8a-25d3-56cc-a5f5-8b64a6f4aad3
+  type: component
+  name: TestDiamondDependency
+  description: "\r\n    D depends on B and C; B and C both depend on A.\r\n      \
+    \   A\r\n        / \\\\\r\n       B   C\r\n        \\\\ /\r\n         D\r\n  \
+    \  "
+- id: e9600b08-363f-5de2-97f5-51952b16b449
+  type: component
+  name: test_diamond
+  description: Function test_diamond
+- id: 230bb098-71b3-554d-ac97-b4161b178967
+  type: component
+  name: TestCircularDependency
+  description: Class TestCircularDependency
+- id: 25f4e13a-a8b2-571f-b903-5558dcc97cfa
+  type: component
+  name: test_circular_raises
+  description: Function test_circular_raises
+- id: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
+  type: module
+  name: test_reality_generator.py
+  description: Module tests.test_reality_generator
+- id: ce6f1690-67f5-5328-a6f8-d116fcca829a
+  type: component
+  name: test_reality_generator_basic
+  description: Function test_reality_generator_basic
+- id: 4e69c047-f110-52a7-ae49-9b0488769bb3
+  type: component
+  name: test_reality_generator_depends_on
+  description: Function test_reality_generator_depends_on
+- id: 615c27a9-bb15-5367-8b7b-a9e423b2ac6c
+  type: component
+  name: test_reality_generator_agents
+  description: Function test_reality_generator_agents
+- id: f3f6cf2e-53d4-55ce-8236-0eafd085c905
+  type: component
+  name: test_reality_generator_python_guid_extraction
+  description: Function test_reality_generator_python_guid_extraction
+- id: f970fd43-c9c9-5739-99a6-2ff663e94846
+  type: component
+  name: test_reality_generator_definition_guid_does_not_replace_module_identity
+  description: Function test_reality_generator_definition_guid_does_not_replace_module_identity
+- id: 19edeec5-04e3-5f2d-b83b-9fd66dd6699f
+  type: component
+  name: test_reality_generator_rejects_duplicate_canonical_source_markers
+  description: Function test_reality_generator_rejects_duplicate_canonical_source_markers
+- id: bfd2e345-16bc-5633-8057-be5145970c9a
+  type: component
+  name: test_reality_generator_skips_nonstructural_expression_trees
+  description: Function test_reality_generator_skips_nonstructural_expression_trees
+- id: eb5a2adf-d33a-5be4-9c15-82b3ccf6b86e
+  type: component
+  name: test_reality_generator_excludes_framework_state_directories
+  description: Function test_reality_generator_excludes_framework_state_directories
+- id: fc20cc3f-230d-5b6f-9cd8-fb0646ced58a
+  type: component
+  name: test_reality_generator_parses_project_source_without_native_crash
+  description: Function test_reality_generator_parses_project_source_without_native_crash
+- id: 1c27a5d8-bfbb-50a5-984f-f80714abd540
+  type: component
+  name: test_reality_generator_agent_guid_extraction
+  description: Function test_reality_generator_agent_guid_extraction
+- id: 3acc05d8-0792-569c-843b-93f8bee063ab
+  type: component
+  name: test_reality_generator_agent_numeric_guid_extraction
+  description: Function test_reality_generator_agent_numeric_guid_extraction
+- id: a878d805-54f0-5ab8-940d-b236fe69ea08
+  type: module
+  name: test_reconciliation.py
+  description: Module tests.test_reconciliation
+- id: 35f020c1-fed3-592d-9957-2a03f54a6792
+  type: component
+  name: test_reconciliation_classifies_identity_without_inventing_mappings
+  description: Function test_reconciliation_classifies_identity_without_inventing_mappings
+- id: 74dc5819-4b7a-5f58-a78b-d6e84557cf29
+  type: component
+  name: test_reconciliation_output_is_deterministic_and_bounded_without_hiding_totals
+  description: Function test_reconciliation_output_is_deterministic_and_bounded_without_hiding_totals
+- id: 989614c6-e114-5762-8959-49c2b81f9472
+  type: component
+  name: test_one_reality_candidate_cannot_be_proposed_for_multiple_intents
+  description: Function test_one_reality_candidate_cannot_be_proposed_for_multiple_intents
+- id: 5b22abe7-38ff-5f11-aa9c-a25521dcc81a
+  type: component
+  name: test_duplicate_intent_names_without_reality_do_not_invent_shared_candidates
+  description: Function test_duplicate_intent_names_without_reality_do_not_invent_shared_candidates
+- id: 889e684a-7cf5-5623-913b-446d4266cfbd
+  type: component
+  name: test_reconciliation_preserves_unicode_identity_and_rejects_empty_keys
+  description: Function test_reconciliation_preserves_unicode_identity_and_rejects_empty_keys
+- id: 568a48c6-b79f-530d-9ddc-9c563d55f38a
+  type: component
+  name: test_reconciliation_bounds_nested_ambiguous_evidence_with_complete_totals
+  description: Function test_reconciliation_bounds_nested_ambiguous_evidence_with_complete_totals
+- id: a5035bc1-df8d-5751-a6b9-575d60472873
+  type: component
+  name: test_reconciliation_confirms_mixed_case_text_forms_of_the_same_guid
+  description: Function test_reconciliation_confirms_mixed_case_text_forms_of_the_same_guid
+- id: 23ad157a-00e7-5603-9608-5ef017c78c38
+  type: component
+  name: test_reconciliation_rejects_duplicate_text_forms_of_one_canonical_guid
+  description: Function test_reconciliation_rejects_duplicate_text_forms_of_one_canonical_guid
+- id: bb2e6079-8969-52e3-8d88-10a0b20b7045
+  type: component
+  name: test_safe_diff_requests_review_and_never_infers_creation_or_deletion
+  description: Function test_safe_diff_requests_review_and_never_infers_creation_or_deletion
+- id: 52bb8542-78e8-551e-ac28-b162bebbb34a
+  type: component
+  name: test_safe_diff_caps_review_work_and_preserves_complete_counts
+  description: Function test_safe_diff_caps_review_work_and_preserves_complete_counts
+- id: 7d191475-64c3-5775-ba45-29628393aba9
+  type: component
+  name: test_safe_diff_task_keys_cannot_drop_intents_with_shared_id_prefixes
+  description: Function test_safe_diff_task_keys_cannot_drop_intents_with_shared_id_prefixes
+- id: a48c05df-e234-5ca5-81a1-a62fa037812e
+  type: component
+  name: test_safe_diff_canonicalizes_equivalent_mixed_case_edges
+  description: Function test_safe_diff_canonicalizes_equivalent_mixed_case_edges
+- id: 4b25bf5f-946f-5097-94b9-ff868ac64288
+  type: component
+  name: test_safe_diff_deduplicates_identical_logical_edges
+  description: Function test_safe_diff_deduplicates_identical_logical_edges
+- id: b4354761-1c0e-51dc-a7c9-269c1fde35d9
+  type: component
+  name: test_safe_diff_bounds_edges_in_canonical_order_not_input_order
+  description: Function test_safe_diff_bounds_edges_in_canonical_order_not_input_order
+- id: e38cf6c4-4df6-5bb0-a838-ea61baae70da
+  type: component
+  name: test_safe_diff_prioritizes_actionable_candidates_before_unmapped_intent
+  description: Function test_safe_diff_prioritizes_actionable_candidates_before_unmapped_intent
+- id: 05fc6c09-9731-5dcb-b32b-6d564298af1e
+  type: component
+  name: test_safe_diff_does_not_treat_missing_observations_as_drift
+  description: Function test_safe_diff_does_not_treat_missing_observations_as_drift
+- id: a38bb022-995e-52dc-b156-6c1a74161f39
+  type: component
+  name: test_safe_diff_does_not_treat_unspecified_intent_domain_as_drift
+  description: Function test_safe_diff_does_not_treat_unspecified_intent_domain_as_drift
+- id: 18a673bd-853c-5c7f-92b1-c7906a15f93d
+  type: component
+  name: test_safe_diff_reports_observed_contradictions_for_confirmed_identity
+  description: Function test_safe_diff_reports_observed_contradictions_for_confirmed_identity
+- id: a79bd829-cd38-5fd2-b2d2-28e80897b4f1
+  type: component
+  name: test_legacy_structural_diff_requires_explicit_policy
+  description: Function test_legacy_structural_diff_requires_explicit_policy
+- id: 3cb65517-d8e5-5788-97c8-d5b205108d15
+  type: module
+  name: test_security.py
+  description: Module tests.test_security
+- id: da7aa9c3-ccde-5b1f-bd9b-a271b8a4c7bd
+  type: component
+  name: test_symlink_arbitrary_write_vulnerability
+  description: Function test_symlink_arbitrary_write_vulnerability
+- id: 70b21164-bf77-5ed5-98ed-fc00789a9087
+  type: module
+  name: test_security_adversarial.py
+  description: Module tests.test_security_adversarial
+- id: 4cadabca-74ed-5899-900e-38fe3f4c2139
+  type: component
+  name: test_no_excessive_permissions
+  description: Function test_no_excessive_permissions
+- id: 809432e9-aaba-5b9d-a1ed-d537129f6259
+  type: component
+  name: test_grep_search_in_tools
+  description: Function test_grep_search_in_tools
+- id: 7bb11dbc-3295-5af9-a19e-70455169489f
+  type: module
+  name: test_state_integrity.py
+  description: Module tests.test_state_integrity
+- id: 35d2e6ca-f605-5fda-8216-6d32564a2484
+  type: component
+  name: test_missing_backlog_uses_current_schema
+  description: Function test_missing_backlog_uses_current_schema
+- id: c0a12108-ad5d-5325-9156-f810f9a3ed27
+  type: component
+  name: test_legacy_items_migrate_deterministically_without_an_implicit_write
+  description: Function test_legacy_items_migrate_deterministically_without_an_implicit_write
+- id: bd656ebd-8f47-54a8-a167-5502777bad66
+  type: component
+  name: test_explicit_migration_persists_current_schema_and_audits_it
+  description: Function test_explicit_migration_persists_current_schema_and_audits_it
+- id: 5690c596-77f7-5f8c-939f-8ef0c35806f8
+  type: component
+  name: test_cli_exposes_explicit_local_state_migration
+  description: Function test_cli_exposes_explicit_local_state_migration
+- id: bddfa6eb-251d-515a-8234-0ba5822c4b7e
+  type: component
+  name: test_cli_migrates_legacy_layout_before_schema_migration
+  description: Function test_cli_migrates_legacy_layout_before_schema_migration
+- id: 88080ea6-ef86-5bc7-bf28-a2ad29a5f0e0
+  type: component
+  name: test_legacy_generated_backlog_is_archived_and_retired_idempotently
+  description: Function test_legacy_generated_backlog_is_archived_and_retired_idempotently
+- id: edd9f5f9-42b2-5e10-9350-761de66bac2b
+  type: component
+  name: test_legacy_backlog_retirement_rejects_a_symlinked_archive_parent
+  description: Function test_legacy_backlog_retirement_rejects_a_symlinked_archive_parent
+- id: d1e24152-4c50-5373-b5e4-a0ef926d7b06
+  type: component
+  name: test_future_schema_is_rejected_without_modifying_state
+  description: Function test_future_schema_is_rejected_without_modifying_state
+- id: b7e23a2c-73ea-51bc-b504-8a3381778c3e
+  type: component
+  name: test_save_writes_a_prepared_and_committed_audit_pair
+  description: Function test_save_writes_a_prepared_and_committed_audit_pair
+- id: e9d58814-9b72-58d4-a67c-2c9f47ac8bc2
+  type: component
+  name: test_stale_writer_is_rejected_instead_of_losing_a_concurrent_update
+  description: Function test_stale_writer_is_rejected_instead_of_losing_a_concurrent_update
+- id: 9cfad7cd-b6a9-5d0d-946c-772adcc56ade
+  type: component
+  name: test_unversioned_writer_cannot_replace_versioned_state
+  description: Function test_unversioned_writer_cannot_replace_versioned_state
+- id: 16af73d1-a771-5318-b00d-e983d104f05c
+  type: component
+  name: test_failed_replace_preserves_state_and_is_reconciled_as_rolled_back
+  description: Function test_failed_replace_preserves_state_and_is_reconciled_as_rolled_back
+- id: f8b49d60-090b-5e25-9757-008ae3a1249b
+  type: component
+  name: test_load_recovers_commit_when_audit_commit_was_interrupted
+  description: Function test_load_recovers_commit_when_audit_commit_was_interrupted
+- id: 1ac11d2d-dd93-521f-93b2-359ac6c60a53
+  type: component
+  name: test_load_repairs_a_truncated_final_audit_record
+  description: Function test_load_repairs_a_truncated_final_audit_record
+- id: 97a79199-7261-572e-94bf-052e2bfcbab6
+  type: module
+  name: test_status.py
+  description: Module tests.test_status
+- id: d2cd7790-0a72-5427-844a-de63b9a596ce
+  type: component
+  name: clean_backlog
+  description: Function clean_backlog
+- id: f5f24385-5672-59c9-a6c0-cd703b071e61
+  type: component
+  name: TestBackwardCompat
+  description: Class TestBackwardCompat
+- id: a8b520a2-dd09-52f5-8676-38450f181734
+  type: component
+  name: test_missing_status_defaults_to_new
+  description: Items without a status field should be treated as 'New'.
+- id: cbdc20f0-0f80-5046-9850-630fbc802e30
+  type: component
+  name: test_explicit_status_is_respected
+  description: Function test_explicit_status_is_respected
+- id: 18773878-fc79-5b42-8346-46edf1abb7e3
+  type: component
+  name: TestCompletedScoring
+  description: Class TestCompletedScoring
+- id: b16eed8d-065d-54ab-959d-803a9b53f7d6
+  type: component
+  name: test_completed_item_gets_zero_scores
+  description: Function test_completed_item_gets_zero_scores
+- id: d4f87c27-3613-55ac-9625-cbc0916087a3
+  type: component
+  name: test_completed_item_sinks_to_bottom
+  description: Function test_completed_item_sinks_to_bottom
+- id: 36ce0804-722d-53fa-adad-48ce0a7458c0
+  type: component
+  name: TestStatusCmd
+  description: Class TestStatusCmd
+- id: d9ed8cbc-aaeb-5aee-b7ec-ad7383e2dae5
+  type: component
+  name: test_status_cmd_changes_status
+  description: Function test_status_cmd_changes_status
+- id: 33f020f8-b8d9-58b1-8a7b-cb27e47e1643
+  type: component
+  name: test_status_cmd_missing_item
+  description: Function test_status_cmd_missing_item
+- id: 4f1edcc0-c29b-504f-af6e-eed38be1681d
+  type: component
+  name: TestAddWithStatus
+  description: Class TestAddWithStatus
+- id: 3498d437-499a-537b-a868-56a6c647c677
+  type: component
+  name: test_add_default_status
+  description: Function test_add_default_status
+- id: 70060622-7eaa-5ce7-abaa-48685fdb278e
+  type: component
+  name: test_add_custom_status
+  description: Function test_add_custom_status
+- id: 84ea2e44-daa1-53c6-a13f-01c226cc23f0
+  type: component
+  name: test_add_missing_description_raises
+  description: Function test_add_missing_description_raises
+- id: 0a163bed-7cab-5793-9dd8-c412fcfd6f39
+  type: module
+  name: test_templating_engine.py
+  description: Module tests.test_templating_engine
+- id: b4371f48-7b13-5c1e-bcb7-a8dd993fbc49
+  type: component
+  name: test_generate_document
+  description: Function test_generate_document
+- id: 7641f862-726a-5f41-bda4-288ca698fc87
+  type: component
+  name: test_template_not_found
+  description: Function test_template_not_found
+- id: 8c4b52d8-0b20-52d0-a25b-d187fca9f9b2
+  type: component
+  name: test_generate_document_preserves_template_trailing_newline
+  description: Function test_generate_document_preserves_template_trailing_newline
+- id: b0996653-f397-5cd5-9f1c-0a0fb6c5160c
+  type: module
+  name: test_toctou_adversarial.py
+  description: Module tests.test_toctou_adversarial
+- id: bfc5f97a-e036-5e60-9213-97b04107c0de
+  type: component
+  name: test_symlink_toctou_vulnerability
+  description: Function test_symlink_toctou_vulnerability
+- id: 62747999-702e-56a2-9281-584a13bf6426
+  type: module
+  name: test_workspace_layout.py
+  description: Module tests.test_workspace_layout
+- id: 02c5fb32-1131-5598-8673-f714d88eb2bf
+  type: component
+  name: test_framework_paths_share_the_full_project_name_parent
+  description: Function test_framework_paths_share_the_full_project_name_parent
+- id: 69ec6521-a924-5226-96ba-21ffb7192ff4
+  type: component
+  name: test_workspace_path_is_project_relative
+  description: Function test_workspace_path_is_project_relative
+- id: 1d1029ba-5dcd-5583-9bfe-0ced6fd93212
+  type: component
+  name: test_ensure_workspace_eagerly_creates_operational_directories
+  description: Function test_ensure_workspace_eagerly_creates_operational_directories
+- id: 34f0e30e-d4b3-573a-98c8-9e9de25e58e6
+  type: component
+  name: test_no_short_name_state_directory_is_created
+  description: Function test_no_short_name_state_directory_is_created
+- id: 81a2f741-32a9-5721-b56f-585601497116
+  type: component
+  name: test_legacy_workspace_migration_preserves_state_and_audits_provenance
+  description: Function test_legacy_workspace_migration_preserves_state_and_audits_provenance
+- id: 3ec5db6e-7f34-5799-9b7f-1d39794ef776
+  type: component
+  name: test_normal_commands_fail_before_legacy_state_can_be_hidden
+  description: Function test_normal_commands_fail_before_legacy_state_can_be_hidden
+- id: 2498a92b-a337-55ec-8f64-fb06ebbc3763
+  type: component
+  name: test_workspace_migration_refuses_dual_layout_conflicts_without_changes
+  description: Function test_workspace_migration_refuses_dual_layout_conflicts_without_changes
+- id: 70929657-e455-5ce0-8f2b-62b9985e1c79
+  type: component
+  name: test_host_repository_spec_directory_is_never_claimed_as_framework_state
+  description: Function test_host_repository_spec_directory_is_never_claimed_as_framework_state
+- id: bf0ae804-3350-52eb-b12b-98bb855ecede
+  type: component
+  name: test_non_aio_root_backlog_is_rejected_without_mutation
+  description: Function test_non_aio_root_backlog_is_rejected_without_mutation
+- id: 3c6d1325-f7d0-5cce-9861-12233d812dd9
+  type: component
+  name: test_migration_repairs_a_truncated_legacy_audit_tail
+  description: Function test_migration_repairs_a_truncated_legacy_audit_tail
+- id: 1238936c-83b3-543c-a460-05c30b8447ba
+  type: component
+  name: test_normal_state_operations_wait_for_the_workspace_migration_lock
+  description: Function test_normal_state_operations_wait_for_the_workspace_migration_lock
+- id: 0c750d74-61ff-5066-89a7-ea81997cc150
+  type: component
+  name: test_workspace_migration_waits_for_the_legacy_mapping_lock
+  description: Function test_workspace_migration_waits_for_the_legacy_mapping_lock
+- id: e6abc03a-084f-56d3-9050-bd188b29021d
+  type: component
+  name: test_state_and_config_reject_a_symlinked_canonical_parent
+  description: Function test_state_and_config_reject_a_symlinked_canonical_parent
+- id: 7ce1f513-eaf2-5d48-a97f-f53b044fd685
+  type: component
+  name: test_writable_workspace_files_reject_leaf_symlinks
+  description: Function test_writable_workspace_files_reject_leaf_symlinks
+edges:
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 01972ce1-dba9-54a3-9f75-771d02ad2cec
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: c5136308-b1db-530b-99f3-6c1956c46d5e
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 0e159810-cde1-5fb7-9250-9e1e63b47898
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: e45f0d86-76ad-5d0f-a05e-150921499094
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 3dc0533b-0263-5cf9-aef5-46b0afef9161
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 6d9e067b-64b4-5188-9e71-6b66a981676b
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: fe0d8f57-f8d2-5d80-9680-e2f44c137f0a
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: bdffa5b3-fa12-54cf-99c0-a567938595f5
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: bdf19ef6-c810-53c0-8562-914d4bc3b507
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 1f2db192-e092-5b9f-b281-878f83be11a1
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 391a970e-235c-5c2e-9563-704be8eea2dc
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 7e96ebb9-baca-5acc-9c69-605df0a7d51f
+  type: contains
+- source: 7e96ebb9-baca-5acc-9c69-605df0a7d51f
+  target: 6506870b-b262-4f54-b6e9-43de4a873a55
+  type: contains
+- source: 6506870b-b262-4f54-b6e9-43de4a873a55
+  target: be58456d-4614-56c4-b978-12df360a4420
+  type: contains
+- source: 6506870b-b262-4f54-b6e9-43de4a873a55
+  target: dfb4466f-fa2d-53d5-9fd2-6993d425e519
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
+  type: contains
+- source: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
+  target: 195ac99f-003a-56d4-8367-ddaaa3b90f44
+  type: contains
+- source: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
+  target: b8ca9ec5-256e-5445-9785-9e2bec5e75a1
+  type: contains
+- source: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
+  target: 830497fa-76b9-52e0-b926-bbdf7cd74f38
+  type: contains
+- source: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
+  target: 5055b359-19e0-5468-a06e-c374dbbc0282
+  type: contains
+- source: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
+  target: 8836ec02-e54e-5caa-8b11-cb60b718097e
+  type: contains
+- source: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
+  target: 3fac676c-413a-5817-8427-49ce1beb6b44
+  type: contains
+- source: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
+  target: 78ed9163-987c-5da4-9a31-c7f37c938fed
+  type: contains
+- source: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
+  target: d34c9145-dfef-5edc-98a0-2cb9105e1574
+  type: contains
+- source: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
+  target: 18d883a5-8761-5f46-8997-cba9c6566e38
+  type: contains
+- source: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
+  target: 2e18ad74-77e7-5ead-9e33-d19552b9d86f
+  type: contains
+- source: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
+  target: 5000f46c-c485-585e-8908-17ef0299f3aa
+  type: contains
+- source: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
+  target: 460cc297-75fe-5c44-86f2-6d7aab7bd975
+  type: contains
+- source: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
+  target: b0179b46-154b-5188-b8ba-c3de4407ac92
+  type: contains
+- source: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
+  target: a4b1cc77-0b97-547f-9d3e-0925f72982ac
+  type: contains
+- source: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
+  target: 2e6bd533-369f-5cd8-90cd-89b90fe9d973
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 1b601f4c-40b3-5895-a9cb-445be5577970
+  type: contains
+- source: 1b601f4c-40b3-5895-a9cb-445be5577970
+  target: fa9bcd5f-af33-536a-83e0-8283551d7957
+  type: contains
+- source: 1b601f4c-40b3-5895-a9cb-445be5577970
+  target: 58a3e307-eeb2-5cb7-947a-2124b7870493
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: dda24752-8c90-5617-8ee2-4727bb22232f
+  type: contains
+- source: dda24752-8c90-5617-8ee2-4727bb22232f
+  target: f075b9e0-f4cb-528a-b05b-0b3a679257c8
+  type: contains
+- source: dda24752-8c90-5617-8ee2-4727bb22232f
+  target: 2f0aeffc-5a56-59f2-a8d9-b235a945afdd
+  type: contains
+- source: dda24752-8c90-5617-8ee2-4727bb22232f
+  target: 6fa8e638-6df9-5c5a-9eb0-23b2253620d9
+  type: contains
+- source: dda24752-8c90-5617-8ee2-4727bb22232f
+  target: 4a882d86-8c0a-5bbf-b7b1-f3951b767e48
+  type: contains
+- source: dda24752-8c90-5617-8ee2-4727bb22232f
+  target: 291e3287-75aa-5af5-bd7e-146ef4a417a8
+  type: contains
+- source: dda24752-8c90-5617-8ee2-4727bb22232f
+  target: d2b82959-ed25-5aff-880d-0aeac611bcf0
+  type: contains
+- source: dda24752-8c90-5617-8ee2-4727bb22232f
+  target: 46a5c65f-490e-5f9d-8a3e-3b5c9556eacd
+  type: contains
+- source: dda24752-8c90-5617-8ee2-4727bb22232f
+  target: 84e0dd20-7029-5420-8ccf-2a282762ee43
+  type: contains
+- source: dda24752-8c90-5617-8ee2-4727bb22232f
+  target: 1c315831-f474-5846-92cb-c674a75a1972
+  type: contains
+- source: dda24752-8c90-5617-8ee2-4727bb22232f
+  target: 4bd0b49f-e803-5c60-ad6a-748d1d853a50
+  type: contains
+- source: dda24752-8c90-5617-8ee2-4727bb22232f
+  target: 43a7b4d2-1d7b-5f7d-b216-ee2e0694921e
+  type: contains
+- source: dda24752-8c90-5617-8ee2-4727bb22232f
+  target: 19ec3ffc-ed29-51ca-886f-c90fd1874216
+  type: contains
+- source: dda24752-8c90-5617-8ee2-4727bb22232f
+  target: 7bb08a69-dab6-5b62-b7cf-53bbf251ad8a
+  type: contains
+- source: dda24752-8c90-5617-8ee2-4727bb22232f
+  target: 5332080c-2077-569e-b305-fcb0bbf258e8
+  type: contains
+- source: dda24752-8c90-5617-8ee2-4727bb22232f
+  target: 4df334df-d21f-595c-a8db-ee3734926fd2
+  type: contains
+- source: dda24752-8c90-5617-8ee2-4727bb22232f
+  target: 6df510af-eac7-5001-aaee-9434b12f4eef
+  type: contains
+- source: dda24752-8c90-5617-8ee2-4727bb22232f
+  target: 08949c1f-e697-5962-9aaf-919f16b1d857
+  type: contains
+- source: dda24752-8c90-5617-8ee2-4727bb22232f
+  target: 4332ee05-cded-51dc-b884-7249af9d97cd
+  type: contains
+- source: 4332ee05-cded-51dc-b884-7249af9d97cd
+  target: 6bf977ee-c94d-5750-acca-d8c0b707edf0
+  type: contains
+- source: 4332ee05-cded-51dc-b884-7249af9d97cd
+  target: d53a9141-bdd1-55ab-8340-1dddaac885ec
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 51038e11-df2c-549d-b731-bd99dd919ed5
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: a15e2b3b-0a4e-5d04-9c5a-e8cb9092f6f3
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 134ec7e9-0379-5027-bc3f-3b6addecffe3
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 62d9aa92-3b61-593d-89b6-6307d3b9a092
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 83f1a4a0-b8a4-5f52-83d7-999c06fb1ef2
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: ff0e3348-2bc1-5e22-a358-580b392b8f4c
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 459707f4-d4d8-57dd-ba73-6f99a29010e2
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: eecf7ebe-dbd5-5b94-b7e2-c9979bb55136
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: eb4faf78-202c-583f-9e3c-20664c39f163
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 3c021686-6291-51ac-a516-43e858cd8565
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 483bcd48-3e11-5f55-a5c6-d3df8e89b4f5
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 4c72f245-723a-5df9-b165-9fd5b704c735
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 2b77c80b-27d1-5b82-b03c-3d3c7333d62b
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 0ed46e46-0115-5f0f-91cc-5e79007a6add
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 6ad8ed0e-94a3-59e8-9838-830626388670
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: a5baca28-6c2a-5364-8cdc-a40d247c0dd1
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 2bb272b6-e5d3-59e0-93f3-2742c08a9080
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: cf4e9aba-ea4e-5053-9adb-dfed53cdb08e
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 8a5e8860-5cc7-5c1a-8df5-379790182f9d
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 3955d36a-5b09-5258-968e-bb8988706986
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 4fc8b2eb-faaf-596f-ac1a-a589bee54535
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 9933b843-51ec-5a9c-b197-522873bb2b09
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 32cbe30e-0414-5b27-a71a-77c392f4b4e9
+  type: contains
+- source: 32cbe30e-0414-5b27-a71a-77c392f4b4e9
+  target: 412c6407-f59f-5d49-973d-945454bb23e3
+  type: contains
+- source: 412c6407-f59f-5d49-973d-945454bb23e3
+  target: 3b2de36e-ca66-57b0-bf91-b474580eb60c
+  type: contains
+- source: 412c6407-f59f-5d49-973d-945454bb23e3
+  target: 9ba32a08-6f9f-5d04-bcaa-8e975837cef9
+  type: contains
+- source: 412c6407-f59f-5d49-973d-945454bb23e3
+  target: 2102fa27-6ec6-541b-9881-0c7fb95f18f9
+  type: contains
+- source: 412c6407-f59f-5d49-973d-945454bb23e3
+  target: f7228c92-96b1-588d-bfa7-4c62438238b6
+  type: contains
+- source: 412c6407-f59f-5d49-973d-945454bb23e3
+  target: b785926e-a308-5d74-a31c-25ade7ca7bf2
+  type: contains
+- source: 412c6407-f59f-5d49-973d-945454bb23e3
+  target: 0d739ffd-fe16-56dd-9440-edcc1a67c577
+  type: contains
+- source: 412c6407-f59f-5d49-973d-945454bb23e3
+  target: 1cb51dcb-a876-53f9-aeec-b12af6dbda74
+  type: contains
+- source: 412c6407-f59f-5d49-973d-945454bb23e3
+  target: ed6d021d-9b37-5030-b58c-ad09bfa41164
+  type: contains
+- source: 412c6407-f59f-5d49-973d-945454bb23e3
+  target: 8f46e25d-7f21-5437-a95c-4f1f6f7d0da3
+  type: contains
+- source: 412c6407-f59f-5d49-973d-945454bb23e3
+  target: 661897ac-332d-5eb0-aaad-0aa4201796a6
+  type: contains
+- source: 412c6407-f59f-5d49-973d-945454bb23e3
+  target: 9ef72273-8852-5e99-8b75-96e478e4be10
+  type: contains
+- source: 412c6407-f59f-5d49-973d-945454bb23e3
+  target: 88a3f8c7-7de3-57ca-8d59-4a59b4e0547a
+  type: contains
+- source: 412c6407-f59f-5d49-973d-945454bb23e3
+  target: ee82a9a1-6c0f-51ba-b324-3bbada55921f
+  type: contains
+- source: 412c6407-f59f-5d49-973d-945454bb23e3
+  target: 9230f5df-9a51-551a-b613-84b0fac8a398
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: c3a8c1de-4d0c-5324-b5fc-6eb826953c7e
+  type: contains
+- source: c3a8c1de-4d0c-5324-b5fc-6eb826953c7e
+  target: c3ed5e8f-8a17-5b24-b14f-e0a44f3763c2
+  type: contains
+- source: c3a8c1de-4d0c-5324-b5fc-6eb826953c7e
+  target: 1b8ebfe0-b537-535d-a559-2337a35bc5f9
+  type: contains
+- source: c3a8c1de-4d0c-5324-b5fc-6eb826953c7e
+  target: b9fc84c4-be34-5e5b-8f60-ea5a3943ee6f
+  type: contains
+- source: c3a8c1de-4d0c-5324-b5fc-6eb826953c7e
+  target: 43f31eee-cc05-5b5a-a0f7-b9597ffa5623
+  type: contains
+- source: c3a8c1de-4d0c-5324-b5fc-6eb826953c7e
+  target: 8860e218-5a9a-5560-9e40-9df912a1282a
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: c3695b6b-abf2-537d-9ed0-0f9df0dfc354
+  type: contains
+- source: c3695b6b-abf2-537d-9ed0-0f9df0dfc354
+  target: 1439a387-5fac-5026-8cb9-d879e62efccb
+  type: contains
+- source: c3695b6b-abf2-537d-9ed0-0f9df0dfc354
+  target: bcc62278-0533-561f-bd0a-4357b34e876c
+  type: contains
+- source: c3695b6b-abf2-537d-9ed0-0f9df0dfc354
+  target: 5d246f57-dc0d-51d5-b855-df74fd119e47
+  type: contains
+- source: c3695b6b-abf2-537d-9ed0-0f9df0dfc354
+  target: dc01d5ee-931b-586b-8dac-6f821a02bb95
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 193b8ecb-ff6a-5c43-aa4d-ed19e677d282
+  type: contains
+- source: 193b8ecb-ff6a-5c43-aa4d-ed19e677d282
+  target: 014d3f5d-595e-5582-aeb5-2ead9d6ba95f
+  type: contains
+- source: 014d3f5d-595e-5582-aeb5-2ead9d6ba95f
+  target: 56da859d-16e5-5d8f-ab78-9cd08a202723
+  type: contains
+- source: 014d3f5d-595e-5582-aeb5-2ead9d6ba95f
+  target: d4666098-add5-5c06-a75b-56d4561d8fec
+  type: contains
+- source: 193b8ecb-ff6a-5c43-aa4d-ed19e677d282
+  target: 6199cd62-9332-5ad1-b458-18bd2e865da1
+  type: contains
+- source: 6199cd62-9332-5ad1-b458-18bd2e865da1
+  target: 0c16f2bc-7c68-5ad9-bd22-b4223d083f1e
+  type: contains
+- source: 6199cd62-9332-5ad1-b458-18bd2e865da1
+  target: d183433d-01cb-57e1-b566-02da520084e6
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 03ab3d9a-beb1-5a32-b3f4-5efdddeee956
+  type: contains
+- source: 03ab3d9a-beb1-5a32-b3f4-5efdddeee956
+  target: 14d0034e-f619-58e4-afab-20fdd764240c
+  type: contains
+- source: 03ab3d9a-beb1-5a32-b3f4-5efdddeee956
+  target: 63f3d428-f9d4-5183-b085-9806661fb55d
+  type: contains
+- source: 03ab3d9a-beb1-5a32-b3f4-5efdddeee956
+  target: b24a8fca-8fa6-5b8a-9056-28c7f9ecfd23
+  type: contains
+- source: 03ab3d9a-beb1-5a32-b3f4-5efdddeee956
+  target: 452e5fcb-6194-5580-ad3d-c946688b6089
+  type: contains
+- source: 03ab3d9a-beb1-5a32-b3f4-5efdddeee956
+  target: 14e9edee-fd26-5142-9cdc-998626c1682b
+  type: contains
+- source: 03ab3d9a-beb1-5a32-b3f4-5efdddeee956
+  target: da7f9e29-a637-5a01-b05f-2c312bf58ff9
+  type: contains
+- source: da7f9e29-a637-5a01-b05f-2c312bf58ff9
+  target: 8ee60fc5-88e6-5e6d-b832-b5e5f37e35e1
+  type: contains
+- source: 03ab3d9a-beb1-5a32-b3f4-5efdddeee956
+  target: d86ca145-1dc3-54e5-9758-706d79d71dc3
+  type: contains
+- source: 03ab3d9a-beb1-5a32-b3f4-5efdddeee956
+  target: 83de9d12-feba-5b31-a2e5-9b1ea9f869b3
+  type: contains
+- source: 83de9d12-feba-5b31-a2e5-9b1ea9f869b3
+  target: ac513063-fcdc-5ca6-bce7-418130a52602
+  type: contains
+- source: 03ab3d9a-beb1-5a32-b3f4-5efdddeee956
+  target: b5348027-f430-535c-87ee-784c414b036f
+  type: contains
+- source: b5348027-f430-535c-87ee-784c414b036f
+  target: 9a44e5c7-e9f8-552a-a1c6-03f978c3d775
+  type: contains
+- source: b5348027-f430-535c-87ee-784c414b036f
+  target: 194020aa-bb6b-5a4b-90d8-c8dcd6d98a7b
+  type: contains
+- source: 03ab3d9a-beb1-5a32-b3f4-5efdddeee956
+  target: 4e7e0f73-3eae-5f42-866a-a1d999e70a85
+  type: contains
+- source: 4e7e0f73-3eae-5f42-866a-a1d999e70a85
+  target: d9ff483d-1f84-5eec-9be6-5d7c286090ab
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 214466a1-8303-573d-abd3-6c91afc5783e
+  type: contains
+- source: 214466a1-8303-573d-abd3-6c91afc5783e
+  target: 84123bb2-31f6-550b-add9-315c748a5364
+  type: contains
+- source: 214466a1-8303-573d-abd3-6c91afc5783e
+  target: d0b7ad9d-9cfe-5ba9-aef9-dd0d41928561
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: db87f8e5-dca8-5952-91f6-454eec0f1a34
+  type: contains
+- source: db87f8e5-dca8-5952-91f6-454eec0f1a34
+  target: 6a32e581-a47a-59f8-acb8-6b59a5020cfa
+  type: contains
+- source: db87f8e5-dca8-5952-91f6-454eec0f1a34
+  target: 407dbabf-8298-554b-a0e7-5be2c9162a1e
+  type: contains
+- source: 407dbabf-8298-554b-a0e7-5be2c9162a1e
+  target: 10e8ca84-bd3d-5f86-87a8-a7dc364d9db5
+  type: contains
+- source: db87f8e5-dca8-5952-91f6-454eec0f1a34
+  target: 6317643a-a8fc-5026-b373-9330004bc90d
+  type: contains
+- source: 6317643a-a8fc-5026-b373-9330004bc90d
+  target: 1de97e3f-03eb-5463-abe4-646fa112aa44
+  type: contains
+- source: 6317643a-a8fc-5026-b373-9330004bc90d
+  target: eaf40f28-a4a7-503c-904e-6584d498e113
+  type: contains
+- source: 6317643a-a8fc-5026-b373-9330004bc90d
+  target: a2a30d01-4de7-5dee-bca7-ef3a5f806538
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 8c0e4daf-dba6-5a8a-ba9a-02a88a4b50de
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 9b7ae2b8-d6ba-5c3f-aa1e-92cf59f454a8
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 30418993-ffbb-5948-8125-37accdf8c793
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 27d349fa-4905-512c-a307-eacc951c8bf3
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: f8033945-8431-5720-8cdb-f0b052272279
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: b87c464d-ef41-52bf-b370-d9d28a4ee0e7
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 94518999-2f9a-50f7-b73b-cf035a7e1d38
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 20f7b4b4-56fd-590e-998a-16777d30f8c6
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 6150938a-425a-507d-ad46-efc4994295c0
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: f9401341-57c3-5fe1-9737-2265f006ee5c
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: de46d3a7-8d56-5a59-b4cd-52abbbdb82bc
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 02702c9c-f095-5993-ac3a-6223c055b941
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 6dfd771b-0f2d-56bf-9ce9-714b1f7f3887
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: a938fadb-83a2-54ff-a2fc-4faa73191a6e
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 93cc7cb1-efa6-5648-9b4c-1214e0602884
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: ec1e27bd-46ff-5749-9218-3e302db760a9
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 0e2977b9-3646-5467-94a9-f1d6f8a17052
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 379b1768-a910-5fa8-a879-28fece4a3dcc
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 69438715-a4a3-5f13-8f5c-7d2a9b08ace4
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 869f4f9e-cfef-5819-b456-2bff82979318
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: afd197bc-17a5-5220-a429-9351b8417e9d
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 47a75c78-9576-5a40-bf45-eb1af4114e09
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: f5e29b19-f15e-58aa-9438-30e772912751
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 654e7846-a5b4-5627-af8a-6045142b4851
+  type: contains
+- source: 654e7846-a5b4-5627-af8a-6045142b4851
+  target: 2ebf00ef-c11d-501f-add4-f86a1df8be8a
+  type: contains
+- source: 654e7846-a5b4-5627-af8a-6045142b4851
+  target: aa788b5d-b918-5414-b688-a1db5fda7ea4
+  type: contains
+- source: 654e7846-a5b4-5627-af8a-6045142b4851
+  target: 47757762-ac3c-582e-a93a-0bee49c1de94
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 1dbef474-b42c-50ba-81a6-fcf97002ad6c
+  type: contains
+- source: 1dbef474-b42c-50ba-81a6-fcf97002ad6c
+  target: 5f9d3dc7-cd7e-5402-86cd-356a4b6846fb
+  type: contains
+- source: 5f9d3dc7-cd7e-5402-86cd-356a4b6846fb
+  target: d484d25c-d3d6-5215-93bb-76543a0e7867
+  type: contains
+- source: 5f9d3dc7-cd7e-5402-86cd-356a4b6846fb
+  target: 2f305d49-796d-553c-b67c-daf04ff09189
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 9015c8a3-fd14-5598-916d-d03fcf41e415
+  type: contains
+- source: 9015c8a3-fd14-5598-916d-d03fcf41e415
+  target: a913cfa4-0b24-59ed-bed0-483c531138e3
+  type: contains
+- source: 9015c8a3-fd14-5598-916d-d03fcf41e415
+  target: bf419a61-02eb-5269-9274-a3e643e46ab4
+  type: contains
+- source: 9015c8a3-fd14-5598-916d-d03fcf41e415
+  target: f7415c6c-dee2-5149-a87b-57a4e19d1cbf
+  type: contains
+- source: f7415c6c-dee2-5149-a87b-57a4e19d1cbf
+  target: b49bf431-c08c-536f-a772-b3babe3a1e3a
+  type: contains
+- source: f7415c6c-dee2-5149-a87b-57a4e19d1cbf
+  target: 9e5d1e31-36dc-56a2-a15a-37a11bf2745e
+  type: contains
+- source: f7415c6c-dee2-5149-a87b-57a4e19d1cbf
+  target: 5016b6a2-c0bb-567f-976e-416e36de3356
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 5e164b78-a596-57a3-8ce3-c1cdd590ec67
+  type: contains
+- source: 5e164b78-a596-57a3-8ce3-c1cdd590ec67
+  target: 27d4b108-db4e-5e0b-8ab3-20ce969a9e9b
+  type: contains
+- source: 5e164b78-a596-57a3-8ce3-c1cdd590ec67
+  target: 9615e392-aee7-5f1e-b01d-0a49d97cd062
+  type: contains
+- source: 5e164b78-a596-57a3-8ce3-c1cdd590ec67
+  target: fbf875e6-7c1b-5d5c-8687-a4cc20342dbe
+  type: contains
+- source: 5e164b78-a596-57a3-8ce3-c1cdd590ec67
+  target: 78731c65-6497-566e-9df6-ee22d88861c8
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: bc9340ac-838c-5761-bd32-d04ca334c376
+  type: contains
+- source: bc9340ac-838c-5761-bd32-d04ca334c376
+  target: 53949030-6417-5f37-a5b2-aa5b78833dd3
+  type: contains
+- source: 53949030-6417-5f37-a5b2-aa5b78833dd3
+  target: d8f4749a-0278-5d59-8e0d-cabcb8f96161
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: c1d5d3f5-9bf5-5de5-aff0-e04a35728545
+  type: contains
+- source: c1d5d3f5-9bf5-5de5-aff0-e04a35728545
+  target: eead12e1-3524-5e23-99c1-c23c44e35eba
+  type: contains
+- source: c1d5d3f5-9bf5-5de5-aff0-e04a35728545
+  target: 828c3a86-8c8c-59a9-b76b-194ea93baad6
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: f71e0f60-3a1d-54d4-ac81-403f66de42c7
+  type: contains
+- source: f71e0f60-3a1d-54d4-ac81-403f66de42c7
+  target: 0c8a6b20-4822-57d7-be3f-8342e6623d3a
+  type: contains
+- source: f71e0f60-3a1d-54d4-ac81-403f66de42c7
+  target: 1f20b5f6-2dc3-5786-b5d5-244e710c87a5
+  type: contains
+- source: f71e0f60-3a1d-54d4-ac81-403f66de42c7
+  target: 53b6fcea-970d-5fb7-940a-412bbf48025e
+  type: contains
+- source: f71e0f60-3a1d-54d4-ac81-403f66de42c7
+  target: c4f18dbe-70e5-5b56-9837-a61977231d7d
+  type: contains
+- source: f71e0f60-3a1d-54d4-ac81-403f66de42c7
+  target: 6eef87c3-fd7e-5ef8-9efd-46026aa2e5cf
+  type: contains
+- source: f71e0f60-3a1d-54d4-ac81-403f66de42c7
+  target: c799e44e-62a1-5775-8bb2-ee8f180d4c6f
+  type: contains
+- source: f71e0f60-3a1d-54d4-ac81-403f66de42c7
+  target: 25dd94d4-55e5-56f8-9d0a-3b616b8cd844
+  type: contains
+- source: f71e0f60-3a1d-54d4-ac81-403f66de42c7
+  target: 4ccffb18-3908-5c7d-9be0-a2826d069185
+  type: contains
+- source: f71e0f60-3a1d-54d4-ac81-403f66de42c7
+  target: 0e78e571-e133-5e84-acf8-8d29677e6e00
+  type: contains
+- source: f71e0f60-3a1d-54d4-ac81-403f66de42c7
+  target: 659aa8cf-1159-53aa-b360-39a665d09294
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: bcf289fc-073a-5a5c-9e95-c8da5d4d1f1d
+  type: contains
+- source: bcf289fc-073a-5a5c-9e95-c8da5d4d1f1d
+  target: d76c9ca8-4548-5c54-95cc-86bb437c3acb
+  type: contains
+- source: bcf289fc-073a-5a5c-9e95-c8da5d4d1f1d
+  target: 370f8b4f-0766-5ffa-a93f-948947910c79
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
+  type: contains
+- source: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
+  target: 0b472f99-e8b6-5cf8-9a44-c0238dd3cdd0
+  type: contains
+- source: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
+  target: 488d725f-5f60-5a3f-a9ca-0cdd54c24682
+  type: contains
+- source: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
+  target: 4ac67159-aa34-5ebf-b95e-74ce9c2185bd
+  type: contains
+- source: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
+  target: c1d46915-cf2c-5755-b1aa-c136a6f6bc3a
+  type: contains
+- source: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
+  target: b91f06f9-2899-5a9a-81db-70a2499d4c28
+  type: contains
+- source: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
+  target: 7ac2310a-050b-5ea8-b231-7672e93de8fc
+  type: contains
+- source: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
+  target: 6661fc18-c1f5-50bc-82a8-3a1e538e6b09
+  type: contains
+- source: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
+  target: e913faf0-2611-55f3-a209-ac71af115bf0
+  type: contains
+- source: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
+  target: 6086dfc0-7bba-5abd-a6a8-954c0dce042c
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: bf62376c-c574-5242-91e9-5048f4183d45
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 227d2797-c5fe-58b1-93ef-b0be257e77dd
+  type: contains
+- source: 227d2797-c5fe-58b1-93ef-b0be257e77dd
+  target: e8c24523-1c9c-5af8-9d3d-f825e9e95a46
+  type: contains
+- source: e8c24523-1c9c-5af8-9d3d-f825e9e95a46
+  target: 5ab60629-6592-5751-bbb7-a6361f3482d6
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: e9b84b03-d3bc-543e-a3c2-161f583768a4
+  type: contains
+- source: e9b84b03-d3bc-543e-a3c2-161f583768a4
+  target: a7278b66-0ac6-5e6b-91d7-0604d42cc40f
+  type: contains
+- source: a7278b66-0ac6-5e6b-91d7-0604d42cc40f
+  target: f7ec265d-59e9-5d8d-bd47-5c91bc4cd357
+  type: contains
+- source: a7278b66-0ac6-5e6b-91d7-0604d42cc40f
+  target: 17e3ea75-f350-5468-9ebd-98f215f4a196
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: e3b72ae9-9e2d-5a12-9614-34f892a0e932
+  type: contains
+- source: e3b72ae9-9e2d-5a12-9614-34f892a0e932
+  target: a4114ac7-09b1-5a58-ae83-45acdaff1884
+  type: contains
+- source: a4114ac7-09b1-5a58-ae83-45acdaff1884
+  target: ef8a8a73-e433-57d9-8065-f3b7b8627114
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 4271a927-f51e-512e-b272-45fa54fbb3d3
+  type: contains
+- source: 4271a927-f51e-512e-b272-45fa54fbb3d3
+  target: 68d91d09-7a15-5e5c-8387-68ac2ec30139
+  type: contains
+- source: 68d91d09-7a15-5e5c-8387-68ac2ec30139
+  target: a7b81d98-2450-55f8-98f8-6f92d6136a23
+  type: contains
+- source: 68d91d09-7a15-5e5c-8387-68ac2ec30139
+  target: 01382c12-efbb-5d74-8ce4-04ee5ace65a5
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 77759c7c-420b-572a-a765-65c3d3479dd5
+  type: contains
+- source: 77759c7c-420b-572a-a765-65c3d3479dd5
+  target: f940e565-358a-54d9-b22d-2d3dc93382ed
+  type: contains
+- source: f940e565-358a-54d9-b22d-2d3dc93382ed
+  target: b2c9b52c-3eb0-59be-a79d-57fd478111cb
+  type: contains
+- source: f940e565-358a-54d9-b22d-2d3dc93382ed
+  target: 1f196eb5-db49-5594-a60f-671f0350e77d
+  type: contains
+- source: f940e565-358a-54d9-b22d-2d3dc93382ed
+  target: 4078ec42-8c14-589d-a261-870f8fed2284
+  type: contains
+- source: f940e565-358a-54d9-b22d-2d3dc93382ed
+  target: 003cc972-7a3b-54e2-af38-26ce8f54dd07
+  type: contains
+- source: f940e565-358a-54d9-b22d-2d3dc93382ed
+  target: af759edf-5b26-5c59-a4ff-11f5909f2744
+  type: contains
+- source: f940e565-358a-54d9-b22d-2d3dc93382ed
+  target: 38bea82c-9eee-5138-b71f-427670a8e1c2
+  type: contains
+- source: f940e565-358a-54d9-b22d-2d3dc93382ed
+  target: 13ff4d02-e93c-5cae-b42a-528a248a5907
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 16d66432-6381-537d-bff9-e8b1562f8de4
+  type: contains
+- source: 16d66432-6381-537d-bff9-e8b1562f8de4
+  target: 037c26cb-574d-5946-9ca3-14b082668762
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 6d7fe7c8-dd7a-5a13-be7d-19c74a01fb6a
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: b6b90cff-6b0e-55b1-b287-ff8d8daa4cf0
+  type: contains
+- source: b6b90cff-6b0e-55b1-b287-ff8d8daa4cf0
+  target: df00097b-3436-52ad-bea6-38785fcff7ef
+  type: contains
+- source: b6b90cff-6b0e-55b1-b287-ff8d8daa4cf0
+  target: de7f81c0-85af-55e8-9c47-370e954299ea
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 2a0a0310-15be-5143-8a35-cfcfdf126782
+  type: contains
+- source: 2a0a0310-15be-5143-8a35-cfcfdf126782
+  target: 8e9e2363-7acf-5e15-aa7f-b643f5678a4a
+  type: contains
+- source: 2a0a0310-15be-5143-8a35-cfcfdf126782
+  target: 4c0eac62-7b6e-5ab5-9749-8093c3de6574
+  type: contains
+- source: 2a0a0310-15be-5143-8a35-cfcfdf126782
+  target: cfd5dcff-8d19-5059-bebe-2230fa719d31
+  type: contains
+- source: 2a0a0310-15be-5143-8a35-cfcfdf126782
+  target: dd94a0e7-a58f-5b59-ba81-8d7151447de8
+  type: contains
+- source: 2a0a0310-15be-5143-8a35-cfcfdf126782
+  target: 3bc44cbe-f1a4-56ee-a58e-3130a88a1733
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 9f84f6d6-5a79-55b6-a577-19621bd21cec
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 8a96372c-b452-5c23-bc49-819bdd27f85f
+  type: contains
+- source: 8a96372c-b452-5c23-bc49-819bdd27f85f
+  target: c50cce26-fa8c-501c-9c5e-9bedfbffb300
+  type: contains
+- source: 8a96372c-b452-5c23-bc49-819bdd27f85f
+  target: b168cf88-0c31-5c51-a97f-5c479066f82d
+  type: contains
+- source: b168cf88-0c31-5c51-a97f-5c479066f82d
+  target: 6911c426-3f08-5f8f-995a-e1504ba2610c
+  type: contains
+- source: 8a96372c-b452-5c23-bc49-819bdd27f85f
+  target: 29af1434-0fb8-5646-941b-7ac27404d819
+  type: contains
+- source: 29af1434-0fb8-5646-941b-7ac27404d819
+  target: 6334ed52-774c-50f4-96ba-5bba0c68d622
+  type: contains
+- source: 29af1434-0fb8-5646-941b-7ac27404d819
+  target: 11238375-0914-56b9-b548-b1e2f88e5fbc
+  type: contains
+- source: 29af1434-0fb8-5646-941b-7ac27404d819
+  target: 4fdf1cf6-b141-5e39-b446-d43897c4d401
+  type: contains
+- source: 8a96372c-b452-5c23-bc49-819bdd27f85f
+  target: 105ff938-5035-5a4e-9c13-e8ba56df729e
+  type: contains
+- source: 105ff938-5035-5a4e-9c13-e8ba56df729e
+  target: 521b3c39-6b65-5af8-833f-24d9565f6c70
+  type: contains
+- source: 105ff938-5035-5a4e-9c13-e8ba56df729e
+  target: 18ed3160-c324-51fd-a190-4f1e796d7318
+  type: contains
+- source: 105ff938-5035-5a4e-9c13-e8ba56df729e
+  target: 893c1927-0c26-5682-aefc-088c51111ee2
+  type: contains
+- source: 8a96372c-b452-5c23-bc49-819bdd27f85f
+  target: 6cf8351c-2a8c-5b15-b87e-744ba804560a
+  type: contains
+- source: 6cf8351c-2a8c-5b15-b87e-744ba804560a
+  target: ac3abd0a-0495-5c83-8197-1f4496046694
+  type: contains
+- source: 6cf8351c-2a8c-5b15-b87e-744ba804560a
+  target: ccd9ed47-e600-5e38-b0b2-60cd0fd7ddcd
+  type: contains
+- source: 6cf8351c-2a8c-5b15-b87e-744ba804560a
+  target: c7b4f207-4a8b-5a2d-80c6-a5ed0559ed5b
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 0b13dfa7-537a-587a-bcad-ae36747fa5c9
+  type: contains
+- source: 0b13dfa7-537a-587a-bcad-ae36747fa5c9
+  target: 56c66c21-c5ce-58fe-8ccb-e64abe2cc5ab
+  type: contains
+- source: 0b13dfa7-537a-587a-bcad-ae36747fa5c9
+  target: 5b870e14-0ee6-5d94-a36c-6e7e719b9b45
+  type: contains
+- source: 0b13dfa7-537a-587a-bcad-ae36747fa5c9
+  target: 88beb28a-57b8-5b3f-a14c-d0356282d66f
+  type: contains
+- source: 0b13dfa7-537a-587a-bcad-ae36747fa5c9
+  target: dd5345e0-b0a7-5f18-b792-b928856a5a8b
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: f8bef23f-17b8-58a4-95f7-1653f6e4c6cd
+  type: contains
+- source: f8bef23f-17b8-58a4-95f7-1653f6e4c6cd
+  target: 58a423fd-786f-58ce-b10a-73815f079cfe
+  type: contains
+- source: f8bef23f-17b8-58a4-95f7-1653f6e4c6cd
+  target: 3a9ca90d-2a80-563b-90f1-fb0d1da38e4c
+  type: contains
+- source: f8bef23f-17b8-58a4-95f7-1653f6e4c6cd
+  target: 25cdfa0f-5d12-5f70-8100-f7e3c2b24268
+  type: contains
+- source: f8bef23f-17b8-58a4-95f7-1653f6e4c6cd
+  target: e60aa3fc-6709-53a7-aa41-d2974cb543c2
+  type: contains
+- source: f8bef23f-17b8-58a4-95f7-1653f6e4c6cd
+  target: 1c07436a-39e8-55f5-a363-5262b6c373cb
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
+  type: contains
+- source: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
+  target: fe16cb7b-db41-5314-8cbd-c28de692ec18
+  type: contains
+- source: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
+  target: 1ac3c0fc-933d-526c-bd92-39bbed745d5e
+  type: contains
+- source: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
+  target: e639c56f-f276-5fc7-890c-49797276985a
+  type: contains
+- source: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
+  target: 5baf7d05-a0df-5e13-82f0-156a44ca68bc
+  type: contains
+- source: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
+  target: 945544f5-4817-56df-bb7c-dfb6053d4f84
+  type: contains
+- source: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
+  target: db52e587-d512-5d72-8a6e-eff521d44767
+  type: contains
+- source: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
+  target: 598e31c4-c725-580e-b20b-7e9bd08fa784
+  type: contains
+- source: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
+  target: 6c6cff86-b612-5f8d-9634-289b4655d874
+  type: contains
+- source: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
+  target: 6053d8a7-3dd0-5235-b10b-133abf806dbf
+  type: contains
+- source: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
+  target: e7f83e89-dfc0-5c43-bf0e-23533fe2d987
+  type: contains
+- source: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
+  target: ae33a850-0f70-58ad-8ec0-267098ec05dc
+  type: contains
+- source: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
+  target: 0d512ec6-874a-5d29-8297-d192372a0b26
+  type: contains
+- source: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
+  target: e9194825-1bcd-5dda-95a6-ff249ad728d1
+  type: contains
+- source: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
+  target: 9ce05651-500c-5f75-9c1c-5b2b6cd17dc4
+  type: contains
+- source: ee7a894d-a6a3-54fa-8c01-f5f6549af2fb
+  target: f32f9c8e-c4f7-5f2b-955c-dd6909998280
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 8b385454-109c-58ae-9b05-a2e90c009ea8
+  type: contains
+- source: 8b385454-109c-58ae-9b05-a2e90c009ea8
+  target: 482c5ac5-2dad-5759-9271-fef5bac6f89c
+  type: contains
+- source: 8b385454-109c-58ae-9b05-a2e90c009ea8
+  target: e7dd6066-5fbc-5dcf-8eb1-899a4abe55f2
+  type: contains
+- source: 8b385454-109c-58ae-9b05-a2e90c009ea8
+  target: 2b9ae0b4-cba6-5990-9798-416f5cd948f4
+  type: contains
+- source: 8b385454-109c-58ae-9b05-a2e90c009ea8
+  target: 40b99d39-fa76-5b8a-a2db-45e0d92c9964
+  type: contains
+- source: 8b385454-109c-58ae-9b05-a2e90c009ea8
+  target: d6943fe1-7b16-503d-a71a-9dd3d89d21a9
+  type: contains
+- source: 8b385454-109c-58ae-9b05-a2e90c009ea8
+  target: fe355bb8-f11c-5f98-949a-febbf5daf83f
+  type: contains
+- source: 8b385454-109c-58ae-9b05-a2e90c009ea8
+  target: 1b54c5ba-5851-52c7-a613-c32cbf23d5a7
+  type: contains
+- source: 8b385454-109c-58ae-9b05-a2e90c009ea8
+  target: c5cc8a30-94ef-57e5-8590-42095d457c9b
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: bc644a99-9a32-5c73-9d3f-fe9a1f4ff135
+  type: contains
+- source: bc644a99-9a32-5c73-9d3f-fe9a1f4ff135
+  target: 1d0f4a6f-61aa-5fe4-9e26-c89634484036
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: ba4ab388-6a80-5b3b-b658-cd9d4bb3f5f8
+  type: contains
+- source: ba4ab388-6a80-5b3b-b658-cd9d4bb3f5f8
+  target: 52c6fcf9-b237-5c70-b7a4-364ddbbf4cf4
+  type: contains
+- source: 52c6fcf9-b237-5c70-b7a4-364ddbbf4cf4
+  target: 196fbaa6-81e7-5195-ba5e-99e7f270c23c
+  type: contains
+- source: 52c6fcf9-b237-5c70-b7a4-364ddbbf4cf4
+  target: e2e56b5c-7ec9-58e9-ab2a-4f8a76bff5f5
+  type: contains
+- source: 52c6fcf9-b237-5c70-b7a4-364ddbbf4cf4
+  target: 34b57440-e0a3-5df8-94bb-7b2f81c6718a
+  type: contains
+- source: 52c6fcf9-b237-5c70-b7a4-364ddbbf4cf4
+  target: 18987c1e-22bc-5aba-b29b-44296b3281a1
+  type: contains
+- source: 52c6fcf9-b237-5c70-b7a4-364ddbbf4cf4
+  target: b019e60b-d446-5124-8ace-4344bf47ec81
+  type: contains
+- source: 52c6fcf9-b237-5c70-b7a4-364ddbbf4cf4
+  target: 4a5b8cc4-88e6-52e5-a0b1-c502f968c31b
+  type: contains
+- source: 52c6fcf9-b237-5c70-b7a4-364ddbbf4cf4
+  target: a4ed46ab-d143-5c19-8d70-a58856f601ae
+  type: contains
+- source: ba4ab388-6a80-5b3b-b658-cd9d4bb3f5f8
+  target: f70c52cb-bb16-5ac1-8d18-df87613dafa8
+  type: contains
+- source: f70c52cb-bb16-5ac1-8d18-df87613dafa8
+  target: fe7f8f8b-af5c-5bcb-b70e-f40ff71bd2b9
+  type: contains
+- source: f70c52cb-bb16-5ac1-8d18-df87613dafa8
+  target: 9c05f3ed-f246-51ee-bf97-354b009bd1b9
+  type: contains
+- source: f70c52cb-bb16-5ac1-8d18-df87613dafa8
+  target: d82d04d4-363b-5298-872d-8b12416c40fc
+  type: contains
+- source: f70c52cb-bb16-5ac1-8d18-df87613dafa8
+  target: 1655aa1a-2a2a-5a69-a441-665774b256a1
+  type: contains
+- source: f70c52cb-bb16-5ac1-8d18-df87613dafa8
+  target: 77847b8f-a54b-5d6b-b163-b1c6309da020
+  type: contains
+- source: f70c52cb-bb16-5ac1-8d18-df87613dafa8
+  target: 6ba66ff9-8f5e-56f3-a95a-81109f8d0da1
+  type: contains
+- source: ba4ab388-6a80-5b3b-b658-cd9d4bb3f5f8
+  target: 1f8dc6cf-2d15-59c1-aaad-0fe5144e2ab6
+  type: contains
+- source: 1f8dc6cf-2d15-59c1-aaad-0fe5144e2ab6
+  target: bca646a2-c5dc-5c56-8336-5c778f0e838b
+  type: contains
+- source: 1f8dc6cf-2d15-59c1-aaad-0fe5144e2ab6
+  target: 15faaf7c-18b9-5aa9-831a-b32f07a20f8d
+  type: contains
+- source: 1f8dc6cf-2d15-59c1-aaad-0fe5144e2ab6
+  target: ecf0b911-15ec-57e3-963d-8eda3ccbe6bd
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 470b519d-906b-5b0c-ab28-45c0915e3e4e
+  type: contains
+- source: 470b519d-906b-5b0c-ab28-45c0915e3e4e
+  target: 4cabd05f-38b9-51eb-830a-644e8ab23f73
+  type: contains
+- source: 470b519d-906b-5b0c-ab28-45c0915e3e4e
+  target: 3fb0a300-2fc9-5d94-99e5-ce4845cee45c
+  type: contains
+- source: 470b519d-906b-5b0c-ab28-45c0915e3e4e
+  target: bfb654f5-1e3d-54b6-ba06-ec291991eaec
+  type: contains
+- source: 470b519d-906b-5b0c-ab28-45c0915e3e4e
+  target: fb2e00a3-c5e2-56e1-9522-af249c1a8795
+  type: contains
+- source: 470b519d-906b-5b0c-ab28-45c0915e3e4e
+  target: 72843ab5-e72d-5b52-bd46-f43bbb70f4ea
+  type: contains
+- source: 470b519d-906b-5b0c-ab28-45c0915e3e4e
+  target: 56843600-abcc-58cc-9e55-489c78c9cd42
+  type: contains
+- source: 470b519d-906b-5b0c-ab28-45c0915e3e4e
+  target: a6aad213-315f-50d3-9e98-ff063356253b
+  type: contains
+- source: 470b519d-906b-5b0c-ab28-45c0915e3e4e
+  target: d9567c2f-8bd9-5ca7-ac17-9e18cb4233c5
+  type: contains
+- source: 470b519d-906b-5b0c-ab28-45c0915e3e4e
+  target: ffd13441-9370-5702-8dd0-d5f42ff77545
+  type: contains
+- source: 470b519d-906b-5b0c-ab28-45c0915e3e4e
+  target: 6e9024b1-c07f-5e32-a3e5-4305264fe3c3
+  type: contains
+- source: 470b519d-906b-5b0c-ab28-45c0915e3e4e
+  target: 91687f0d-9337-54b0-a7a4-f4502c89631c
+  type: contains
+- source: 470b519d-906b-5b0c-ab28-45c0915e3e4e
+  target: 88125128-cc8d-54f8-9798-bdb06aba9769
+  type: contains
+- source: 470b519d-906b-5b0c-ab28-45c0915e3e4e
+  target: 522cc4a4-81fc-5e8e-b176-f90b51e7efe2
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 6a2d84d3-1259-5016-b5ea-82b90183905c
+  type: contains
+- source: 6a2d84d3-1259-5016-b5ea-82b90183905c
+  target: c963a71c-aa12-5d19-8634-f480b5b585b8
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 7f6f0ca3-5e2c-54b1-8334-9829e34152e2
+  type: contains
+- source: 7f6f0ca3-5e2c-54b1-8334-9829e34152e2
+  target: bd1801d9-8dc5-5005-9203-5d1a5a16a4ea
+  type: contains
+- source: 7f6f0ca3-5e2c-54b1-8334-9829e34152e2
+  target: 55603daf-5845-5523-91d4-2a66ba45c24f
+  type: contains
+- source: 7f6f0ca3-5e2c-54b1-8334-9829e34152e2
+  target: 566f025c-8865-59e6-8b26-65ec98ca28f3
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: def5f46c-9492-58bf-830d-0bef09e1b4e4
+  type: contains
+- source: def5f46c-9492-58bf-830d-0bef09e1b4e4
+  target: e6505b81-1f78-580d-a94d-535df16500f3
+  type: contains
+- source: def5f46c-9492-58bf-830d-0bef09e1b4e4
+  target: 7ebe98a5-2c9d-5ca1-861d-036f9ee21dd0
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: e98f7b5a-6918-5dab-ae61-de83861a6f64
+  type: contains
+- source: e98f7b5a-6918-5dab-ae61-de83861a6f64
+  target: 84bb2a44-de9d-5498-9e8a-bf606517b52e
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 5d8d9e09-0b89-5c48-b718-1b86b155d300
+  type: contains
+- source: 5d8d9e09-0b89-5c48-b718-1b86b155d300
+  target: 16a2cae7-a929-5464-a303-e8ede4eec73a
+  type: contains
+- source: 5d8d9e09-0b89-5c48-b718-1b86b155d300
+  target: f8e35e99-63af-57cf-9055-66ed9a2a42c1
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 58608c3e-4108-5f19-b87d-f07956cd195c
+  type: contains
+- source: 58608c3e-4108-5f19-b87d-f07956cd195c
+  target: ae6b567e-86a1-5cf6-9ac8-fded8b3193ae
+  type: contains
+- source: 58608c3e-4108-5f19-b87d-f07956cd195c
+  target: 57377f37-2e28-5dcb-aa42-6f8c4c2b329b
+  type: contains
+- source: 58608c3e-4108-5f19-b87d-f07956cd195c
+  target: 2081188b-5e49-5038-b859-1471c0aa72ea
+  type: contains
+- source: 58608c3e-4108-5f19-b87d-f07956cd195c
+  target: 5441ec78-5b83-55ff-9ae9-c26db1b9f958
+  type: contains
+- source: 58608c3e-4108-5f19-b87d-f07956cd195c
+  target: 1f0858cf-7277-58c6-bbac-cdce03baf568
+  type: contains
+- source: 58608c3e-4108-5f19-b87d-f07956cd195c
+  target: 0c026709-faeb-5559-b6a4-ebe5949c2def
+  type: contains
+- source: 58608c3e-4108-5f19-b87d-f07956cd195c
+  target: acdcaa8f-f75a-5185-8e82-f6add8f39170
+  type: contains
+- source: 58608c3e-4108-5f19-b87d-f07956cd195c
+  target: e528c0b8-a3fd-5ab7-a6e0-13598d876541
+  type: contains
+- source: 58608c3e-4108-5f19-b87d-f07956cd195c
+  target: f69b30fe-006c-5e47-8731-a47804456233
+  type: contains
+- source: 58608c3e-4108-5f19-b87d-f07956cd195c
+  target: fa1fe169-e96d-5f32-b781-096ac3828520
+  type: contains
+- source: 58608c3e-4108-5f19-b87d-f07956cd195c
+  target: 80855d1c-4ba6-5a62-8def-e46fad168982
+  type: contains
+- source: 58608c3e-4108-5f19-b87d-f07956cd195c
+  target: debe243b-99e1-5bae-8586-59eae1d1bbff
+  type: contains
+- source: 58608c3e-4108-5f19-b87d-f07956cd195c
+  target: a5acbbee-4a36-5133-a2e3-784f907b4730
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 6b957405-800a-5af4-8323-cc9a81061f2b
+  type: contains
+- source: 6b957405-800a-5af4-8323-cc9a81061f2b
+  target: 58608c3e-4108-5f19-b87d-f07956cd195c
+  type: depends_on
+- source: 6b957405-800a-5af4-8323-cc9a81061f2b
+  target: 0f519f09-c7d6-57ac-a441-f63cf11536ba
+  type: contains
+- source: 6b957405-800a-5af4-8323-cc9a81061f2b
+  target: 8fb81fbe-8cab-59f8-9858-f70f0ca2114a
+  type: contains
+- source: 6b957405-800a-5af4-8323-cc9a81061f2b
+  target: 8ba78a12-0c68-5df4-ad16-0dc110be419b
+  type: contains
+- source: 6b957405-800a-5af4-8323-cc9a81061f2b
+  target: cfc544e2-9d89-51a5-9ca2-6820452053f8
+  type: contains
+- source: 6b957405-800a-5af4-8323-cc9a81061f2b
+  target: 1f2303aa-b094-5eae-9195-580a6052bd88
+  type: contains
+- source: 6b957405-800a-5af4-8323-cc9a81061f2b
+  target: c115718b-816c-5fca-bc5e-2305a0096441
+  type: contains
+- source: 6b957405-800a-5af4-8323-cc9a81061f2b
+  target: f7ac69d4-edc4-5aa5-8634-14d2afe58daf
+  type: contains
+- source: 6b957405-800a-5af4-8323-cc9a81061f2b
+  target: 1d1ec987-c467-53ab-a486-9bb22357fcef
+  type: contains
+- source: 6b957405-800a-5af4-8323-cc9a81061f2b
+  target: f2408acd-9a0e-5189-a192-65bf4ef809b7
+  type: contains
+- source: 6b957405-800a-5af4-8323-cc9a81061f2b
+  target: e869864c-5e49-5ffd-ab1b-42b62549ab62
+  type: contains
+- source: 6b957405-800a-5af4-8323-cc9a81061f2b
+  target: 14ceeddf-0f1b-5792-9398-33792fb158ae
+  type: contains
+- source: 6b957405-800a-5af4-8323-cc9a81061f2b
+  target: 6d8e9fa4-cca4-5057-962a-e17c10b61836
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: c1552c03-0124-5c46-9234-fbfdf964fd5d
+  type: contains
+- source: c1552c03-0124-5c46-9234-fbfdf964fd5d
+  target: c45ff811-6b49-59aa-8fbf-bdbda819c74b
+  type: contains
+- source: c1552c03-0124-5c46-9234-fbfdf964fd5d
+  target: 3f1f1d2d-cb00-5519-9bff-abe3f3456bbb
+  type: contains
+- source: c1552c03-0124-5c46-9234-fbfdf964fd5d
+  target: de2dd1c6-7b30-574e-9086-a169912d212e
+  type: contains
+- source: c1552c03-0124-5c46-9234-fbfdf964fd5d
+  target: 6dda4b49-8c38-591d-a3e1-d1be627b50e9
+  type: contains
+- source: c1552c03-0124-5c46-9234-fbfdf964fd5d
+  target: d11b0dcd-8c4e-5464-856c-3f99573c259c
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
+  type: contains
+- source: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
+  target: 607f9d02-4c5a-5f83-a8f3-a1edba192337
+  type: contains
+- source: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
+  target: 49bb24d8-7a77-5a4b-b2f5-84ccf7e89a58
+  type: contains
+- source: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
+  target: 41270516-9ff9-55bd-8455-a677d19ee39d
+  type: contains
+- source: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
+  target: e5d9c81a-f55b-5840-8688-9b3445c592b3
+  type: contains
+- source: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
+  target: f298a1f9-3a8a-5a93-a239-ea17b8048062
+  type: contains
+- source: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
+  target: 54588a4b-724e-50b7-95ec-48922ee0557d
+  type: contains
+- source: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
+  target: 85fcb345-fa22-5b99-af1c-ddd49e5c6cd7
+  type: contains
+- source: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
+  target: 20e0c37e-feb8-5a26-a465-e1e09dba80d1
+  type: contains
+- source: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
+  target: a11bcbea-2b42-5708-9540-71b1eedba171
+  type: contains
+- source: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
+  target: 0f66e8c4-8f30-51d7-8a78-04603ffc6a96
+  type: contains
+- source: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
+  target: ab384f07-9992-5747-bc1f-4c0f9fb86a1e
+  type: contains
+- source: 75ad0ca0-6dc2-5cfa-8c2e-eb2ebff77744
+  target: c2d990f9-0096-5cb7-80ea-8ced3320caa4
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: c2ff5cd1-a00b-5918-a85f-fdfaa06beef0
+  type: contains
+- source: c2ff5cd1-a00b-5918-a85f-fdfaa06beef0
+  target: 16d66432-6381-537d-bff9-e8b1562f8de4
+  type: depends_on
+- source: c2ff5cd1-a00b-5918-a85f-fdfaa06beef0
+  target: f742f545-d90a-5a6a-b2bd-e8a355206050
+  type: contains
+- source: c2ff5cd1-a00b-5918-a85f-fdfaa06beef0
+  target: bbab37d4-301f-5b40-abcc-f639d8f51f10
+  type: contains
+- source: c2ff5cd1-a00b-5918-a85f-fdfaa06beef0
+  target: bf11dfed-7855-5d96-b061-f88ffcba8671
+  type: contains
+- source: c2ff5cd1-a00b-5918-a85f-fdfaa06beef0
+  target: c9b38431-7b50-5af2-b1e4-21e321e5a2f6
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 5b3a04ac-053e-5b70-a7c0-395880ff103f
+  type: contains
+- source: 5b3a04ac-053e-5b70-a7c0-395880ff103f
+  target: e477a9b0-eaf9-5509-bf84-cdfa78355c4d
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: be111a39-518d-5a75-9d7a-3a929e1bf72f
+  type: contains
+- source: be111a39-518d-5a75-9d7a-3a929e1bf72f
+  target: ba403fa7-8e34-5d64-8150-0856018ce2fe
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: bc84de34-c0ea-5215-a086-c3b4d2eac880
+  type: contains
+- source: bc84de34-c0ea-5215-a086-c3b4d2eac880
+  target: 85a1ff9a-5afe-54d4-a044-247686c170e9
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 300b5e69-1e98-5b6b-8aa0-4b84713d76da
+  type: contains
+- source: 300b5e69-1e98-5b6b-8aa0-4b84713d76da
+  target: 0606fdad-9caf-569e-adf7-0622f9a6ee0a
+  type: contains
+- source: 300b5e69-1e98-5b6b-8aa0-4b84713d76da
+  target: 571dd9db-e9ec-5b92-9e20-d6262054ac14
+  type: contains
+- source: 300b5e69-1e98-5b6b-8aa0-4b84713d76da
+  target: 5b22d651-5205-5065-ae8a-f44594ac3ef6
+  type: contains
+- source: 300b5e69-1e98-5b6b-8aa0-4b84713d76da
+  target: 41630ef8-a557-5f04-b37f-7de2baac240e
+  type: contains
+- source: 300b5e69-1e98-5b6b-8aa0-4b84713d76da
+  target: 0562a648-29c2-578c-bd36-90bc2e3ea221
+  type: contains
+- source: 300b5e69-1e98-5b6b-8aa0-4b84713d76da
+  target: 88c3cb2c-8920-5b1f-b2fc-83ca5864101e
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: c89cf80c-c223-536d-9d0e-235dbd48443c
+  type: contains
+- source: c89cf80c-c223-536d-9d0e-235dbd48443c
+  target: 0241c54b-6b96-55d2-a55c-dd039443b228
+  type: contains
+- source: c89cf80c-c223-536d-9d0e-235dbd48443c
+  target: 234a139c-3147-50f2-bb10-fa938abb7598
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: e23fede4-ba23-565d-b7ef-92a61bd55bca
+  type: contains
+- source: e23fede4-ba23-565d-b7ef-92a61bd55bca
+  target: 9168376b-1331-568e-b1df-f2a8cbc35a71
+  type: contains
+- source: e23fede4-ba23-565d-b7ef-92a61bd55bca
+  target: 1372b175-e4f2-5c8f-aba9-a0e38fb1ce52
+  type: contains
+- source: 1372b175-e4f2-5c8f-aba9-a0e38fb1ce52
+  target: a923d909-a548-5ec6-9b56-de3792eaa368
+  type: contains
+- source: 1372b175-e4f2-5c8f-aba9-a0e38fb1ce52
+  target: c1039db9-ea4e-5c75-be32-2f47af934f9b
+  type: contains
+- source: 1372b175-e4f2-5c8f-aba9-a0e38fb1ce52
+  target: c89dbf3d-99b5-5619-997e-779d545913a9
+  type: contains
+- source: 1372b175-e4f2-5c8f-aba9-a0e38fb1ce52
+  target: facdd4e1-4cae-5e31-a2e4-ff14791c35ac
+  type: contains
+- source: 1372b175-e4f2-5c8f-aba9-a0e38fb1ce52
+  target: 1c2afa24-9a0b-5e8b-8704-0b11edb10be1
+  type: contains
+- source: 1372b175-e4f2-5c8f-aba9-a0e38fb1ce52
+  target: d662b00c-3ccd-50c2-b2ee-ae2f6969a9f2
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: d86ce102-6f13-5a54-9197-b59144c9720b
+  type: contains
+- source: d86ce102-6f13-5a54-9197-b59144c9720b
+  target: 29eba330-5804-5fb8-911d-fa751de9182c
+  type: contains
+- source: d86ce102-6f13-5a54-9197-b59144c9720b
+  target: 30f070d7-a39a-593a-b98c-54e4a91c9f50
+  type: contains
+- source: d86ce102-6f13-5a54-9197-b59144c9720b
+  target: f02b2555-f42b-570d-8d7c-25bcd263c71a
+  type: contains
+- source: d86ce102-6f13-5a54-9197-b59144c9720b
+  target: e3d3c8fb-a5f1-5f2f-8213-7e40febf1b38
+  type: contains
+- source: d86ce102-6f13-5a54-9197-b59144c9720b
+  target: c10f0b08-b80d-5182-9fab-7a79677c627f
+  type: contains
+- source: d86ce102-6f13-5a54-9197-b59144c9720b
+  target: 6f236d8d-8b1b-558f-8dbb-66cbb7b1854a
+  type: contains
+- source: d86ce102-6f13-5a54-9197-b59144c9720b
+  target: 5fa60525-ec00-5e90-b6b7-bd74014f6422
+  type: contains
+- source: d86ce102-6f13-5a54-9197-b59144c9720b
+  target: 696ec9e0-9f59-5aab-bc9e-8d335daa2d1b
+  type: contains
+- source: d86ce102-6f13-5a54-9197-b59144c9720b
+  target: dc005c4e-26c6-5f1a-8bd4-455b2e211b91
+  type: contains
+- source: d86ce102-6f13-5a54-9197-b59144c9720b
+  target: d367ec29-9b1a-5a91-a888-90eb76bc81d9
+  type: contains
+- source: d86ce102-6f13-5a54-9197-b59144c9720b
+  target: 3bdd1c69-abb3-5797-96c0-36519363a63d
+  type: contains
+- source: d86ce102-6f13-5a54-9197-b59144c9720b
+  target: 346fe91e-beb6-5a33-bbda-8e52e4213394
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: f733181c-4b30-51a2-82d0-363dc94473bd
+  type: contains
+- source: f733181c-4b30-51a2-82d0-363dc94473bd
+  target: 491e575d-8984-5c63-9c7b-dfd616bb39ef
+  type: contains
+- source: f733181c-4b30-51a2-82d0-363dc94473bd
+  target: f6fce8d4-4527-5807-87e8-65540abd7277
+  type: contains
+- source: f6fce8d4-4527-5807-87e8-65540abd7277
+  target: aefcc095-4be7-54a7-b471-f4335bcfb6f7
+  type: contains
+- source: f733181c-4b30-51a2-82d0-363dc94473bd
+  target: 896d7138-66bb-5e7f-831c-4d85430eef4c
+  type: contains
+- source: 896d7138-66bb-5e7f-831c-4d85430eef4c
+  target: 68f8e973-2535-5a21-b55b-3111d1889751
+  type: contains
+- source: f733181c-4b30-51a2-82d0-363dc94473bd
+  target: 5e691e8a-25d3-56cc-a5f5-8b64a6f4aad3
+  type: contains
+- source: 5e691e8a-25d3-56cc-a5f5-8b64a6f4aad3
+  target: e9600b08-363f-5de2-97f5-51952b16b449
+  type: contains
+- source: f733181c-4b30-51a2-82d0-363dc94473bd
+  target: 230bb098-71b3-554d-ac97-b4161b178967
+  type: contains
+- source: 230bb098-71b3-554d-ac97-b4161b178967
+  target: 25f4e13a-a8b2-571f-b903-5558dcc97cfa
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
+  type: contains
+- source: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
+  target: ce6f1690-67f5-5328-a6f8-d116fcca829a
+  type: contains
+- source: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
+  target: 4e69c047-f110-52a7-ae49-9b0488769bb3
+  type: contains
+- source: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
+  target: 615c27a9-bb15-5367-8b7b-a9e423b2ac6c
+  type: contains
+- source: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
+  target: f3f6cf2e-53d4-55ce-8236-0eafd085c905
+  type: contains
+- source: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
+  target: f970fd43-c9c9-5739-99a6-2ff663e94846
+  type: contains
+- source: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
+  target: 19edeec5-04e3-5f2d-b83b-9fd66dd6699f
+  type: contains
+- source: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
+  target: bfd2e345-16bc-5633-8057-be5145970c9a
+  type: contains
+- source: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
+  target: eb5a2adf-d33a-5be4-9c15-82b3ccf6b86e
+  type: contains
+- source: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
+  target: fc20cc3f-230d-5b6f-9cd8-fb0646ced58a
+  type: contains
+- source: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
+  target: 1c27a5d8-bfbb-50a5-984f-f80714abd540
+  type: contains
+- source: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
+  target: 3acc05d8-0792-569c-843b-93f8bee063ab
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: a878d805-54f0-5ab8-940d-b236fe69ea08
+  type: contains
+- source: a878d805-54f0-5ab8-940d-b236fe69ea08
+  target: 35f020c1-fed3-592d-9957-2a03f54a6792
+  type: contains
+- source: a878d805-54f0-5ab8-940d-b236fe69ea08
+  target: 74dc5819-4b7a-5f58-a78b-d6e84557cf29
+  type: contains
+- source: a878d805-54f0-5ab8-940d-b236fe69ea08
+  target: 989614c6-e114-5762-8959-49c2b81f9472
+  type: contains
+- source: a878d805-54f0-5ab8-940d-b236fe69ea08
+  target: 5b22abe7-38ff-5f11-aa9c-a25521dcc81a
+  type: contains
+- source: a878d805-54f0-5ab8-940d-b236fe69ea08
+  target: 889e684a-7cf5-5623-913b-446d4266cfbd
+  type: contains
+- source: a878d805-54f0-5ab8-940d-b236fe69ea08
+  target: 568a48c6-b79f-530d-9ddc-9c563d55f38a
+  type: contains
+- source: a878d805-54f0-5ab8-940d-b236fe69ea08
+  target: a5035bc1-df8d-5751-a6b9-575d60472873
+  type: contains
+- source: a878d805-54f0-5ab8-940d-b236fe69ea08
+  target: 23ad157a-00e7-5603-9608-5ef017c78c38
+  type: contains
+- source: a878d805-54f0-5ab8-940d-b236fe69ea08
+  target: bb2e6079-8969-52e3-8d88-10a0b20b7045
+  type: contains
+- source: a878d805-54f0-5ab8-940d-b236fe69ea08
+  target: 52bb8542-78e8-551e-ac28-b162bebbb34a
+  type: contains
+- source: a878d805-54f0-5ab8-940d-b236fe69ea08
+  target: 7d191475-64c3-5775-ba45-29628393aba9
+  type: contains
+- source: a878d805-54f0-5ab8-940d-b236fe69ea08
+  target: a48c05df-e234-5ca5-81a1-a62fa037812e
+  type: contains
+- source: a878d805-54f0-5ab8-940d-b236fe69ea08
+  target: 4b25bf5f-946f-5097-94b9-ff868ac64288
+  type: contains
+- source: a878d805-54f0-5ab8-940d-b236fe69ea08
+  target: b4354761-1c0e-51dc-a7c9-269c1fde35d9
+  type: contains
+- source: a878d805-54f0-5ab8-940d-b236fe69ea08
+  target: e38cf6c4-4df6-5bb0-a838-ea61baae70da
+  type: contains
+- source: a878d805-54f0-5ab8-940d-b236fe69ea08
+  target: 05fc6c09-9731-5dcb-b32b-6d564298af1e
+  type: contains
+- source: a878d805-54f0-5ab8-940d-b236fe69ea08
+  target: a38bb022-995e-52dc-b156-6c1a74161f39
+  type: contains
+- source: a878d805-54f0-5ab8-940d-b236fe69ea08
+  target: 18a673bd-853c-5c7f-92b1-c7906a15f93d
+  type: contains
+- source: a878d805-54f0-5ab8-940d-b236fe69ea08
+  target: a79bd829-cd38-5fd2-b2d2-28e80897b4f1
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 3cb65517-d8e5-5788-97c8-d5b205108d15
+  type: contains
+- source: 3cb65517-d8e5-5788-97c8-d5b205108d15
+  target: da7aa9c3-ccde-5b1f-bd9b-a271b8a4c7bd
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 70b21164-bf77-5ed5-98ed-fc00789a9087
+  type: contains
+- source: 70b21164-bf77-5ed5-98ed-fc00789a9087
+  target: 4cadabca-74ed-5899-900e-38fe3f4c2139
+  type: contains
+- source: 70b21164-bf77-5ed5-98ed-fc00789a9087
+  target: 809432e9-aaba-5b9d-a1ed-d537129f6259
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 7bb11dbc-3295-5af9-a19e-70455169489f
+  type: contains
+- source: 7bb11dbc-3295-5af9-a19e-70455169489f
+  target: 35d2e6ca-f605-5fda-8216-6d32564a2484
+  type: contains
+- source: 7bb11dbc-3295-5af9-a19e-70455169489f
+  target: c0a12108-ad5d-5325-9156-f810f9a3ed27
+  type: contains
+- source: 7bb11dbc-3295-5af9-a19e-70455169489f
+  target: bd656ebd-8f47-54a8-a167-5502777bad66
+  type: contains
+- source: 7bb11dbc-3295-5af9-a19e-70455169489f
+  target: 5690c596-77f7-5f8c-939f-8ef0c35806f8
+  type: contains
+- source: 7bb11dbc-3295-5af9-a19e-70455169489f
+  target: bddfa6eb-251d-515a-8234-0ba5822c4b7e
+  type: contains
+- source: 7bb11dbc-3295-5af9-a19e-70455169489f
+  target: 88080ea6-ef86-5bc7-bf28-a2ad29a5f0e0
+  type: contains
+- source: 7bb11dbc-3295-5af9-a19e-70455169489f
+  target: edd9f5f9-42b2-5e10-9350-761de66bac2b
+  type: contains
+- source: 7bb11dbc-3295-5af9-a19e-70455169489f
+  target: d1e24152-4c50-5373-b5e4-a0ef926d7b06
+  type: contains
+- source: 7bb11dbc-3295-5af9-a19e-70455169489f
+  target: b7e23a2c-73ea-51bc-b504-8a3381778c3e
+  type: contains
+- source: 7bb11dbc-3295-5af9-a19e-70455169489f
+  target: e9d58814-9b72-58d4-a67c-2c9f47ac8bc2
+  type: contains
+- source: 7bb11dbc-3295-5af9-a19e-70455169489f
+  target: 9cfad7cd-b6a9-5d0d-946c-772adcc56ade
+  type: contains
+- source: 7bb11dbc-3295-5af9-a19e-70455169489f
+  target: 16af73d1-a771-5318-b00d-e983d104f05c
+  type: contains
+- source: 7bb11dbc-3295-5af9-a19e-70455169489f
+  target: f8b49d60-090b-5e25-9757-008ae3a1249b
+  type: contains
+- source: 7bb11dbc-3295-5af9-a19e-70455169489f
+  target: 1ac11d2d-dd93-521f-93b2-359ac6c60a53
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 97a79199-7261-572e-94bf-052e2bfcbab6
+  type: contains
+- source: 97a79199-7261-572e-94bf-052e2bfcbab6
+  target: d2cd7790-0a72-5427-844a-de63b9a596ce
+  type: contains
+- source: 97a79199-7261-572e-94bf-052e2bfcbab6
+  target: f5f24385-5672-59c9-a6c0-cd703b071e61
+  type: contains
+- source: f5f24385-5672-59c9-a6c0-cd703b071e61
+  target: a8b520a2-dd09-52f5-8676-38450f181734
+  type: contains
+- source: f5f24385-5672-59c9-a6c0-cd703b071e61
+  target: cbdc20f0-0f80-5046-9850-630fbc802e30
+  type: contains
+- source: 97a79199-7261-572e-94bf-052e2bfcbab6
+  target: 18773878-fc79-5b42-8346-46edf1abb7e3
+  type: contains
+- source: 18773878-fc79-5b42-8346-46edf1abb7e3
+  target: b16eed8d-065d-54ab-959d-803a9b53f7d6
+  type: contains
+- source: 18773878-fc79-5b42-8346-46edf1abb7e3
+  target: d4f87c27-3613-55ac-9625-cbc0916087a3
+  type: contains
+- source: 97a79199-7261-572e-94bf-052e2bfcbab6
+  target: 36ce0804-722d-53fa-adad-48ce0a7458c0
+  type: contains
+- source: 36ce0804-722d-53fa-adad-48ce0a7458c0
+  target: d9ed8cbc-aaeb-5aee-b7ec-ad7383e2dae5
+  type: contains
+- source: 36ce0804-722d-53fa-adad-48ce0a7458c0
+  target: 33f020f8-b8d9-58b1-8a7b-cb27e47e1643
+  type: contains
+- source: 97a79199-7261-572e-94bf-052e2bfcbab6
+  target: 4f1edcc0-c29b-504f-af6e-eed38be1681d
+  type: contains
+- source: 4f1edcc0-c29b-504f-af6e-eed38be1681d
+  target: 3498d437-499a-537b-a868-56a6c647c677
+  type: contains
+- source: 4f1edcc0-c29b-504f-af6e-eed38be1681d
+  target: 70060622-7eaa-5ce7-abaa-48685fdb278e
+  type: contains
+- source: 4f1edcc0-c29b-504f-af6e-eed38be1681d
+  target: 84ea2e44-daa1-53c6-a13f-01c226cc23f0
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 0a163bed-7cab-5793-9dd8-c412fcfd6f39
+  type: contains
+- source: 0a163bed-7cab-5793-9dd8-c412fcfd6f39
+  target: b4371f48-7b13-5c1e-bcb7-a8dd993fbc49
+  type: contains
+- source: 0a163bed-7cab-5793-9dd8-c412fcfd6f39
+  target: 7641f862-726a-5f41-bda4-288ca698fc87
+  type: contains
+- source: 0a163bed-7cab-5793-9dd8-c412fcfd6f39
+  target: 8c4b52d8-0b20-52d0-a25b-d187fca9f9b2
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: b0996653-f397-5cd5-9f1c-0a0fb6c5160c
+  type: contains
+- source: b0996653-f397-5cd5-9f1c-0a0fb6c5160c
+  target: bfc5f97a-e036-5e60-9213-97b04107c0de
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 62747999-702e-56a2-9281-584a13bf6426
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: 02c5fb32-1131-5598-8673-f714d88eb2bf
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: 69ec6521-a924-5226-96ba-21ffb7192ff4
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: 1d1029ba-5dcd-5583-9bfe-0ced6fd93212
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: 34f0e30e-d4b3-573a-98c8-9e9de25e58e6
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: 81a2f741-32a9-5721-b56f-585601497116
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: 3ec5db6e-7f34-5799-9b7f-1d39794ef776
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: 2498a92b-a337-55ec-8f64-fb06ebbc3763
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: 70929657-e455-5ce0-8f2b-62b9985e1c79
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: bf0ae804-3350-52eb-b12b-98bb855ecede
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: 3c6d1325-f7d0-5cce-9861-12233d812dd9
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: 1238936c-83b3-543c-a460-05c30b8447ba
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: 0c750d74-61ff-5066-89a7-ea81997cc150
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: e6abc03a-084f-56d3-9050-bd188b29021d
+  type: contains
+- source: 62747999-702e-56a2-9281-584a13bf6426
+  target: 7ce1f513-eaf2-5d48-a97f-f53b044fd685
+  type: contains

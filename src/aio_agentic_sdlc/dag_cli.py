@@ -15,6 +15,7 @@ from aio_agentic_sdlc.reconciliation import (
     ReconciliationEngine,
     write_reconciliation_report,
 )
+from aio_agentic_sdlc.workspace import INTENTION_DAG_FILE
 
 
 @click.group()
@@ -186,7 +187,7 @@ def mapping_review(project_path, intent_id):
     """Render fresh source-bound evidence for one mapping decision."""
 
     try:
-        engine = MappingEngine(project_path, Path(project_path) / "intention-dag.yaml")
+        engine = MappingEngine(project_path, Path(project_path) / INTENTION_DAG_FILE)
         click.echo(json.dumps(engine.review(intent_id), indent=2))
     except Exception as e:
         click.secho(f"Error reviewing mapping: {str(e)}", err=True, fg="red")
@@ -230,7 +231,7 @@ def mapping_approve(
     """Approve exactly one fresh candidate and persist verified source evidence."""
 
     try:
-        engine = MappingEngine(project_path, Path(project_path) / "intention-dag.yaml")
+        engine = MappingEngine(project_path, Path(project_path) / INTENTION_DAG_FILE)
         approval = MappingApproval.model_validate(
             {
                 "approved_by": approved_by,

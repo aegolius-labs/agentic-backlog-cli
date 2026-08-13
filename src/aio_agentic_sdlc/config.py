@@ -1,18 +1,27 @@
 import json
 import os
 
-CONFIG_FILE = ".aio-agentic-sdlc.json"
+from .workspace import (
+    CONFIG_FILE,
+    require_current_workspace,
+    workspace_file_path,
+    workspace_migration_lock,
+)
 
 
 def load_config(project_path="."):
-    file_path = os.path.join(project_path, CONFIG_FILE)
-    if not os.path.exists(file_path):
-        return {}
-    with open(file_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    with workspace_migration_lock(project_path):
+        require_current_workspace(project_path)
+        file_path = workspace_file_path(project_path, CONFIG_FILE)
+        if not os.path.exists(file_path):
+            return {}
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
 
 
 def save_config(config_dict, project_path="."):
-    file_path = os.path.join(project_path, CONFIG_FILE)
-    with open(file_path, "w", encoding="utf-8") as f:
-        json.dump(config_dict, f, indent=2)
+    with workspace_migration_lock(project_path):
+        require_current_workspace(project_path)
+        file_path = workspace_file_path(project_path, CONFIG_FILE)
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(config_dict, f, indent=2)

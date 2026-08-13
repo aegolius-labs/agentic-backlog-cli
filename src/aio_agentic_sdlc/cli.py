@@ -22,8 +22,15 @@ from .core import (
     set_status,
     update_item,
 )
-
-BACKLOG_FILE = "backlog.json"
+from .workspace import (
+    ARCHIVE_DIR,
+    BACKLOG_FILE,
+    INBOX_DIR,
+    INTENTION_DAG_FILE,
+    REALITY_DAG_FILE,
+    ensure_workspace,
+    migrate_legacy_workspace,
+)
 
 STATUS_BADGES = {
     "New": "🆕",
@@ -47,7 +54,7 @@ def _inject_agent_skills():
         )
         return
 
-    skill_dir = os.path.join(".agent", "skills", "aio-agentic-sdlc")
+    skill_dir = os.path.join(".agents", "skills", "aio-agentic-sdlc")
     os.makedirs(skill_dir, exist_ok=True)
 
     skill_file = os.path.join(skill_dir, "SKILL.md")
@@ -121,6 +128,9 @@ def _inject_platform_rules(platforms_str):
 
 
 def init_cmd(args):
+    migration = migrate_legacy_workspace(".")
+    if migration["changed"]:
+        print("Migrated legacy framework paths into .aio-agentic-sdlc/.")
     print("\n--- Agentic-Backlog Initialization ---")
     print("1. Simple Hierarchy: Epic -> Feature -> Task/Bug")
     print(
@@ -179,8 +189,8 @@ def init_cmd(args):
         "hierarchy": hierarchy,
     }
 
+    ensure_workspace()
     save_config(config)
-    from .core import BACKLOG_FILE
 
     if not os.path.exists(BACKLOG_FILE):
         nodes = {}
@@ -394,7 +404,10 @@ async def _run_architect_subagent(inbox_files):
     )
 
     files_str = ", ".join(inbox_files)
-    prompt = f"Process the following PRDs from the inbox/ directory: {files_str}. Map them to intention-dag.yaml."
+    prompt = (
+        f"Process the following PRDs from {INBOX_DIR}/: {files_str}. "
+        f"Map them to {INTENTION_DAG_FILE}."
+    )
     async with Agent(config) as agent:
         await agent.chat(prompt)
 
@@ -410,18 +423,18 @@ def plan_cmd(args):
     from .diffing_engine import DiffingEngine
 
     try:
-        if os.path.exists("inbox") and os.path.isdir("inbox"):
-            inbox_files = glob.glob(os.path.join("inbox", "*.md"))
+        if os.path.exists(INBOX_DIR) and os.path.isdir(INBOX_DIR):
+            inbox_files = glob.glob(os.path.join(INBOX_DIR, "*.md"))
             if inbox_files:
                 asyncio.run(_run_architect_subagent(inbox_files))
-                archiver = PRDArchiver()
+                archiver = PRDArchiver(archive_dir=ARCHIVE_DIR)
 
-                # Check if PRDs were reflected in intention-dag.yaml
+                # Check if PRDs were reflected in the canonical Intention DAG.
                 dag_nodes = set()
                 try:
                     import yaml
 
-                    with open("intention-dag.yaml", "r", encoding="utf-8") as f:
+                    with open(INTENTION_DAG_FILE, "r", encoding="utf-8") as f:
                         content = f.read()
                         dag_data = yaml.safe_load(content) or {}
                     nodes = dag_data.get("nodes", [])
@@ -446,14 +459,15 @@ def plan_cmd(args):
                             archiver.archive(file_path)
                         else:
                             print(
-                                f"Warning: PRD {filename} was not reflected in intention-dag.yaml. Skipping archive.",
+                                f"Warning: PRD {filename} was not reflected in "
+                                f"{INTENTION_DAG_FILE}. Skipping archive.",
                                 file=sys.stderr,
                             )
                     except Exception as e:
                         print(f"Error archiving {file_path}: {e}", file=sys.stderr)
 
-        intention_dag = DAGManager.load("intention-dag.yaml")
-        reality_dag = DAGManager.load("reality-dag.yaml")
+        intention_dag = DAGManager.load(INTENTION_DAG_FILE)
+        reality_dag = DAGManager.load(REALITY_DAG_FILE)
         engine = DiffingEngine(intention_dag, reality_dag)
         diff = engine.calculate_diff()
         print(json.dumps(diff, indent=2))
@@ -478,7 +492,9 @@ def apply_cmd(args):
 def migrate_state_cmd(args):
     from .state import migrate_backlog, retire_legacy_backlog
 
+    workspace_result = migrate_legacy_workspace(".")
     result = migrate_backlog(".")
+    result["workspace"] = workspace_result
     if args.retire_legacy:
         result["legacy"] = retire_legacy_backlog(".")
     print(json.dumps(result, indent=2))
@@ -527,8 +543,8 @@ def migrate_ids_cmd(args):
             yaml.dump(data, f, sort_keys=False, default_flow_style=False)
         print(f"Migrated {migrated_count} node IDs in {filepath}.")
 
-    migrate_file("intention-dag.yaml")
-    migrate_file("reality-dag.yaml")
+    migrate_file(INTENTION_DAG_FILE)
+    migrate_file(REALITY_DAG_FILE)
     print("Migration complete.")
 
 
@@ -611,7 +627,11 @@ def main():
     )
 
     p_export = subparsers.add_parser("export", help="Export to Markdown")
-    p_export.add_argument("--out", default="backlog.md", help="Output file")
+    p_export.add_argument(
+        "--out",
+        default=f"{BACKLOG_FILE.removesuffix('.json')}.md",
+        help="Output file",
+    )
 
     subparsers.add_parser("plan", help="Calculate and output the DAG diff (plan)")
 

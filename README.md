@@ -66,6 +66,30 @@ agb migrate-state --retire-legacy
 
 *(Note: `aio-agentic-sdlc` can also be used if you prefer the full name)*
 
+### Migrating an Existing Checkout
+
+Before using a project created with the former root-level layout, run:
+
+```bash
+aio-sdlc migrate-state
+```
+
+The command moves recognized framework state into `.aio-agentic-sdlc/`: root
+`backlog.json`, `.aio-agentic-sdlc.json`, `intention-dag.yaml`,
+`reality-dag.yaml`, and the former `.aio-sdlc` audit/legacy state. The retired
+GitHub configuration is removed while hierarchy and validation settings are
+preserved with local mode enforced. Each moved file is recorded with hashes in
+the canonical audit log before backlog schema migration continues.
+
+Migration fails without choosing a winner when both old and new paths exist,
+when a source is a symlink, or when its content is not a valid framework
+artifact. Normal state commands also fail with a migration instruction instead
+of silently starting an empty backlog. Generic host directories such as
+`specs/`, `changes/`, `archive/`, `inbox/`, and `research-spikes/` are never
+claimed automatically. The migrator bridges the former and current state and mapping locks,
+discards known obsolete lock files after release, removes `.aio-sdlc/` when it
+is empty, and reports rather than deletes any unknown entries that remain.
+
 ### Zero-Install Execution (via uvx)
 
 If you prefer not to install the CLI globally, you can execute commands entirely on-the-fly directly from GitHub:
@@ -83,15 +107,15 @@ Instead of relying on token-heavy LLM context windows or external integrations, 
 
 - **Intention DAG (I-DAG)**: A graph-based structural representation of planned features and dependencies.
 - **Reality DAG (R-DAG)**: A deterministic reflection of the actual codebase logic.
-- **Canonical Traceability**: PRDs (Product Requirement Documents) in the `specs/` directory are firmly anchored to both DAGs using `aio-sdlc-node` GUID tags, allowing subagents to detect architectural drift automatically and execute Just-In-Time (JIT) TDD loops with zero hallucination.
+- **Canonical Traceability**: PRDs in `.aio-agentic-sdlc/specs/` are anchored to both DAGs using `aio-sdlc-node` GUID tags, allowing subagents to detect architectural drift and execute Just-In-Time (JIT) TDD loops from explicit evidence.
 
 Intent IR can be validated strictly or reviewed without reading raw YAML:
 
 ```bash
-uv run dag-tool intent create-node --file intention-dag.yaml --node-id <guid> \
+uv run dag-tool intent create-node --file .aio-agentic-sdlc/intention-dag.yaml --node-id <guid> \
   --type component --name "Capability" --payload-file intent.json
-uv run dag-tool validate-intent --file intention-dag.yaml
-uv run dag-tool intent-summary --file intention-dag.yaml
+uv run dag-tool validate-intent --file .aio-agentic-sdlc/intention-dag.yaml
+uv run dag-tool intent-summary --file .aio-agentic-sdlc/intention-dag.yaml
 ```
 
 Use `--allow-partial` during migration while legacy nodes do not yet contain Intent IR. Strict
@@ -101,13 +125,13 @@ Reconcile identity evidence before creating an execution backlog:
 
 ```bash
 uv run dag-tool reconcile \
-  --intention intention-dag.yaml \
-  --reality reality-dag.yaml \
+  --intention .aio-agentic-sdlc/intention-dag.yaml \
+  --reality .aio-agentic-sdlc/reality-dag.yaml \
   --max-items 100 \
   --max-candidates 20
 uv run dag-tool diff \
-  --intention intention-dag.yaml \
-  --reality reality-dag.yaml \
+  --intention .aio-agentic-sdlc/intention-dag.yaml \
+  --reality .aio-agentic-sdlc/reality-dag.yaml \
   --max-tasks 100 \
   --max-candidates 20
 ```

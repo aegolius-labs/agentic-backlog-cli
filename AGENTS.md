@@ -8,7 +8,8 @@
 
 ## State integrity
 
-- Never edit `intention-dag.yaml`, `reality-dag.yaml`, or backlog state manually.
+- Never edit `.aio-agentic-sdlc/intention-dag.yaml`,
+  `.aio-agentic-sdlc/reality-dag.yaml`, or backlog state manually.
 - Use the `aio-agentic-sdlc` MCP tools, CLI, or Python API for every state transition.
 - Preserve canonical GUID traceability across DAG nodes, specs, and source markers.
 - Generate and promote framework documents through the provided tools; do not hand-edit

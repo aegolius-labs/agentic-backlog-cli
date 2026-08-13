@@ -24,7 +24,7 @@ jobs:
           DEFAULT_BRANCH: main
           ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: false
           FILTER_REGEX_EXCLUDE: >-
-            (^|/)(backlog\.json|intention-dag\.yaml|reality-dag\.yaml)$
+            (^|/)(backlog\.json|intention-dag\.yaml|reality-dag\.yaml)$|(^|/)\.aio-agentic-sdlc/(archive|inbox|research-spikes|specs)/|(^|/)\.aio-agentic-sdlc/changes/.+\.json$
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LINTER_RULES_PATH: .
           MARKDOWN_CONFIG_FILE: .markdownlint.json

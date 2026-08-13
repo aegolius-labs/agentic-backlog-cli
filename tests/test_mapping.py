@@ -1,6 +1,7 @@
 import hashlib
 import json
 import os
+import threading
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -10,6 +11,7 @@ from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.dag_models import Metadata, Node, NodeType
 from aio_agentic_sdlc.mapping import MappingApproval, MappingEngine, MappingError
 from aio_agentic_sdlc.reality_dag_generator import RealityDAGGenerator
+from aio_agentic_sdlc.workspace import INTENTION_DAG_FILE, workspace_migration_lock
 
 INTENT_ID = "6506870b-b262-4f54-b6e9-43de4a873a55"
 
@@ -28,7 +30,8 @@ def _project(tmp_path: Path, sources: dict[str, bytes | str], *, name="PRD Archi
         [Node(id=INTENT_ID, type=NodeType.COMPONENT, name=name)],
         [],
     )
-    intention_path = tmp_path / "intention-dag.yaml"
+    intention_path = tmp_path / INTENTION_DAG_FILE
+    intention_path.parent.mkdir(parents=True, exist_ok=True)
     intention.save(str(intention_path))
     return MappingEngine(tmp_path, intention_path), intention_path
 
@@ -116,6 +119,44 @@ def test_mapping_approval_atomically_marks_and_confirms_exact_python_symbol(tmp_
     generated = RealityDAGGenerator(str(tmp_path), "Mapping Test").generate()
     assert INTENT_ID in generated.nodes
     assert generated.nodes[INTENT_ID].name == "PRDArchiver"
+
+
+def test_mapping_approval_waits_for_workspace_migration_lock(tmp_path):
+    engine, _ = _project(
+        tmp_path,
+        {"src/archiver.py": "class PRDArchiver:\n    pass\n"},
+    )
+    review = engine.review(INTENT_ID)
+    started = threading.Event()
+    finished = threading.Event()
+    failures = []
+
+    def approve_in_thread():
+        started.set()
+        try:
+            engine.approve(
+                INTENT_ID,
+                review["candidates"][0]["reality"]["id"],
+                review["evidence_digest"],
+                _approval(),
+            )
+        except Exception as exc:  # noqa: BLE001 - captured for cross-thread assertion
+            failures.append(exc)
+        finally:
+            finished.set()
+
+    with workspace_migration_lock(tmp_path):
+        worker = threading.Thread(target=approve_in_thread)
+        worker.start()
+        assert started.wait(timeout=1)
+        assert not finished.wait(timeout=0.1)
+
+    worker.join(timeout=3)
+    assert not worker.is_alive()
+    assert failures == []
+    assert f"# aio-sdlc-node: {INTENT_ID}" in (tmp_path / "src/archiver.py").read_text(
+        encoding="utf-8"
+    )
 
 
 def test_mapping_marker_precedes_decorators_and_preserves_crlf(tmp_path):

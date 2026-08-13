@@ -10,92 +10,90 @@ from aio_agentic_sdlc.mcp_server import (
     reconcile_dags,
     review_mapping,
 )
+from aio_agentic_sdlc.workspace import (
+    CHANGES_DIR,
+    INTENTION_DAG_FILE,
+    REALITY_DAG_FILE,
+    SPECS_DIR,
+)
+
+
+def _sdd_data(title="Test MCP Title"):
+    return {
+        "title": title,
+        "author": "MCP",
+        "date": "2026-08-10",
+        "related_prd": "prd.md",
+        "architecture_overview": "Overview",
+        "system_components": "Components",
+        "data_model": "Model",
+        "api_design": "API",
+        "security_considerations": "Security",
+    }
 
 
 def test_mcp_generate_document(tmp_path):
-    templates_dir = tmp_path / "templates"
-    templates_dir.mkdir()
-
-    template_content = (
-        "Title: {{ title }}\nAuthor: {{ author }}\nContent: {{ content }}"
+    result = generate_document(
+        template_name="sdd-template.md",
+        data_json=json.dumps(_sdd_data()),
+        output_filename="mcp_output.md",
+        target_dir=str(tmp_path),
+        project_path=str(tmp_path),
     )
-    template_file = templates_dir / "test-template.md"
-    template_file.write_text(template_content, encoding="utf-8")
 
-    old_cwd = Path.cwd()
-    os.chdir(tmp_path)
-    try:
-        data = {
-            "title": "Test MCP Title",
-            "author": "MCP",
-            "content": "This is an MCP test.",
-        }
-        data_json = json.dumps(data)
-
-        result = generate_document(
-            template_name="test-template.md",
-            data_json=data_json,
-            output_filename="mcp_output.md",
-            target_dir=str(tmp_path),
-        )
-
-        assert "successfully generated" in result
-
-        output_file = tmp_path / "mcp_output.md"
-        assert output_file.exists()
-        content = output_file.read_text(encoding="utf-8")
-        assert "Title: Test MCP Title" in content
-        assert "Author: MCP" in content
-        assert "Content: This is an MCP test." in content
-    finally:
-        os.chdir(old_cwd)
+    assert "successfully generated" in result
+    content = (tmp_path / "mcp_output.md").read_text(encoding="utf-8")
+    assert "# Test MCP Title" in content
+    assert 'author: "MCP"' in content
 
 
 def test_mcp_generate_document_error(tmp_path):
-    old_cwd = Path.cwd()
-    os.chdir(tmp_path)
-    try:
-        # Create templates dir so we don't get directory not found
-        (tmp_path / "templates").mkdir()
-
-        result = generate_document(
-            template_name="missing.md",
-            data_json="{}",
-            output_filename="mcp_out.md",
-            target_dir=str(tmp_path),
-        )
-        assert "Error generating document" in result
-        assert "Template 'missing.md' not found" in result
-    finally:
-        os.chdir(old_cwd)
+    result = generate_document(
+        template_name="missing.md",
+        data_json="{}",
+        output_filename="mcp_out.md",
+        target_dir=str(tmp_path),
+        project_path=str(tmp_path),
+    )
+    assert "Error generating document" in result
+    assert "Template 'missing.md' not found" in result
 
 
 def test_mcp_generate_document_uses_explicit_project_path(tmp_path):
     project = tmp_path / "project"
     process_cwd = tmp_path / "plugin-cache"
-    (project / "templates").mkdir(parents=True)
+    project.mkdir()
     process_cwd.mkdir()
-    (project / "templates" / "test-template.md").write_text(
-        "Project: {{ name }}", encoding="utf-8"
-    )
 
     old_cwd = Path.cwd()
     os.chdir(process_cwd)
     try:
         result = generate_document(
-            template_name="test-template.md",
-            data_json=json.dumps({"name": "Codex"}),
+            template_name="sdd-template.md",
+            data_json=json.dumps(_sdd_data("Codex Workspace")),
             output_filename="generated.md",
-            target_dir=str(project / "specs"),
+            target_dir=str(project / SPECS_DIR),
             project_path=str(project),
         )
     finally:
         os.chdir(old_cwd)
 
     assert "successfully generated" in result
-    assert (project / "specs" / "generated.md").read_text(encoding="utf-8") == (
-        "Project: Codex"
+    assert "# Codex Workspace" in (project / SPECS_DIR / "generated.md").read_text(
+        encoding="utf-8"
     )
+
+
+def test_mcp_generate_document_defaults_to_framework_changes(tmp_path):
+    result = generate_document(
+        template_name="sdd-template.md",
+        data_json=json.dumps(_sdd_data("Default Target")),
+        output_filename="generated.md",
+        project_path=str(tmp_path),
+    )
+
+    assert "successfully generated" in result
+    assert (tmp_path / CHANGES_DIR / "generated.md").is_file()
 
 
 def test_mcp_reconcile_dags_returns_the_same_evidence_report(tmp_path):
@@ -105,8 +103,9 @@ def test_mcp_reconcile_dags_returns_the_same_evidence_report(tmp_path):
         name="Mapped component",
     )
     metadata = Metadata(name="Test", version="1.0")
-    DAGManager(metadata, [node], []).save(str(tmp_path / "intention-dag.yaml"))
-    DAGManager(metadata, [node], []).save(str(tmp_path / "reality-dag.yaml"))
+    (tmp_path / INTENTION_DAG_FILE).parent.mkdir(parents=True)
+    DAGManager(metadata, [node], []).save(str(tmp_path / INTENTION_DAG_FILE))
+    DAGManager(metadata, [node], []).save(str(tmp_path / REALITY_DAG_FILE))
 
     result = json.loads(reconcile_dags(project_path=str(tmp_path)))
 
@@ -125,11 +124,12 @@ def test_mcp_mapping_review_and_approval_use_source_bound_evidence(tmp_path):
     source_path = tmp_path / "src" / "archiver.py"
     source_path.parent.mkdir(parents=True)
     source_path.write_text("class PRDArchiver:\n    pass\n", encoding="utf-8")
+    (tmp_path / INTENTION_DAG_FILE).parent.mkdir(parents=True)
     DAGManager(
         Metadata(name="Mapping MCP", version="1.0"),
         [Node(id=intent_id, type=NodeType.COMPONENT, name="PRD Archiver")],
         [],
-    ).save(str(tmp_path / "intention-dag.yaml"))
+    ).save(str(tmp_path / INTENTION_DAG_FILE))
 
     review = json.loads(review_mapping(intent_id=intent_id, project_path=str(tmp_path)))
     candidate_id = review["candidates"][0]["reality"]["id"]

@@ -2,11 +2,10 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 
-def get_project_root() -> Path:
-    """Returns the project root directory."""
-    # Assuming src/aio_agentic_sdlc/templating_engine.py
-    current_dir = Path(__file__).parent
-    return current_dir.parent.parent
+def get_package_templates_dir() -> Path:
+    """Return the templates bundled with the installed framework package."""
+
+    return Path(__file__).parent / "templates"
 
 
 def generate_document(
@@ -22,8 +21,8 @@ def generate_document(
         template_name: The name of the template file in the templates/ directory.
         data: A dictionary of data to populate the template.
         output_path: The path where the generated document will be saved.
-        templates_dir: Optional explicit template directory. When omitted, prefer the current
-            working directory's templates folder and then the installed project templates.
+        templates_dir: Optional explicit template directory. When omitted, use the templates
+            bundled with the installed framework package.
 
     Returns:
         The content of the generated document.
@@ -31,11 +30,7 @@ def generate_document(
     if templates_dir is not None:
         resolved_templates_dir = Path(templates_dir)
     else:
-        cwd_templates = Path.cwd() / "templates"
-        if cwd_templates.exists():
-            resolved_templates_dir = cwd_templates
-        else:
-            resolved_templates_dir = get_project_root() / "templates"
+        resolved_templates_dir = get_package_templates_dir()
 
     if not resolved_templates_dir.exists():
         raise FileNotFoundError(

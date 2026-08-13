@@ -1,6 +1,7 @@
 import yaml
 
 from aio_agentic_sdlc.cli import migrate_ids_cmd
+from aio_agentic_sdlc.workspace import INTENTION_DAG_FILE, REALITY_DAG_FILE
 
 
 class DummyArgs:
@@ -19,16 +20,17 @@ def test_migrate_ids_maintains_cross_file_consistency(tmpdir, monkeypatch):
         "edges": [],
     }
 
-    with open("intention-dag.yaml", "w") as f:
+    (tmpdir / ".aio-agentic-sdlc").ensure(dir=True)
+    with open(INTENTION_DAG_FILE, "w") as f:
         yaml.dump(intention_data, f)
-    with open("reality-dag.yaml", "w") as f:
+    with open(REALITY_DAG_FILE, "w") as f:
         yaml.dump(reality_data, f)
 
     migrate_ids_cmd(DummyArgs())
 
-    with open("intention-dag.yaml", "r") as f:
+    with open(INTENTION_DAG_FILE, "r") as f:
         int_data = yaml.safe_load(f)
-    with open("reality-dag.yaml", "r") as f:
+    with open(REALITY_DAG_FILE, "r") as f:
         real_data = yaml.safe_load(f)
 
     int_id = int_data["nodes"][0]["id"]

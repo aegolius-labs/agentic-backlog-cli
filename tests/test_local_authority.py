@@ -6,6 +6,13 @@ import pytest
 
 from aio_agentic_sdlc import core
 from aio_agentic_sdlc.cli import init_cmd, main
+from aio_agentic_sdlc.workspace import (
+    BACKLOG_FILE,
+    CONFIG_FILE,
+    WORKSPACE_DIR,
+    WorkspaceMigrationRequired,
+    migrate_legacy_workspace,
+)
 
 
 def test_cli_has_no_github_sync_surface(monkeypatch, capsys):
@@ -41,6 +48,17 @@ def test_legacy_github_config_cannot_redirect_backlog_operations(tmp_path):
         encoding="utf-8",
     )
 
+    with pytest.raises(WorkspaceMigrationRequired, match="migrate-state"):
+        core.add_item(
+            "Blocked before migration",
+            impact=5,
+            effort=1,
+            category="Reliability",
+            description="Legacy state must not be ignored.",
+            project_path=str(tmp_path),
+        )
+
+    migrate_legacy_workspace(tmp_path)
     core.add_item(
         "Local task",
         impact=5,
@@ -50,8 +68,11 @@ def test_legacy_github_config_cannot_redirect_backlog_operations(tmp_path):
         project_path=str(tmp_path),
     )
 
-    backlog = json.loads((tmp_path / "backlog.json").read_text(encoding="utf-8"))
+    backlog = json.loads((tmp_path / BACKLOG_FILE).read_text(encoding="utf-8"))
     assert "Local task" in backlog["nodes"]
+    config = json.loads((tmp_path / CONFIG_FILE).read_text(encoding="utf-8"))
+    assert config["core"]["mode"] == "local"
+    assert "github" not in config
 
 
 def test_init_records_local_as_the_only_mode(tmp_path, monkeypatch):
@@ -60,11 +81,11 @@ def test_init_records_local_as_the_only_mode(tmp_path, monkeypatch):
 
     init_cmd(argparse.Namespace(empty=True, platforms=None))
 
-    config = json.loads(
-        (tmp_path / ".aio-agentic-sdlc.json").read_text(encoding="utf-8")
-    )
+    config = json.loads((tmp_path / CONFIG_FILE).read_text(encoding="utf-8"))
     assert config["core"]["mode"] == "local"
     assert "github" not in config
+    assert (tmp_path / ".agents/skills/aio-agentic-sdlc/SKILL.md").is_file()
+    assert not (tmp_path / ".agent").exists()
 
 
 def test_failed_backlog_write_preserves_previous_state(tmp_path, monkeypatch):
@@ -91,4 +112,4 @@ def test_failed_backlog_write_preserves_previous_state(tmp_path, monkeypatch):
         core.save_backlog(replacement, str(tmp_path))
 
     assert core.load_backlog(str(tmp_path))["nodes"] == original["nodes"]
-    assert list(tmp_path.glob(".backlog.json.*.tmp")) == []
+    assert list((tmp_path / WORKSPACE_DIR).glob(".backlog.json.*.tmp")) == []

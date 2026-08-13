@@ -7,11 +7,18 @@ from aio_agentic_sdlc import core
 from aio_agentic_sdlc.cli import main
 from aio_agentic_sdlc.state import (
     AUDIT_FILE,
+    BACKLOG_FILE,
     CURRENT_BACKLOG_SCHEMA_VERSION,
     BacklogConflictError,
     UnsupportedBacklogSchema,
     migrate_backlog,
     retire_legacy_backlog,
+)
+from aio_agentic_sdlc.workspace import (
+    LEGACY_DIR,
+    WORKSPACE_DIR,
+    WorkspaceMigrationError,
+    ensure_workspace,
 )
 
 
@@ -34,7 +41,8 @@ def test_missing_backlog_uses_current_schema(tmp_path):
 
 
 def test_legacy_items_migrate_deterministically_without_an_implicit_write(tmp_path):
-    backlog_path = tmp_path / "backlog.json"
+    backlog_path = tmp_path / BACKLOG_FILE
+    backlog_path.parent.mkdir(parents=True)
     backlog_path.write_text(
         json.dumps(
             {
@@ -64,7 +72,8 @@ def test_legacy_items_migrate_deterministically_without_an_implicit_write(tmp_pa
 
 
 def test_explicit_migration_persists_current_schema_and_audits_it(tmp_path):
-    backlog_path = tmp_path / "backlog.json"
+    backlog_path = tmp_path / BACKLOG_FILE
+    backlog_path.parent.mkdir(parents=True)
     backlog_path.write_text(
         json.dumps({"nodes": {"Task": {"description": "Keep me"}}, "edges": []}),
         encoding="utf-8",
@@ -83,9 +92,9 @@ def test_explicit_migration_persists_current_schema_and_audits_it(tmp_path):
 
 
 def test_cli_exposes_explicit_local_state_migration(tmp_path, monkeypatch, capsys):
-    (tmp_path / "backlog.json").write_text(
-        json.dumps({"nodes": {}, "edges": []}), encoding="utf-8"
-    )
+    backlog_path = tmp_path / BACKLOG_FILE
+    backlog_path.parent.mkdir(parents=True)
+    backlog_path.write_text(json.dumps({"nodes": {}, "edges": []}), encoding="utf-8")
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(sys, "argv", ["aio-sdlc", "migrate-state"])
 
@@ -95,7 +104,58 @@ def test_cli_exposes_explicit_local_state_migration(tmp_path, monkeypatch, capsy
         "from_version": 0,
         "to_version": CURRENT_BACKLOG_SCHEMA_VERSION,
         "changed": True,
+        "workspace": {
+            "changed": False,
+            "migrated": [],
+            "discarded_legacy_locks": [],
+            "remaining_legacy_paths": [],
+        },
     }
+
+
+def test_cli_migrates_legacy_layout_before_schema_migration(
+    tmp_path, monkeypatch, capsys
+):
+    (tmp_path / "backlog.json").write_text(
+        json.dumps({"nodes": {"Preserved": {}}, "edges": []}), encoding="utf-8"
+    )
+    (tmp_path / ".aio-agentic-sdlc.json").write_text(
+        json.dumps(
+            {
+                "core": {"mode": "github", "validation_mode": "strict"},
+                "github": {"repo": "retired/remote"},
+                "hierarchy": {"1": ["Task"]},
+            }
+        ),
+        encoding="utf-8",
+    )
+    legacy_state = tmp_path / ".aio-sdlc"
+    legacy_state.mkdir()
+    (legacy_state / "state-audit.jsonl").write_text(
+        '{"operation":"legacy.event"}\n', encoding="utf-8"
+    )
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(sys, "argv", ["aio-sdlc", "migrate-state"])
+
+    main()
+
+    result = json.loads(capsys.readouterr().out)
+    assert result["workspace"]["changed"] is True
+    assert {item["source"] for item in result["workspace"]["migrated"]} == {
+        ".aio-agentic-sdlc.json",
+        ".aio-sdlc/state-audit.jsonl",
+        "backlog.json",
+    }
+    assert result["changed"] is True
+    assert (
+        "Preserved"
+        in json.loads((tmp_path / BACKLOG_FILE).read_text(encoding="utf-8"))["nodes"]
+    )
+    config = json.loads(
+        (tmp_path / ".aio-agentic-sdlc/config.json").read_text(encoding="utf-8")
+    )
+    assert config["core"] == {"mode": "local", "validation_mode": "strict"}
+    assert "github" not in config
 
 
 def test_legacy_generated_backlog_is_archived_and_retired_idempotently(tmp_path):
@@ -117,8 +177,30 @@ def test_legacy_generated_backlog_is_archived_and_retired_idempotently(tmp_path)
     assert event["sha256"] == first["sha256"]
 
 
+def test_legacy_backlog_retirement_rejects_a_symlinked_archive_parent(tmp_path):
+    legacy_path = tmp_path / ".agentic-backlog.json"
+    payload = b'{"nodes":{"Legacy":{}}}'
+    legacy_path.write_bytes(payload)
+    workspace = ensure_workspace(tmp_path)
+    redirect_target = tmp_path / "archive-redirect"
+    redirect_target.mkdir()
+    archive_parent = tmp_path / LEGACY_DIR
+    try:
+        archive_parent.symlink_to(redirect_target, target_is_directory=True)
+    except OSError as exc:
+        pytest.skip(f"Directory symlinks are unavailable: {exc}")
+
+    with pytest.raises(WorkspaceMigrationError, match="real directory"):
+        retire_legacy_backlog(str(tmp_path))
+
+    assert legacy_path.read_bytes() == payload
+    assert list(redirect_target.iterdir()) == []
+    assert workspace.is_dir()
+
+
 def test_future_schema_is_rejected_without_modifying_state(tmp_path):
-    backlog_path = tmp_path / "backlog.json"
+    backlog_path = tmp_path / BACKLOG_FILE
+    backlog_path.parent.mkdir(parents=True)
     original = {
         "schema_version": CURRENT_BACKLOG_SCHEMA_VERSION + 1,
         "nodes": {},
@@ -196,7 +278,7 @@ def test_failed_replace_preserves_state_and_is_reconciled_as_rolled_back(
 
     assert loaded["nodes"] == original["nodes"]
     assert _audit_events(tmp_path)[-1]["phase"] == "rolled_back"
-    assert list(tmp_path.glob(".backlog.json.*.tmp")) == []
+    assert list((tmp_path / WORKSPACE_DIR).glob(".backlog.json.*.tmp")) == []
 
 
 def test_load_recovers_commit_when_audit_commit_was_interrupted(tmp_path, monkeypatch):

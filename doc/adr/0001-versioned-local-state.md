@@ -27,8 +27,8 @@ monotonic `revision`, `nodes`, and `edges`.
 - `migrate-state --retire-legacy` archives the obsolete generated backlog by content
   hash before removing it.
 
-The audit journal and lock live under the gitignored `.aio-sdlc/` directory. They are
-operational state, not project intent.
+The backlog, audit journal, and lock live under the gitignored runtime portion of the
+canonical `.aio-agentic-sdlc/` workspace. They are operational state, not project intent.
 
 ## Consequences
 
