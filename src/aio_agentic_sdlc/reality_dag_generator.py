@@ -30,6 +30,8 @@ def _is_ignored_directory(directory: str) -> bool:
     return normalized in IGNORED_DIRECTORIES or normalized.endswith(".egg-info")
 
 
+# aio-sdlc-mapping-approval: {"approved_at":"2026-08-13T19:29:14.286017-04:00","approved_by":"Felix","candidate_reality_id":"5f9d3dc7-cd7e-5402-86cd-356a4b6846fb","evidence_digest":"506a82e619bca8370b7af081f885edaa08bea033761e11a5b30924066e73b9f5","intent_id":"0fea8fea-9a23-404b-a16b-a9c9c3990e1b","rationale":"Approved the RealityDAGGenerator source identity; responsibility and public API match the reviewed Intention node.","schema_version":1,"source_path":"src/aio_agentic_sdlc/reality_dag_generator.py","source_sha256":"c688f5fe800d8178dae6bb861f71b8ac59e6015165e346bdecb647966371e242","symbol_kind":"class","symbol_name":"RealityDAGGenerator"}
+# aio-sdlc-node: 0fea8fea-9a23-404b-a16b-a9c9c3990e1b
 class RealityDAGGenerator:
     """
     Generates a Reality DAG by statically analyzing source code.

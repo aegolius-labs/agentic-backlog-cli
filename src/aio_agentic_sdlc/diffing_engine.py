@@ -45,6 +45,8 @@ class DiffPolicy:
         return cls(mode="legacy_structural")
 
 
+# aio-sdlc-mapping-approval: {"approved_at":"2026-08-13T19:29:14.286017-04:00","approved_by":"Felix","candidate_reality_id":"6199cd62-9332-5ad1-b458-18bd2e865da1","evidence_digest":"49c7ce1f1cf9501958cbb0a20b0919911d5d9270f20b46b52b7a35535a7eaaf8","intent_id":"fa35fa8a-b6b5-40ca-9080-b31421117e37","rationale":"Approved the DiffingEngine source identity; DAG diff responsibility, documentation, public API, and related-test references match.","schema_version":1,"source_path":"src/aio_agentic_sdlc/diffing_engine.py","source_sha256":"813cc0a840b1c380e98ab6b1fa0b64a060bfc3bba05682b2165cf954f54cee94","symbol_kind":"class","symbol_name":"DiffingEngine"}
+# aio-sdlc-node: fa35fa8a-b6b5-40ca-9080-b31421117e37
 class DiffingEngine:
     """
     Computes the difference between an Intention DAG and a Reality DAG,
