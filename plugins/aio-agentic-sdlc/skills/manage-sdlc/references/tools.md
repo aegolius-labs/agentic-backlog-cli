@@ -16,6 +16,7 @@ Tool names may be namespaced by the Codex host. Match them by the operation name
 | Validate GUID links | `validate_traceability` | Use the Python API if MCP is unavailable |
 | Generate Reality DAG | `generate_reality` | `uv run dag-tool generate-reality ...` |
 | Reconcile DAG identity evidence | `reconcile_dags` | `uv run dag-tool reconcile ...` |
+| Triage reconciliation drift | `triage_reconciliation_drift` | `uv run dag-tool triage ...` |
 | Review a source mapping | `review_mapping` | `uv run dag-tool mapping review ...` |
 | Approve an exact reviewed mapping | `approve_mapping` | `uv run dag-tool mapping approve ...` |
 | Create intent node | `create_intent_node` | `uv run dag-tool intent create-node ...` |
@@ -32,6 +33,13 @@ root so its containment checks apply to the target repository instead of the MCP
 
 Treat warnings and string results beginning with `Error:` as failed operations. Re-read state after
 a write before claiming success. Do not fall back to manual edits for protected state.
+
+Run drift triage after safe reconciliation and before creating or selecting implementation work.
+Review-required, draft, rejected, or missing Intent IR cannot authorize implementation. Explicit
+triage decisions must match the current plan digest and include concrete evidence, an actor, and a
+timezone-aware timestamp. Only `missing_implementation` on approved intent may be routed to the
+implementer; tooling drift goes to the framework, and obsolete or unapproved intent goes back to
+Intake/Architecture.
 
 Mapping is a two-step approval gate. Run `review_mapping` immediately before presenting a decision.
 Present the decision brief first: intended responsibility and acceptance criteria, actual symbol

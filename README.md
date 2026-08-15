@@ -14,6 +14,7 @@ The `aio-agentic-sdlc` framework includes several built-in features that ensure 
 - **Versioned Local State**: The execution backlog uses explicit schema and revision numbers, atomic replacement, stale-writer protection, and a local transaction audit log.
 - **Auditable Intent IR**: Intention nodes can preserve source provenance, assumptions, ambiguities, confidence, evidence-bound acceptance criteria, revision history, and approval state in a strict versioned schema.
 - **Evidence-Gated Reconciliation**: GUID matches are confirmed deterministically, structural matches remain review candidates, and unmatched Reality observations never become deletion work by default.
+- **Approval-Aware Drift Triage**: Safe-plan work is withheld from implementation until accepted intent, Reality observability, and digest-bound classification evidence agree.
 - **SDLC Scribe Agent**: An automated Scribe agent executes before the DevOps agent steps to ensure user-facing documentation (like this README) stays perfectly aligned with the codebase's true reality.
 
 ## Licensing Note
@@ -156,6 +157,10 @@ uv run dag-tool diff \
   --reality .aio-agentic-sdlc/reality-dag.yaml \
   --max-tasks 100 \
   --max-candidates 20
+uv run dag-tool triage \
+  --intention .aio-agentic-sdlc/intention-dag.yaml \
+  --reality .aio-agentic-sdlc/reality-dag.yaml \
+  --max-items 100
 ```
 
 Both commands are read-only. Safe diffing is the default: it asks for mapping review or additional
@@ -164,6 +169,16 @@ code. The historical structural algorithm requires the explicit `--mode legacy-s
 Both top-level records and nested candidate identities are bounded while complete totals and
 truncation metadata remain visible. Report output refuses to overwrite DAG, backlog, audit, or lock
 state.
+
+Triage is also read-only. It automatically withholds draft, review-required, rejected, or missing
+Intent IR as `obsolete_or_unapproved_intent`; it does not turn those nodes into coding work.
+Relationships whose endpoint intent is unapproved are withheld, and relationship shapes the
+Reality parser cannot emit are classified as `framework_tooling_drift`. Remaining approved gaps
+require a `TriageDecisionSet` whose digest matches the exact validated Intention and Reality
+content. Only an explicit `missing_implementation` decision on approved intent is marked actionable.
+The default human view presents names and reasons first and leaves GUIDs and hashes in its final
+audit section. Use `--format json` for automation, `--decisions <file>` for explicit classifications,
+and `--output <file>` for an atomically written derived report.
 
 Promote one unique Python class or function candidate only through an explicit two-step decision:
 

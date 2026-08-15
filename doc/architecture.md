@@ -165,6 +165,14 @@ only through the explicit `legacy-structural` compatibility mode.
 Report writers reject canonical DAG, backlog, transaction-journal, and lock paths. Safe edge work
 canonicalizes endpoint GUIDs, deduplicates logical edges, and sorts them before applying limits.
 
+`DriftTriageEngine` is the read-only gate between that safe plan and execution. It uses canonical,
+line-ending-independent hashes of both validated DAGs to bind explicit decisions to one exact plan
+identity. Non-approved intent and relationships with non-approved endpoints are withheld from
+implementation. Relationship shapes outside the Reality parser's observation contract are routed
+as framework-tooling drift. Approved gaps that remain uncertain require an explicit, timestamped
+decision with concrete evidence; only `missing_implementation` on approved intent is actionable.
+The report retains complete totals while bounding returned items and nested acceptance evidence.
+
 ```powershell
 uv run dag-tool reconcile --intention .aio-agentic-sdlc/intention-dag.yaml `
   --reality .aio-agentic-sdlc/reality-dag.yaml `
@@ -172,6 +180,9 @@ uv run dag-tool reconcile --intention .aio-agentic-sdlc/intention-dag.yaml `
 uv run dag-tool diff --intention .aio-agentic-sdlc/intention-dag.yaml `
   --reality .aio-agentic-sdlc/reality-dag.yaml `
   --max-tasks 100 --max-candidates 20
+uv run dag-tool triage --intention .aio-agentic-sdlc/intention-dag.yaml `
+  --reality .aio-agentic-sdlc/reality-dag.yaml `
+  --max-items 100
 uv run dag-tool diff --intention .aio-agentic-sdlc/intention-dag.yaml `
   --reality .aio-agentic-sdlc/reality-dag.yaml `
   --mode legacy-structural

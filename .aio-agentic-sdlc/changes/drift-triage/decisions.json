@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "plan_digest": "c8bc15b752513042dd3b8120da48eaeef817315aa787cb1ec394f32d479267ae",
+  "decisions": [
+    {
+      "subject_key": "intent:841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+      "classification": "missing_implementation",
+      "rationale": "The approved visualization acceptance criteria require CLI and MCP visualization surfaces, comparison evidence, and documented review workflow; none exists in the current source or public tool surface.",
+      "evidence": [
+        "intent:DAG-VIS-AC1-through-DAG-VIS-AC4",
+        "inspection:dag-tool-has-no-visualize-command",
+        "inspection:mcp-server-has-no-visualize-dag-tool"
+      ],
+      "decided_by": "sdlc_cartographer",
+      "decided_at": "2026-08-15T15:53:51.4813516-04:00"
+    },
+    {
+      "subject_key": "intent:f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+      "classification": "framework_tooling_drift",
+      "rationale": "Legacy Intent IR migration is implemented and verified as LegacyIntentMigrator, but deterministic reconciliation cannot map the differently named source symbol without an approved source-identity workflow for unmapped intent.",
+      "evidence": [
+        "source:src/aio_agentic_sdlc/intent_migration.py#LegacyIntentMigrator",
+        "tests:tests/test_intent_migration.py",
+        "artifact:.aio-agentic-sdlc/changes/legacy-intent-ir-migration/result.json"
+      ],
+      "decided_by": "sdlc_cartographer",
+      "decided_at": "2026-08-15T15:53:51.4813516-04:00"
+    }
+  ]
+}

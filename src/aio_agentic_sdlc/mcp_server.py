@@ -18,6 +18,7 @@ from .core import (
 )
 from .dag_manager import DAGManager
 from .dag_models import Node, NodeType
+from .drift_triage import DriftTriageEngine, TriageDecisionSet
 from .intent_ir import IntentIR
 from .intent_store import create_intent_node_file, update_intent_file
 from .mapping import MappingApproval, MappingEngine
@@ -381,6 +382,48 @@ def reconcile_dags(
         return json.dumps(report, indent=2)
     except Exception as e:
         return f"Error reconciling DAGs: {str(e)}"
+
+
+@mcp.tool()
+def triage_reconciliation_drift(
+    project_path: Annotated[
+        str, Field(description="Absolute path to the project directory")
+    ] = ".",
+    decisions_json: Annotated[
+        str,
+        Field(
+            description=(
+                "Optional digest-bound TriageDecisionSet JSON; leave empty for "
+                "deterministic approval and observation routing"
+            )
+        ),
+    ] = "",
+    max_items: Annotated[
+        int,
+        Field(
+            ge=1,
+            description="Maximum triage records returned; totals remain complete",
+        ),
+    ] = 100,
+) -> str:
+    """Classify safe reconciliation work before backlog execution."""
+
+    try:
+        project_root = os.path.abspath(project_path)
+        intention = DAGManager.load(os.path.join(project_root, INTENTION_DAG_FILE))
+        reality = DAGManager.load(os.path.join(project_root, REALITY_DAG_FILE))
+        decisions = (
+            TriageDecisionSet.model_validate_json(decisions_json)
+            if decisions_json.strip()
+            else None
+        )
+        report = DriftTriageEngine(intention, reality).analyze(
+            decisions=decisions,
+            max_items=max_items,
+        )
+        return json.dumps(report, indent=2)
+    except Exception as e:
+        return f"Error triaging reconciliation drift: {str(e)}"
 
 
 @mcp.tool()

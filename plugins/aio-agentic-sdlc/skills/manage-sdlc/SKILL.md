@@ -1,6 +1,6 @@
 ---
 name: manage-sdlc
-description: Manage spec-driven software delivery with the AIO Agentic SDLC dual-DAG backlog and MCP tools. Use when Codex needs to interview for a PRD, detect duplicate requirements, plan or execute a feature through architect/implementer/QA roles, prioritize or update the agentic backlog, generate or reconcile intention and reality DAGs, review or approve source mappings, validate GUID traceability, promote accepted specs, or prepare documentation and delivery.
+description: Manage spec-driven software delivery with the AIO Agentic SDLC dual-DAG backlog and MCP tools. Use when Codex needs to interview for a PRD, detect duplicate requirements, plan or execute a feature through architect/implementer/QA roles, prioritize or update the agentic backlog, generate or reconcile intention and reality DAGs, triage reconciliation drift, review or approve source mappings, validate GUID traceability, promote accepted specs, or prepare documentation and delivery.
 ---
 
 # Manage AIO Agentic SDLC

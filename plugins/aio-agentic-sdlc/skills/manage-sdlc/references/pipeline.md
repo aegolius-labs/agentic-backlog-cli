@@ -24,6 +24,12 @@ candidates, and unmatched Reality observations are unclassified rather than dele
 - Intention drift: code exists without accepted intent; route to the architect for validation.
 - Tooling drift: the framework cannot represent or detect the state; record a framework blocker.
 
+Run `triage_reconciliation_drift` before adding reconciliation work to the backlog. Treat its plan
+digest as stale after either canonical DAG changes. Only items classified as
+`missing_implementation` with `implementation_authorized: true` may proceed to implementation.
+Route `obsolete_or_unapproved_intent` to Intake/Architecture and
+`framework_tooling_drift` to framework maintenance; never convert either into product code work.
+
 When reconciliation yields exactly one supported structural candidate, run `review_mapping` and
 present its human decision brief. Ask an authorized human whether the implementation responsibility,
 public surface, documentation, and related-test evidence justify linking the candidate to the
