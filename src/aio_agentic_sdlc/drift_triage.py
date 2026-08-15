@@ -235,6 +235,8 @@ class DriftTriageEngine:
     )
 
     def __init__(self, intention: DAGManager, reality: DAGManager):
+        intention.validate()
+        reality.validate()
         self.intention = intention
         self.reality = reality
         self._intent_by_canonical_id = self._canonical_node_index(

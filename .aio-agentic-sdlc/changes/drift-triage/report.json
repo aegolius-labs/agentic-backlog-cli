@@ -2,8 +2,8 @@
   "schema_version": 1,
   "source": {
     "intention_sha256": "e523f24914615974ab0cd99c3c33a97d63c68fb2a326989a3c3f00560d89f239",
-    "reality_sha256": "23d7307f201f3c49c8d26099c954f42f5ae1efbf9a65aa00a206dae23486594a",
-    "plan_digest": "c8bc15b752513042dd3b8120da48eaeef817315aa787cb1ec394f32d479267ae"
+    "reality_sha256": "ef06792875c448f7d2d3a411d37cf56484ab0c9e84a4d1e975b5e364f1eb9fb4",
+    "plan_digest": "fa871c95a9a1997c9a466cf4035dcb78100f1d46d1874eb6d2fc1519541da062"
   },
   "summary": {
     "plan_tasks": 55,

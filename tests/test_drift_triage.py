@@ -107,6 +107,70 @@ def _decision(subject_key: str, classification: str) -> dict:
     }
 
 
+@pytest.mark.parametrize(
+    ("edges", "error"),
+    [
+        (
+            [
+                Edge(
+                    source="00000000-0000-0000-0000-000000000001",
+                    target="00000000-0000-0000-0000-000000000099",
+                    type=EdgeType.CONTAINS,
+                )
+            ],
+            "target node .* does not exist",
+        ),
+        (
+            [
+                Edge(
+                    source="00000000-0000-0000-0000-000000000001",
+                    target="00000000-0000-0000-0000-000000000002",
+                    type=EdgeType.DEPENDS_ON,
+                ),
+                Edge(
+                    source="00000000-0000-0000-0000-000000000002",
+                    target="00000000-0000-0000-0000-000000000001",
+                    type=EdgeType.DEPENDS_ON,
+                ),
+            ],
+            "Cycle detected",
+        ),
+    ],
+)
+def test_triage_rejects_invalid_dag_structure(edges, error):
+    nodes = [
+        _node(
+            "00000000-0000-0000-0000-000000000001",
+            "First",
+            state=ApprovalState.APPROVED,
+        ),
+        _node(
+            "00000000-0000-0000-0000-000000000002",
+            "Second",
+            state=ApprovalState.APPROVED,
+        ),
+    ]
+
+    with pytest.raises(ValueError, match=error):
+        DriftTriageEngine(_dag(nodes, edges), _dag([]))
+
+
+def test_triage_rejects_invalid_reality_dag_structure():
+    invalid_reality = _dag(
+        [],
+        [
+            Edge(
+                source="00000000-0000-0000-0000-000000000090",
+                target="00000000-0000-0000-0000-000000000091",
+                type=EdgeType.CONTAINS,
+            )
+        ],
+    )
+
+    with pytest.raises(ValueError, match="source node .* does not exist"):
+        DriftTriageEngine(_dag([]), invalid_reality)
+
+
 def test_triage_withholds_unapproved_intent_from_implementation():
     intent_id = "00000000-0000-0000-0000-000000000001"
     engine = DriftTriageEngine(

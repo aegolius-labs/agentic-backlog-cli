@@ -1546,6 +1546,14 @@ nodes:
   type: module
   name: test_drift_triage.py
   description: Module tests.test_drift_triage
+- id: c2882ba7-1e8f-5a11-91e8-7a95b84894cc
+  type: component
+  name: test_triage_rejects_invalid_dag_structure
+  description: Function test_triage_rejects_invalid_dag_structure
+- id: c2dbebe8-1b45-5d75-a5a3-0c138d073d16
+  type: component
+  name: test_triage_rejects_invalid_reality_dag_structure
+  description: Function test_triage_rejects_invalid_reality_dag_structure
 - id: 25ff365f-5fac-5e2a-9b5d-5278072a2693
   type: component
   name: test_triage_withholds_unapproved_intent_from_implementation
@@ -3620,6 +3628,12 @@ edges:
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 875f9745-0d66-5dd9-81ef-09a1d7e6595f
+  type: contains
+- source: 875f9745-0d66-5dd9-81ef-09a1d7e6595f
+  target: c2882ba7-1e8f-5a11-91e8-7a95b84894cc
+  type: contains
+- source: 875f9745-0d66-5dd9-81ef-09a1d7e6595f
+  target: c2dbebe8-1b45-5d75-a5a3-0c138d073d16
   type: contains
 - source: 875f9745-0d66-5dd9-81ef-09a1d7e6595f
   target: 25ff365f-5fac-5e2a-9b5d-5278072a2693
