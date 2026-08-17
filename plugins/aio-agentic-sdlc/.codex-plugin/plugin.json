@@ -24,10 +24,7 @@
     "longDescription": "Plan requirements, prioritize graph-backed work, orchestrate implementation and QA, visualize and reconcile intention with repository reality, and triage drift before execution.",
     "developerName": "aegolius-labs",
     "category": "Engineering",
-    "capabilities": [
-      "Read",
-      "Write"
-    ],
+    "capabilities": ["Read", "Write"],
     "websiteURL": "https://github.com/aegolius-labs/aio-agentic-sdlc",
     "defaultPrompt": [
       "Turn this feature idea into a traceable PRD.",
