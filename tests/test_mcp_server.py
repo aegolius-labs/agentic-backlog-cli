@@ -9,6 +9,7 @@ from aio_agentic_sdlc.mcp_server import (
     generate_document,
     reconcile_dags,
     review_mapping,
+    triage_reconciliation_drift,
 )
 from aio_agentic_sdlc.workspace import (
     CHANGES_DIR,
@@ -117,6 +118,25 @@ def test_mcp_reconcile_dags_returns_the_same_evidence_report(tmp_path):
             "value": "00000000-0000-0000-0000-000000000001",
         }
     ]
+
+
+def test_mcp_triage_reconciliation_drift_withholds_unapproved_intent(tmp_path):
+    node = Node(
+        id="00000000-0000-0000-0000-000000000002",
+        type=NodeType.COMPONENT,
+        name="Unapproved capability",
+    )
+    metadata = Metadata(name="Test", version="1.0")
+    (tmp_path / INTENTION_DAG_FILE).parent.mkdir(parents=True)
+    DAGManager(metadata, [node], []).save(str(tmp_path / INTENTION_DAG_FILE))
+    DAGManager(metadata, [], []).save(str(tmp_path / REALITY_DAG_FILE))
+
+    result = json.loads(triage_reconciliation_drift(project_path=str(tmp_path)))
+
+    assert result["schema_version"] == 1
+    assert result["summary"]["obsolete_or_unapproved_intent"] == 1
+    assert result["summary"]["actionable_implementation"] == 0
+    assert result["items"][0]["decision_source"] == "approval_gate"
 
 
 def test_mcp_mapping_review_and_approval_use_source_bound_evidence(tmp_path):

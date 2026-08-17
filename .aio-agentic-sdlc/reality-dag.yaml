@@ -303,6 +303,10 @@ nodes:
   type: component
   name: reconcile
   description: Render a bounded, read-only reconciliation evidence report.
+- id: 65e8c64a-7f28-515f-b34b-d6afa699f8ee
+  type: component
+  name: triage
+  description: Classify safe reconciliation work before backlog execution.
 - id: 0ed46e46-0115-5f0f-91cc-5e79007a6add
   type: component
   name: generate_reality
@@ -504,6 +508,50 @@ nodes:
   type: component
   name: calculate_diff
   description: Calculate a bounded safe plan unless legacy behavior is explicit.
+- id: 2d0bae0f-4c1d-5c6e-a67a-1fa09e6bdd76
+  type: module
+  name: drift_triage.py
+  description: Module src.aio_agentic_sdlc.drift_triage
+- id: 49ad556f-0c37-5169-ab72-a1b9fb63d80f
+  type: component
+  name: DriftClassification
+  description: Permitted explicit reconciliation-drift decisions.
+- id: 4836e754-28bc-5155-88ed-99f746b19dfc
+  type: entity
+  name: TriageDecision
+  description: One auditable decision bound to an exact triage subject.
+- id: 9e84c8e8-8019-50ba-9852-2389a95ae4e4
+  type: component
+  name: require_timezone_aware_timestamp
+  description: Function require_timezone_aware_timestamp
+- id: a00508c0-8d80-5141-9091-fc285bc04464
+  type: entity
+  name: TriageDecisionSet
+  description: Explicit decisions for one exact Intention/Reality plan identity.
+- id: ae27108b-dcad-5db0-9b57-87f79cd1a654
+  type: component
+  name: reject_duplicate_subjects
+  description: Function reject_duplicate_subjects
+- id: 6b59aab2-6bbf-56ca-bbe1-6d9708794bd1
+  type: component
+  name: DriftTriageEngine
+  description: Classify safe reconciliation work without mutating DAG or backlog state.
+- id: 1f8c04f8-491f-540f-b1dc-bd49934fc0e3
+  type: component
+  name: __init__
+  description: Function __init__
+- id: 8e1fd93b-b18e-5bb1-ac83-4e3ffc4d96a6
+  type: component
+  name: source_identity
+  description: Function source_identity
+- id: d98476ca-bfb2-5aab-be2b-e61a1ca5de0a
+  type: component
+  name: analyze
+  description: Return a bounded triage report with complete classification totals.
+- id: e62dee61-dd2b-5342-af0e-1c48e3b1d93d
+  type: component
+  name: render_drift_triage
+  description: Render a GUID-last human brief from a drift triage report.
 - id: 03ab3d9a-beb1-5a32-b3f4-5efdddeee956
   type: module
   name: intent_ir.py
@@ -703,6 +751,10 @@ nodes:
   name: reconcile_dags
   description: Classify Intention/Reality identity evidence without mutating project
     state.
+- id: 264ef644-878c-502b-b4a7-d1a47bb29205
+  type: component
+  name: triage_reconciliation_drift
+  description: Classify safe reconciliation work before backlog execution.
 - id: 93cc7cb1-efa6-5648-9b4c-1214e0602884
   type: component
   name: review_mapping
@@ -1490,6 +1542,54 @@ nodes:
   type: component
   name: test_circular_dependency_resiliency
   description: Function test_circular_dependency_resiliency
+- id: 875f9745-0d66-5dd9-81ef-09a1d7e6595f
+  type: module
+  name: test_drift_triage.py
+  description: Module tests.test_drift_triage
+- id: c2882ba7-1e8f-5a11-91e8-7a95b84894cc
+  type: component
+  name: test_triage_rejects_invalid_dag_structure
+  description: Function test_triage_rejects_invalid_dag_structure
+- id: c2dbebe8-1b45-5d75-a5a3-0c138d073d16
+  type: component
+  name: test_triage_rejects_invalid_reality_dag_structure
+  description: Function test_triage_rejects_invalid_reality_dag_structure
+- id: 25ff365f-5fac-5e2a-9b5d-5278072a2693
+  type: component
+  name: test_triage_withholds_unapproved_intent_from_implementation
+  description: Function test_triage_withholds_unapproved_intent_from_implementation
+- id: 0429578b-039a-5e7c-a461-08c229c7ed96
+  type: component
+  name: test_approved_unmapped_intent_requires_digest_bound_decision
+  description: Function test_approved_unmapped_intent_requires_digest_bound_decision
+- id: 3adfc0a6-3637-5bfd-9fb9-0001e2700d5d
+  type: component
+  name: test_triage_rejects_stale_duplicate_and_unused_decisions
+  description: Function test_triage_rejects_stale_duplicate_and_unused_decisions
+- id: 46baf04f-dff7-5020-868f-a8acc046b221
+  type: component
+  name: test_triage_routes_relationships_by_approval_and_observability
+  description: Function test_triage_routes_relationships_by_approval_and_observability
+- id: f200d156-5824-5964-b985-33e00409f46e
+  type: component
+  name: test_triage_is_deterministic_bounded_and_human_readable
+  description: Function test_triage_is_deterministic_bounded_and_human_readable
+- id: 95ae57ae-b941-56b3-8199-58a5afe496fd
+  type: component
+  name: test_triage_source_identity_is_canonical_across_order_and_guid_case
+  description: Function test_triage_source_identity_is_canonical_across_order_and_guid_case
+- id: 47b3231a-94ea-51b8-b18c-0361f7ed2525
+  type: component
+  name: test_triage_bounds_nested_acceptance_evidence_and_reports_truncation
+  description: Function test_triage_bounds_nested_acceptance_evidence_and_reports_truncation
+- id: 226512ee-bced-58dd-9c19-c6ca76e89b74
+  type: component
+  name: test_cli_triage_writes_reproducible_report_without_mutating_dags
+  description: Function test_cli_triage_writes_reproducible_report_without_mutating_dags
+- id: 7c97025e-79c9-584c-ac8d-22e34a6d2ea9
+  type: component
+  name: test_cli_triage_refuses_protected_report_output
+  description: Function test_cli_triage_refuses_protected_report_output
 - id: 6a2d84d3-1259-5016-b5ea-82b90183905c
   type: module
   name: test_functional_bug.py
@@ -1888,6 +1988,10 @@ nodes:
   type: component
   name: test_mcp_reconcile_dags_returns_the_same_evidence_report
   description: Function test_mcp_reconcile_dags_returns_the_same_evidence_report
+- id: b7b44ed9-31a7-544d-926d-75dfc6b05c91
+  type: component
+  name: test_mcp_triage_reconciliation_drift_withholds_unapproved_intent
+  description: Function test_mcp_triage_reconciliation_drift_withholds_unapproved_intent
 - id: 88c3cb2c-8920-5b1f-b2fc-83ca5864101e
   type: component
   name: test_mcp_mapping_review_and_approval_use_source_bound_evidence
@@ -2617,6 +2721,9 @@ edges:
   target: 2b77c80b-27d1-5b82-b03c-3d3c7333d62b
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 65e8c64a-7f28-515f-b34b-d6afa699f8ee
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
   target: 0ed46e46-0115-5f0f-91cc-5e79007a6add
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
@@ -2764,6 +2871,39 @@ edges:
   target: 49ec4886-cacf-50a5-ba6b-061df8eb6cf6
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 2d0bae0f-4c1d-5c6e-a67a-1fa09e6bdd76
+  type: contains
+- source: 2d0bae0f-4c1d-5c6e-a67a-1fa09e6bdd76
+  target: 49ad556f-0c37-5169-ab72-a1b9fb63d80f
+  type: contains
+- source: 2d0bae0f-4c1d-5c6e-a67a-1fa09e6bdd76
+  target: 4836e754-28bc-5155-88ed-99f746b19dfc
+  type: contains
+- source: 4836e754-28bc-5155-88ed-99f746b19dfc
+  target: 9e84c8e8-8019-50ba-9852-2389a95ae4e4
+  type: contains
+- source: 2d0bae0f-4c1d-5c6e-a67a-1fa09e6bdd76
+  target: a00508c0-8d80-5141-9091-fc285bc04464
+  type: contains
+- source: a00508c0-8d80-5141-9091-fc285bc04464
+  target: ae27108b-dcad-5db0-9b57-87f79cd1a654
+  type: contains
+- source: 2d0bae0f-4c1d-5c6e-a67a-1fa09e6bdd76
+  target: 6b59aab2-6bbf-56ca-bbe1-6d9708794bd1
+  type: contains
+- source: 6b59aab2-6bbf-56ca-bbe1-6d9708794bd1
+  target: 1f8c04f8-491f-540f-b1dc-bd49934fc0e3
+  type: contains
+- source: 6b59aab2-6bbf-56ca-bbe1-6d9708794bd1
+  target: 8e1fd93b-b18e-5bb1-ac83-4e3ffc4d96a6
+  type: contains
+- source: 6b59aab2-6bbf-56ca-bbe1-6d9708794bd1
+  target: d98476ca-bfb2-5aab-be2b-e61a1ca5de0a
+  type: contains
+- source: 2d0bae0f-4c1d-5c6e-a67a-1fa09e6bdd76
+  target: e62dee61-dd2b-5342-af0e-1c48e3b1d93d
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 03ab3d9a-beb1-5a32-b3f4-5efdddeee956
   type: contains
 - source: 03ab3d9a-beb1-5a32-b3f4-5efdddeee956
@@ -2909,6 +3049,9 @@ edges:
   type: contains
 - source: 905cfe1d-7c37-50cf-b768-9132c88169e7
   target: a938fadb-83a2-54ff-a2fc-4faa73191a6e
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 264ef644-878c-502b-b4a7-d1a47bb29205
   type: contains
 - source: 905cfe1d-7c37-50cf-b768-9132c88169e7
   target: 93cc7cb1-efa6-5648-9b4c-1214e0602884
@@ -3484,6 +3627,42 @@ edges:
   target: 522cc4a4-81fc-5e8e-b176-f90b51e7efe2
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 875f9745-0d66-5dd9-81ef-09a1d7e6595f
+  type: contains
+- source: 875f9745-0d66-5dd9-81ef-09a1d7e6595f
+  target: c2882ba7-1e8f-5a11-91e8-7a95b84894cc
+  type: contains
+- source: 875f9745-0d66-5dd9-81ef-09a1d7e6595f
+  target: c2dbebe8-1b45-5d75-a5a3-0c138d073d16
+  type: contains
+- source: 875f9745-0d66-5dd9-81ef-09a1d7e6595f
+  target: 25ff365f-5fac-5e2a-9b5d-5278072a2693
+  type: contains
+- source: 875f9745-0d66-5dd9-81ef-09a1d7e6595f
+  target: 0429578b-039a-5e7c-a461-08c229c7ed96
+  type: contains
+- source: 875f9745-0d66-5dd9-81ef-09a1d7e6595f
+  target: 3adfc0a6-3637-5bfd-9fb9-0001e2700d5d
+  type: contains
+- source: 875f9745-0d66-5dd9-81ef-09a1d7e6595f
+  target: 46baf04f-dff7-5020-868f-a8acc046b221
+  type: contains
+- source: 875f9745-0d66-5dd9-81ef-09a1d7e6595f
+  target: f200d156-5824-5964-b985-33e00409f46e
+  type: contains
+- source: 875f9745-0d66-5dd9-81ef-09a1d7e6595f
+  target: 95ae57ae-b941-56b3-8199-58a5afe496fd
+  type: contains
+- source: 875f9745-0d66-5dd9-81ef-09a1d7e6595f
+  target: 47b3231a-94ea-51b8-b18c-0361f7ed2525
+  type: contains
+- source: 875f9745-0d66-5dd9-81ef-09a1d7e6595f
+  target: 226512ee-bced-58dd-9c19-c6ca76e89b74
+  type: contains
+- source: 875f9745-0d66-5dd9-81ef-09a1d7e6595f
+  target: 7c97025e-79c9-584c-ac8d-22e34a6d2ea9
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 6a2d84d3-1259-5016-b5ea-82b90183905c
   type: contains
 - source: 6a2d84d3-1259-5016-b5ea-82b90183905c
@@ -3788,6 +3967,9 @@ edges:
   type: contains
 - source: 300b5e69-1e98-5b6b-8aa0-4b84713d76da
   target: 0562a648-29c2-578c-bd36-90bc2e3ea221
+  type: contains
+- source: 300b5e69-1e98-5b6b-8aa0-4b84713d76da
+  target: b7b44ed9-31a7-544d-926d-75dfc6b05c91
   type: contains
 - source: 300b5e69-1e98-5b6b-8aa0-4b84713d76da
   target: 88c3cb2c-8920-5b1f-b2fc-83ca5864101e

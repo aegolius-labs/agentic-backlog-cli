@@ -11,9 +11,15 @@ from aio_agentic_sdlc.dag_models import Edge, EdgeType, Node, NodeType
 from aio_agentic_sdlc.dag_store import (
     dag_file_lock,
     guarded_dag_path,
+    guarded_file_path,
     mutate_dag_file,
 )
 from aio_agentic_sdlc.diffing_engine import DiffingEngine, DiffPolicy
+from aio_agentic_sdlc.drift_triage import (
+    DriftTriageEngine,
+    TriageDecisionSet,
+    render_drift_triage,
+)
 from aio_agentic_sdlc.intent_ir import IntentIR
 from aio_agentic_sdlc.intent_migration import LegacyIntentMigrator
 from aio_agentic_sdlc.intent_store import create_intent_node_file, update_intent_file
@@ -561,6 +567,81 @@ def reconcile(intention, reality, max_items, max_candidates, output):
             click.echo(json.dumps(report, indent=2))
     except Exception as e:
         click.secho(f"Error reconciling DAGs: {str(e)}", err=True, fg="red")
+        sys.exit(1)
+
+
+@cli.command("triage")
+@click.option(
+    "--intention",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the canonical Intention DAG yaml file.",
+)
+@click.option(
+    "--reality",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the generated Reality DAG yaml file.",
+)
+@click.option(
+    "--decisions",
+    type=click.Path(exists=True, dir_okay=False),
+    help="Optional digest-bound JSON triage decisions.",
+)
+@click.option(
+    "--max-items",
+    type=click.IntRange(min=1),
+    default=100,
+    show_default=True,
+    help="Maximum triage records returned without hiding complete totals.",
+)
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["human", "json"], case_sensitive=False),
+    default="human",
+    show_default=True,
+    help="Render a human brief or the complete machine report.",
+)
+@click.option(
+    "--output",
+    type=click.Path(dir_okay=False),
+    help="Atomically write the JSON report instead of printing it.",
+)
+def triage(intention, reality, decisions, max_items, output_format, output):
+    """Classify safe reconciliation work before backlog execution."""
+
+    try:
+        intent_manager = DAGManager.load(intention)
+        reality_manager = DAGManager.load(reality)
+        decision_set = None
+        if decisions:
+            decision_path = guarded_file_path(decisions)
+            decision_set = TriageDecisionSet.model_validate_json(
+                decision_path.read_text(encoding="utf-8")
+            )
+        report = DriftTriageEngine(intent_manager, reality_manager).analyze(
+            decisions=decision_set,
+            max_items=max_items,
+        )
+        if output:
+            protected_paths = [intention, reality]
+            if decisions:
+                protected_paths.append(decisions)
+            write_reconciliation_report(
+                report,
+                output,
+                protected_paths=tuple(protected_paths),
+            )
+            click.echo(f"Drift triage report saved to {output}.")
+        elif output_format.casefold() == "json":
+            click.echo(json.dumps(report, indent=2))
+        else:
+            click.echo(render_drift_triage(report))
+    except Exception as e:
+        click.secho(
+            f"Error triaging reconciliation drift: {str(e)}", err=True, fg="red"
+        )
         sys.exit(1)
 
 

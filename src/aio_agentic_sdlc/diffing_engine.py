@@ -246,7 +246,12 @@ class DiffingEngine:
                     {
                         "action": "connect_confirmed",
                         "evidence": {
-                            "confirmed_endpoint_ids": [edge_key[0], edge_key[1]]
+                            "confirmed_endpoint_ids": [edge_key[0], edge_key[1]],
+                            "relationship": {
+                                "source_id": edge_key[0],
+                                "target_id": edge_key[1],
+                                "type": edge.type.value,
+                            },
                         },
                     }
                 )

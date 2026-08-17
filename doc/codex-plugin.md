@@ -67,6 +67,7 @@ prompts include:
 - “Show me the highest-priority unblocked task.”
 - “Generate the Reality DAG and report traceability drift.”
 - “Reconcile the Intention and Reality DAGs without proposing destructive cleanup.”
+- “Triage reconciliation drift and show only approved, evidence-backed implementation work.”
 - “Show me a human-readable mapping decision brief for this candidate.”
 
 For MCP calls, pass the absolute target repository as `project_path`. This is especially important
@@ -79,6 +80,11 @@ API, related tests, and unresolved gaps. GUIDs and the digest are audit inputs s
 substitute for review. The default decision is defer because a structural name/type match does not
 prove responsibility or behavior. Only an explicit human identity-linkage decision permits
 `approve_mapping`; any intervening intent, source, or displayed evidence change invalidates it.
+
+Before implementation, the plugin runs approval-aware drift triage. The human view explains names,
+classifications, and routing reasons before its audit identifiers. Non-approved intent never becomes
+implementation work, unsupported Reality relationships are tooling drift, and uncertain approved
+gaps require a decision set bound to the current Intention and Reality digest.
 
 ## Validate changes
 
