@@ -10,7 +10,13 @@ from aio_agentic_sdlc.dag_models import Edge, EdgeType, Metadata, Node
 class DAGManager:
     def __init__(self, metadata: Metadata, nodes: List[Node], edges: List[Edge]):
         self.metadata = metadata
-        self.nodes: Dict[str, Node] = {n.id: n for n in nodes}
+        raw_nodes = list(nodes)
+        seen_ids: set[str] = set()
+        for node in raw_nodes:
+            if node.id in seen_ids:
+                raise ValueError(f"Duplicate node ID {node.id}.")
+            seen_ids.add(node.id)
+        self.nodes: Dict[str, Node] = {n.id: n for n in raw_nodes}
         self.edges: List[Edge] = edges
 
     @classmethod

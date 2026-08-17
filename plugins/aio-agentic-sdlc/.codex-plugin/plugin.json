@@ -1,6 +1,6 @@
 {
   "name": "aio-agentic-sdlc",
-  "version": "0.21.0+codex.20260815195955",
+  "version": "0.21.0+codex.20260817170722",
   "description": "Run a traceable, dual-DAG software delivery workflow with Codex and the AIO Agentic SDLC MCP tools.",
   "author": {
     "name": "aegolius-labs",
@@ -21,16 +21,20 @@
   "interface": {
     "displayName": "AIO Agentic SDLC",
     "shortDescription": "Traceable dual-DAG planning and delivery",
-    "longDescription": "Plan requirements, prioritize graph-backed work, orchestrate implementation and QA, reconcile intention with repository reality, and triage drift before execution.",
+    "longDescription": "Plan requirements, prioritize graph-backed work, orchestrate implementation and QA, visualize and reconcile intention with repository reality, and triage drift before execution.",
     "developerName": "aegolius-labs",
     "category": "Engineering",
-    "capabilities": ["Read", "Write"],
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
     "websiteURL": "https://github.com/aegolius-labs/aio-agentic-sdlc",
     "defaultPrompt": [
       "Turn this feature idea into a traceable PRD.",
       "Run this change through the agentic SDLC pipeline.",
       "Show me the highest-priority unblocked task.",
-      "Triage reconciliation drift and show only approved implementation work."
+      "Triage reconciliation drift and show only approved implementation work.",
+      "Visualize the Intention and Reality DAG comparison before mapping approval."
     ]
   }
 }

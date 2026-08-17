@@ -1,0 +1,478 @@
+{
+  "schema_version": 1,
+  "view": "comparison",
+  "focus": {
+    "node_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+    "depth": 1
+  },
+  "source_discovery": {
+    "state": "available",
+    "reason": "Fresh generated Reality exactly matches the loaded canonical Reality DAG."
+  },
+  "summary": {
+    "available_intention_nodes": 59,
+    "available_reality_nodes": 642,
+    "selected_intention_nodes": 3,
+    "selected_reality_nodes": 6,
+    "classifications": {
+      "confirmed": 2,
+      "candidate": 0,
+      "ambiguous": 0,
+      "unmapped": 1
+    },
+    "intended_relationships": 2,
+    "observed_relationships": 5
+  },
+  "limits": {
+    "records": {
+      "max_items": 20,
+      "total_items": 8,
+      "returned_items": 8,
+      "truncated": false
+    },
+    "intended_relationships": {
+      "max_edges": 20,
+      "total_edges": 2,
+      "returned_edges": 2,
+      "truncated": false
+    },
+    "observed_relationships": {
+      "max_edges": 20,
+      "total_edges": 5,
+      "returned_edges": 5,
+      "truncated": false
+    }
+  },
+  "records": [
+    {
+      "canonical_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+      "subject_kind": "intent",
+      "distance": 0,
+      "classification": "confirmed",
+      "intention": {
+        "id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+        "type": "component",
+        "name": "DAG Visualization and Comparison",
+        "name_truncated": false,
+        "domain": "ux",
+        "domain_truncated": false,
+        "description": "Renders bounded human-readable I-DAG and R-DAG views with reconciliation and source evidence.",
+        "description_truncated": false
+      },
+      "reality_candidates": [
+        {
+          "id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+          "type": "module",
+          "name": "dag_visualization.py",
+          "name_truncated": false,
+          "description": "Module 841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+          "description_truncated": false,
+          "source_evidence": {
+            "state": "available",
+            "locations": [
+              {
+                "path": "src/aio_agentic_sdlc/dag_visualization.py",
+                "symbol_kind": "module",
+                "symbol_name": "dag_visualization.py",
+                "definition_line": 1,
+                "marker_line": 1,
+                "source_sha256": "cfac39199d468c22250f35e03b53c9cb40fd49ce1d32c4132e23eafdaf12b173"
+              }
+            ],
+            "location_truncation": [
+              {
+                "path": false,
+                "symbol_kind": false,
+                "symbol_name": false,
+                "source_sha256": false
+              }
+            ],
+            "limit": {
+              "max_items": 5,
+              "total_items": 1,
+              "returned_items": 1,
+              "truncated": false
+            }
+          }
+        }
+      ],
+      "candidate_limit": {
+        "max_candidates": 5,
+        "total_candidates": 1,
+        "returned_candidates": 1,
+        "truncated": false
+      },
+      "identity_evidence": [
+        {
+          "kind": "canonical_guid",
+          "value": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58"
+        }
+      ],
+      "requires_approval": false,
+      "evidence_state": {
+        "identity": "available",
+        "source": "available",
+        "behavioral_verification": "unavailable"
+      }
+    },
+    {
+      "canonical_id": "6ac347d4-f1d9-57ca-b4b1-285ad583fead",
+      "subject_kind": "reality",
+      "distance": 1,
+      "reality": {
+        "id": "6ac347d4-f1d9-57ca-b4b1-285ad583fead",
+        "type": "component",
+        "name": "render_dag_human",
+        "name_truncated": false,
+        "description": "Render a concise name-first report without exposing DAG serialization.",
+        "description_truncated": false
+      },
+      "source_evidence": {
+        "state": "available",
+        "locations": [
+          {
+            "path": "src/aio_agentic_sdlc/dag_visualization.py",
+            "symbol_kind": "function",
+            "symbol_name": "render_dag_human",
+            "definition_line": 843,
+            "marker_line": 843,
+            "source_sha256": "cfac39199d468c22250f35e03b53c9cb40fd49ce1d32c4132e23eafdaf12b173"
+          }
+        ],
+        "location_truncation": [
+          {
+            "path": false,
+            "symbol_kind": false,
+            "symbol_name": false,
+            "source_sha256": false
+          }
+        ],
+        "limit": {
+          "max_items": 5,
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "evidence_state": {
+        "identity": "unavailable",
+        "source": "available",
+        "behavioral_verification": "unavailable"
+      },
+      "classification": "unclassified_reality"
+    },
+    {
+      "canonical_id": "719b92f7-5e13-5bca-9990-75f7b431ec3b",
+      "subject_kind": "reality",
+      "distance": 1,
+      "reality": {
+        "id": "719b92f7-5e13-5bca-9990-75f7b431ec3b",
+        "type": "system",
+        "name": "system_root",
+        "name_truncated": false,
+        "description": "Root project system",
+        "description_truncated": false
+      },
+      "source_evidence": {
+        "state": "unavailable",
+        "locations": [],
+        "location_truncation": [],
+        "limit": {
+          "max_items": 5,
+          "total_items": 0,
+          "returned_items": 0,
+          "truncated": false
+        },
+        "reason": "No exact SourceLocation evidence was supplied."
+      },
+      "evidence_state": {
+        "identity": "unavailable",
+        "source": "unavailable",
+        "behavioral_verification": "unavailable"
+      },
+      "classification": "unclassified_reality"
+    },
+    {
+      "canonical_id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+      "subject_kind": "intent",
+      "distance": 1,
+      "classification": "confirmed",
+      "intention": {
+        "id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+        "type": "component",
+        "name": "Evidence-Gated Reconciliation Baseline",
+        "name_truncated": false,
+        "domain": "verification",
+        "domain_truncated": false,
+        "description": "Deterministic, non-destructive bridge from canonical intent to observed repository reality.",
+        "description_truncated": false
+      },
+      "reality_candidates": [
+        {
+          "id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+          "type": "module",
+          "name": "reconciliation.py",
+          "name_truncated": false,
+          "description": "Module 9015c8a3-fd14-5598-916d-d03fcf41e415",
+          "description_truncated": false,
+          "source_evidence": {
+            "state": "available",
+            "locations": [
+              {
+                "path": "src/aio_agentic_sdlc/reconciliation.py",
+                "symbol_kind": "module",
+                "symbol_name": "reconciliation.py",
+                "definition_line": 1,
+                "marker_line": 1,
+                "source_sha256": "a81e6098b0220d0ce67ca86b11f3be3bf18f7e776586e7d199d9c268f093cd72"
+              }
+            ],
+            "location_truncation": [
+              {
+                "path": false,
+                "symbol_kind": false,
+                "symbol_name": false,
+                "source_sha256": false
+              }
+            ],
+            "limit": {
+              "max_items": 5,
+              "total_items": 1,
+              "returned_items": 1,
+              "truncated": false
+            }
+          }
+        }
+      ],
+      "candidate_limit": {
+        "max_candidates": 5,
+        "total_candidates": 1,
+        "returned_candidates": 1,
+        "truncated": false
+      },
+      "identity_evidence": [
+        {
+          "kind": "canonical_guid",
+          "value": "9015c8a3-fd14-5598-916d-d03fcf41e415"
+        }
+      ],
+      "requires_approval": false,
+      "evidence_state": {
+        "identity": "available",
+        "source": "available",
+        "behavioral_verification": "unavailable"
+      }
+    },
+    {
+      "canonical_id": "a630d02a-ba78-57bf-a37b-cd2a8a7b5e90",
+      "subject_kind": "reality",
+      "distance": 1,
+      "reality": {
+        "id": "a630d02a-ba78-57bf-a37b-cd2a8a7b5e90",
+        "type": "component",
+        "name": "render_dag_mermaid",
+        "name_truncated": false,
+        "description": "Render a report as safe Mermaid using only synthetic identifiers.",
+        "description_truncated": false
+      },
+      "source_evidence": {
+        "state": "available",
+        "locations": [
+          {
+            "path": "src/aio_agentic_sdlc/dag_visualization.py",
+            "symbol_kind": "function",
+            "symbol_name": "render_dag_mermaid",
+            "definition_line": 795,
+            "marker_line": 795,
+            "source_sha256": "cfac39199d468c22250f35e03b53c9cb40fd49ce1d32c4132e23eafdaf12b173"
+          }
+        ],
+        "location_truncation": [
+          {
+            "path": false,
+            "symbol_kind": false,
+            "symbol_name": false,
+            "source_sha256": false
+          }
+        ],
+        "limit": {
+          "max_items": 5,
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "evidence_state": {
+        "identity": "unavailable",
+        "source": "available",
+        "behavioral_verification": "unavailable"
+      },
+      "classification": "unclassified_reality"
+    },
+    {
+      "canonical_id": "a8572269-49b7-58b6-874e-1cbe5cbe0290",
+      "subject_kind": "reality",
+      "distance": 1,
+      "reality": {
+        "id": "a8572269-49b7-58b6-874e-1cbe5cbe0290",
+        "type": "component",
+        "name": "render_dag",
+        "name_truncated": false,
+        "description": "Render one report through the shared CLI/MCP format contract.",
+        "description_truncated": false
+      },
+      "source_evidence": {
+        "state": "available",
+        "locations": [
+          {
+            "path": "src/aio_agentic_sdlc/dag_visualization.py",
+            "symbol_kind": "function",
+            "symbol_name": "render_dag",
+            "definition_line": 951,
+            "marker_line": 951,
+            "source_sha256": "cfac39199d468c22250f35e03b53c9cb40fd49ce1d32c4132e23eafdaf12b173"
+          }
+        ],
+        "location_truncation": [
+          {
+            "path": false,
+            "symbol_kind": false,
+            "symbol_name": false,
+            "source_sha256": false
+          }
+        ],
+        "limit": {
+          "max_items": 5,
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "evidence_state": {
+        "identity": "unavailable",
+        "source": "available",
+        "behavioral_verification": "unavailable"
+      },
+      "classification": "unclassified_reality"
+    },
+    {
+      "canonical_id": "bd4d54d7-1bf2-5246-b5a3-261a9c28f36d",
+      "subject_kind": "reality",
+      "distance": 1,
+      "reality": {
+        "id": "bd4d54d7-1bf2-5246-b5a3-261a9c28f36d",
+        "type": "component",
+        "name": "DAGVisualizationEngine",
+        "name_truncated": false,
+        "description": "Build one bounded report from validated canonical DAG snapshots.",
+        "description_truncated": false
+      },
+      "source_evidence": {
+        "state": "available",
+        "locations": [
+          {
+            "path": "src/aio_agentic_sdlc/dag_visualization.py",
+            "symbol_kind": "class",
+            "symbol_name": "DAGVisualizationEngine",
+            "definition_line": 169,
+            "marker_line": 169,
+            "source_sha256": "cfac39199d468c22250f35e03b53c9cb40fd49ce1d32c4132e23eafdaf12b173"
+          }
+        ],
+        "location_truncation": [
+          {
+            "path": false,
+            "symbol_kind": false,
+            "symbol_name": false,
+            "source_sha256": false
+          }
+        ],
+        "limit": {
+          "max_items": 5,
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "evidence_state": {
+        "identity": "unavailable",
+        "source": "available",
+        "behavioral_verification": "unavailable"
+      },
+      "classification": "unclassified_reality"
+    },
+    {
+      "canonical_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+      "subject_kind": "intent",
+      "distance": 1,
+      "classification": "unmapped",
+      "intention": {
+        "id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+        "type": "component",
+        "name": "Legacy Intent IR Migration",
+        "name_truncated": false,
+        "domain": "governance",
+        "domain_truncated": false,
+        "description": "Compiles legacy Intention nodes into provenance-preserving, reviewable Intent IR without manual YAML maintenance.",
+        "description_truncated": false
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 5,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "identity_evidence": [],
+      "requires_approval": true,
+      "evidence_state": {
+        "identity": "unavailable",
+        "source": "unavailable",
+        "behavioral_verification": "unavailable"
+      }
+    }
+  ],
+  "intended_relationships": [
+    {
+      "source_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+      "target_id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+      "type": "depends_on",
+      "description": "Comparison view consumes evidence-gated reconciliation classifications.",
+      "description_truncated": false
+    },
+    {
+      "source_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+      "target_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+      "type": "depends_on",
+      "description": "Comparison requires reviewable intent rather than legacy labels alone.",
+      "description_truncated": false
+    }
+  ],
+  "observed_relationships": [
+    {
+      "source_id": "719b92f7-5e13-5bca-9990-75f7b431ec3b",
+      "target_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+      "type": "contains"
+    },
+    {
+      "source_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+      "target_id": "6ac347d4-f1d9-57ca-b4b1-285ad583fead",
+      "type": "contains"
+    },
+    {
+      "source_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+      "target_id": "a630d02a-ba78-57bf-a37b-cd2a8a7b5e90",
+      "type": "contains"
+    },
+    {
+      "source_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+      "target_id": "a8572269-49b7-58b6-874e-1cbe5cbe0290",
+      "type": "contains"
+    },
+    {
+      "source_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+      "target_id": "bd4d54d7-1bf2-5246-b5a3-261a9c28f36d",
+      "type": "contains"
+    }
+  ]
+}

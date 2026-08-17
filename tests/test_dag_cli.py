@@ -7,7 +7,7 @@ from click.testing import CliRunner
 from aio_agentic_sdlc.dag_cli import cli
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.dag_models import Edge, EdgeType, Metadata, Node, NodeType
-from aio_agentic_sdlc.workspace import INTENTION_DAG_FILE
+from aio_agentic_sdlc.workspace import INTENTION_DAG_FILE, REALITY_DAG_FILE
 
 
 @pytest.fixture
@@ -42,6 +42,36 @@ def test_cli_validate(sample_dag_file):
     result = runner.invoke(cli, ["validate", "--file", sample_dag_file])
     assert result.exit_code == 0
     assert "DAG is valid." in result.output
+
+
+def test_cli_validate_rejects_duplicate_raw_node_ids(tmp_path):
+    duplicate_id = "00000000-0000-0000-0000-000000000001"
+    dag_file = tmp_path / "duplicate.yaml"
+    dag_file.write_text(
+        "\n".join(
+            [
+                "metadata:",
+                "  name: Duplicate",
+                "  version: '1.0'",
+                "nodes:",
+                f"- id: {duplicate_id}",
+                "  type: component",
+                "  name: First",
+                f"- id: {duplicate_id}",
+                "  type: component",
+                "  name: Last",
+                "edges: []",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    result = CliRunner().invoke(cli, ["validate", "--file", str(dag_file)])
+
+    assert result.exit_code == 1
+    assert "Duplicate node ID" in result.output
+    assert "Last" not in result.output
 
 
 def test_cli_node_add(sample_dag_file):
@@ -219,6 +249,117 @@ def test_cli_reconcile_returns_bounded_read_only_report(sample_dag_file, tmp_pat
     }
     assert (tmp_path / "dag.yaml").read_bytes() == before_intention
     assert reality_file.read_bytes() == before_reality
+
+
+def test_cli_visualize_supports_all_formats_and_never_mutates_state(tmp_path):
+    first = "00000000-0000-0000-0000-000000000001"
+    second = "00000000-0000-0000-0000-000000000002"
+    metadata = Metadata(name="Visualization", version="1.0")
+    nodes = [
+        Node(id=first, type=NodeType.COMPONENT, name="First"),
+        Node(id=second, type=NodeType.COMPONENT, name="Second"),
+    ]
+    edges = [Edge(source=first, target=second, type=EdgeType.CALLS)]
+    intention_path = tmp_path / INTENTION_DAG_FILE
+    reality_path = tmp_path / REALITY_DAG_FILE
+    intention_path.parent.mkdir(parents=True)
+    DAGManager(metadata, nodes, edges).save(str(intention_path))
+    DAGManager(metadata, nodes, edges).save(str(reality_path))
+    before = (intention_path.read_bytes(), reality_path.read_bytes())
+    runner = CliRunner()
+
+    json_result = runner.invoke(
+        cli,
+        [
+            "visualize",
+            "--project-path",
+            str(tmp_path),
+            "--view",
+            "comparison",
+            "--max-items",
+            "1",
+            "--max-edges",
+            "1",
+            "--max-candidates",
+            "1",
+            "--format",
+            "json",
+        ],
+    )
+    human_result = runner.invoke(
+        cli,
+        [
+            "visualize",
+            "--project-path",
+            str(tmp_path),
+            "--view",
+            "intention",
+            "--format",
+            "human",
+        ],
+    )
+    mermaid_result = runner.invoke(
+        cli,
+        [
+            "visualize",
+            "--project-path",
+            str(tmp_path),
+            "--view",
+            "reality",
+            "--format",
+            "mermaid",
+        ],
+    )
+
+    assert json_result.exit_code == 0
+    report = json.loads(json_result.output)
+    assert report["view"] == "comparison"
+    assert report["limits"]["records"]["truncated"] is True
+    assert report["source_discovery"]["state"] == "unavailable"
+    assert human_result.exit_code == 0
+    assert human_result.output.startswith("DAG visualization (intention)")
+    assert mermaid_result.exit_code == 0
+    assert mermaid_result.output.startswith("flowchart LR")
+    assert (intention_path.read_bytes(), reality_path.read_bytes()) == before
+
+
+def test_cli_visualize_rejects_unknown_focus_and_invalid_limits(tmp_path):
+    metadata = Metadata(name="Visualization", version="1.0")
+    workspace = tmp_path / INTENTION_DAG_FILE
+    workspace.parent.mkdir(parents=True)
+    DAGManager(metadata, [], []).save(str(workspace))
+    DAGManager(metadata, [], []).save(str(tmp_path / REALITY_DAG_FILE))
+    runner = CliRunner()
+
+    unknown = runner.invoke(
+        cli,
+        [
+            "visualize",
+            "--project-path",
+            str(tmp_path),
+            "--view",
+            "comparison",
+            "--focus-node",
+            "ffffffff-ffff-ffff-ffff-ffffffffffff",
+        ],
+    )
+    invalid_limit = runner.invoke(
+        cli,
+        [
+            "visualize",
+            "--project-path",
+            str(tmp_path),
+            "--view",
+            "comparison",
+            "--max-edges",
+            "0",
+        ],
+    )
+
+    assert unknown.exit_code == 1
+    assert "Unknown focus node" in unknown.output
+    assert invalid_limit.exit_code == 2
+    assert "0 is not in the range x>=1" in invalid_limit.output
 
 
 def test_cli_reconcile_can_write_a_reproducible_report_artifact(

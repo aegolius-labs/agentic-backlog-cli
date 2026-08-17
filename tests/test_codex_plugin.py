@@ -91,6 +91,26 @@ def test_codex_skill_routes_intent_ir_through_protected_tools() -> None:
     assert "do not patch DAG files" in cartographer
 
 
+def test_codex_skill_routes_visual_review_before_mapping_approval() -> None:
+    skill_root = PLUGIN_ROOT / "skills" / "manage-sdlc"
+    tools = (skill_root / "references" / "tools.md").read_text(encoding="utf-8")
+    cartographer = (skill_root / "references" / "roles" / "cartographer.md").read_text(
+        encoding="utf-8"
+    )
+    manifest = json.loads(
+        (PLUGIN_ROOT / ".codex-plugin" / "plugin.json").read_text(encoding="utf-8")
+    )
+
+    assert "visualize_dag" in tools
+    assert "dag-tool visualize" in tools
+    assert cartographer.index("visualize_dag") < cartographer.index("approve_mapping")
+    assert any(
+        "visual" in prompt.casefold()
+        for prompt in manifest["interface"]["defaultPrompt"]
+    )
+    assert (ROOT / "doc" / "dag-visualization.md").is_file()
+
+
 def test_project_scoped_codex_agents_map_every_sdlc_role() -> None:
     agent_dir = ROOT / ".codex" / "agents"
     configs = {
