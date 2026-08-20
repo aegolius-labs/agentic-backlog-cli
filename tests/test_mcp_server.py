@@ -2,14 +2,18 @@ import json
 import os
 from pathlib import Path
 
+from click.testing import CliRunner
+
+from aio_agentic_sdlc.dag_cli import cli
 from aio_agentic_sdlc.dag_manager import DAGManager
-from aio_agentic_sdlc.dag_models import Metadata, Node, NodeType
+from aio_agentic_sdlc.dag_models import Edge, EdgeType, Metadata, Node, NodeType
 from aio_agentic_sdlc.mcp_server import (
     approve_mapping,
     generate_document,
     reconcile_dags,
     review_mapping,
     triage_reconciliation_drift,
+    visualize_dag,
 )
 from aio_agentic_sdlc.workspace import (
     CHANGES_DIR,
@@ -137,6 +141,73 @@ def test_mcp_triage_reconciliation_drift_withholds_unapproved_intent(tmp_path):
     assert result["summary"]["obsolete_or_unapproved_intent"] == 1
     assert result["summary"]["actionable_implementation"] == 0
     assert result["items"][0]["decision_source"] == "approval_gate"
+
+
+def test_mcp_visualize_matches_cli_and_never_mutates_state(tmp_path):
+    first = "00000000-0000-0000-0000-000000000001"
+    second = "00000000-0000-0000-0000-000000000002"
+    metadata = Metadata(name="Visualization", version="1.0")
+    nodes = [
+        Node(id=first, type=NodeType.COMPONENT, name="First"),
+        Node(id=second, type=NodeType.COMPONENT, name="Second"),
+    ]
+    edges = [Edge(source=first, target=second, type=EdgeType.CALLS)]
+    intention_path = tmp_path / INTENTION_DAG_FILE
+    reality_path = tmp_path / REALITY_DAG_FILE
+    intention_path.parent.mkdir(parents=True)
+    DAGManager(metadata, nodes, edges).save(str(intention_path))
+    DAGManager(metadata, nodes, edges).save(str(reality_path))
+    before = (intention_path.read_bytes(), reality_path.read_bytes())
+
+    cli_result = CliRunner().invoke(
+        cli,
+        [
+            "visualize",
+            "--project-path",
+            str(tmp_path),
+            "--view",
+            "comparison",
+            "--depth",
+            "0",
+            "--max-items",
+            "1",
+            "--max-edges",
+            "1",
+            "--max-candidates",
+            "1",
+            "--format",
+            "json",
+        ],
+    )
+    mcp_result = visualize_dag(
+        project_path=str(tmp_path),
+        view="comparison",
+        depth=0,
+        max_items=1,
+        max_edges=1,
+        max_candidates=1,
+        output_format="json",
+    )
+
+    assert cli_result.exit_code == 0
+    assert json.loads(mcp_result) == json.loads(cli_result.output)
+    assert (intention_path.read_bytes(), reality_path.read_bytes()) == before
+
+
+def test_mcp_visualize_reports_argument_errors(tmp_path):
+    metadata = Metadata(name="Visualization", version="1.0")
+    intention_path = tmp_path / INTENTION_DAG_FILE
+    intention_path.parent.mkdir(parents=True)
+    DAGManager(metadata, [], []).save(str(intention_path))
+    DAGManager(metadata, [], []).save(str(tmp_path / REALITY_DAG_FILE))
+
+    assert "Unsupported view" in visualize_dag(project_path=str(tmp_path), view="raw")
+    assert "max_edges must be at least 1" in visualize_dag(
+        project_path=str(tmp_path), max_edges=0
+    )
+    assert "Unsupported output format" in visualize_dag(
+        project_path=str(tmp_path), output_format="yaml"
+    )
 
 
 def test_mcp_mapping_review_and_approval_use_source_bound_evidence(tmp_path):

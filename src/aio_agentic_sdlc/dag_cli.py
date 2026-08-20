@@ -14,6 +14,7 @@ from aio_agentic_sdlc.dag_store import (
     guarded_file_path,
     mutate_dag_file,
 )
+from aio_agentic_sdlc.dag_visualization import DAGVisualizationEngine, render_dag
 from aio_agentic_sdlc.diffing_engine import DiffingEngine, DiffPolicy
 from aio_agentic_sdlc.drift_triage import (
     DriftTriageEngine,
@@ -567,6 +568,84 @@ def reconcile(intention, reality, max_items, max_candidates, output):
             click.echo(json.dumps(report, indent=2))
     except Exception as e:
         click.secho(f"Error reconciling DAGs: {str(e)}", err=True, fg="red")
+        sys.exit(1)
+
+
+@cli.command("visualize")
+@click.option(
+    "--project-path",
+    required=True,
+    type=click.Path(exists=True, file_okay=False),
+    help="Path to the project containing the canonical framework workspace.",
+)
+@click.option(
+    "--view",
+    required=True,
+    type=click.Choice(["intention", "reality", "comparison"], case_sensitive=False),
+    help="DAG view to render.",
+)
+@click.option("--focus-node", "focus_node_id", help="Canonical node GUID to focus.")
+@click.option(
+    "--depth",
+    type=click.IntRange(min=0),
+    default=1,
+    show_default=True,
+    help="Incoming and outgoing neighborhood depth.",
+)
+@click.option(
+    "--max-items",
+    type=click.IntRange(min=1),
+    default=100,
+    show_default=True,
+    help="Maximum records returned without hiding complete totals.",
+)
+@click.option(
+    "--max-edges",
+    type=click.IntRange(min=1),
+    default=200,
+    show_default=True,
+    help="Maximum intended and observed relationships returned per collection.",
+)
+@click.option(
+    "--max-candidates",
+    type=click.IntRange(min=1),
+    default=20,
+    show_default=True,
+    help="Maximum identity candidates and nested source locations per record.",
+)
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["human", "mermaid", "json"], case_sensitive=False),
+    default="human",
+    show_default=True,
+    help="Output rendering format.",
+)
+def visualize(
+    project_path,
+    view,
+    focus_node_id,
+    depth,
+    max_items,
+    max_edges,
+    max_candidates,
+    output_format,
+):
+    """Render canonical DAGs without mutating project or framework state."""
+
+    try:
+        engine = DAGVisualizationEngine.from_project(project_path)
+        report = engine.build_report(
+            view=view,
+            focus_node_id=focus_node_id,
+            depth=depth,
+            max_items=max_items,
+            max_edges=max_edges,
+            max_candidates=max_candidates,
+        )
+        click.echo(render_dag(report, output_format))
+    except Exception as e:
+        click.secho(f"Error visualizing DAGs: {str(e)}", err=True, fg="red")
         sys.exit(1)
 
 

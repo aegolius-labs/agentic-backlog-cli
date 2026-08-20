@@ -16,6 +16,7 @@ Tool names may be namespaced by the Codex host. Match them by the operation name
 | Validate GUID links | `validate_traceability` | Use the Python API if MCP is unavailable |
 | Generate Reality DAG | `generate_reality` | `uv run dag-tool generate-reality ...` |
 | Reconcile DAG identity evidence | `reconcile_dags` | `uv run dag-tool reconcile ...` |
+| Visualize or compare canonical DAGs | `visualize_dag` | `uv run dag-tool visualize --project-path ... --view ...` |
 | Triage reconciliation drift | `triage_reconciliation_drift` | `uv run dag-tool triage ...` |
 | Review a source mapping | `review_mapping` | `uv run dag-tool mapping review ...` |
 | Approve an exact reviewed mapping | `approve_mapping` | `uv run dag-tool mapping approve ...` |
@@ -41,8 +42,16 @@ timezone-aware timestamp. Only `missing_implementation` on approved intent may b
 implementer; tooling drift goes to the framework, and obsolete or unapproved intent goes back to
 Intake/Architecture.
 
+Use `visualize_dag` for read-only `intention`, `reality`, or `comparison` views; no raw-YAML review
+is required. Prefer name-first `human` output for a concise brief, `mermaid` for a graph, and `json`
+for complete limits, totals, truncation, and evidence. Keep `max_items`, `max_edges`, and
+`max_candidates` bounded. Exact source locations are available only when fresh in-memory Reality
+generation exactly matches the loaded canonical Reality DAG; visualization does not establish
+behavioral verification.
+
 Mapping is a two-step approval gate. Run `review_mapping` immediately before presenting a decision.
-Present the decision brief first: intended responsibility and acceptance criteria, actual symbol
+Before asking for identity approval, also present a human or Mermaid `comparison` from
+`visualize_dag`. Then present the decision brief: intended responsibility and acceptance criteria, actual symbol
 documentation and public API, related tests, and unresolved gaps. Explain that test references are
 not proof and that approval links identity rather than approving behavior. Show GUIDs and the digest
 last as audit inputs. Call `approve_mapping` only after an authorized human explicitly accepts that

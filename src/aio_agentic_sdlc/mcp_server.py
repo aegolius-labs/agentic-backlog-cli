@@ -18,6 +18,7 @@ from .core import (
 )
 from .dag_manager import DAGManager
 from .dag_models import Node, NodeType
+from .dag_visualization import DAGVisualizationEngine, render_dag
 from .drift_triage import DriftTriageEngine, TriageDecisionSet
 from .intent_ir import IntentIR
 from .intent_store import create_intent_node_file, update_intent_file
@@ -382,6 +383,63 @@ def reconcile_dags(
         return json.dumps(report, indent=2)
     except Exception as e:
         return f"Error reconciling DAGs: {str(e)}"
+
+
+@mcp.tool()
+def visualize_dag(
+    project_path: Annotated[
+        str, Field(description="Absolute path to the project directory")
+    ] = ".",
+    view: Annotated[
+        str,
+        Field(description="DAG view: intention, reality, or comparison"),
+    ] = "comparison",
+    focus_node_id: Annotated[
+        str,
+        Field(description="Optional canonical node GUID for a focused neighborhood"),
+    ] = "",
+    depth: Annotated[
+        int,
+        Field(ge=0, description="Incoming and outgoing neighborhood depth"),
+    ] = 1,
+    max_items: Annotated[
+        int,
+        Field(ge=1, description="Maximum records; totals remain complete"),
+    ] = 100,
+    max_edges: Annotated[
+        int,
+        Field(
+            ge=1,
+            description="Maximum intended and observed relationships per collection",
+        ),
+    ] = 200,
+    max_candidates: Annotated[
+        int,
+        Field(
+            ge=1,
+            description="Maximum candidates and nested source locations per record",
+        ),
+    ] = 20,
+    output_format: Annotated[
+        str,
+        Field(description="Output format: human, mermaid, or json"),
+    ] = "human",
+) -> str:
+    """Render canonical DAG evidence without mutating project state."""
+
+    try:
+        engine = DAGVisualizationEngine.from_project(project_path)
+        report = engine.build_report(
+            view=view,
+            focus_node_id=focus_node_id or None,
+            depth=depth,
+            max_items=max_items,
+            max_edges=max_edges,
+            max_candidates=max_candidates,
+        )
+        return render_dag(report, output_format)
+    except Exception as e:
+        return f"Error visualizing DAGs: {str(e)}"
 
 
 @mcp.tool()

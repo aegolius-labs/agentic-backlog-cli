@@ -30,13 +30,15 @@ digest as stale after either canonical DAG changes. Only items classified as
 Route `obsolete_or_unapproved_intent` to Intake/Architecture and
 `framework_tooling_drift` to framework maintenance; never convert either into product code work.
 
-When reconciliation yields exactly one supported structural candidate, run `review_mapping` and
-present its human decision brief. Ask an authorized human whether the implementation responsibility,
-public surface, documentation, and related-test evidence justify linking the candidate to the
-Intention node. Structural matching and test references are not behavioral proof, so defer is the
-default. Only after an explicit identity-linkage decision may `approve_mapping` atomically add the
-canonical source marker and audit receipt. GUIDs and the digest are audit inputs, and any changed
-digest, intent, or source requires a new review and approval.
+When reconciliation yields exactly one supported structural candidate, run `visualize_dag` with
+`view=comparison` and present a human or Mermaid comparison before asking for identity approval.
+Then run `review_mapping` and present its human decision brief. Ask an authorized human whether the
+implementation responsibility, public surface, documentation, and related-test evidence justify
+linking the candidate to the Intention node. Visualization, structural matching, and test references
+are not behavioral proof, so defer is the default. Only after an explicit identity-linkage decision
+may `approve_mapping` atomically add the canonical source marker and audit receipt. GUIDs and the
+digest are audit inputs, and any changed digest, intent, or source requires a new review and
+approval.
 
 ## 4. Implementation
 

@@ -14,6 +14,7 @@ The `aio-agentic-sdlc` framework includes several built-in features that ensure 
 - **Versioned Local State**: The execution backlog uses explicit schema and revision numbers, atomic replacement, stale-writer protection, and a local transaction audit log.
 - **Auditable Intent IR**: Intention nodes can preserve source provenance, assumptions, ambiguities, confidence, evidence-bound acceptance criteria, revision history, and approval state in a strict versioned schema.
 - **Evidence-Gated Reconciliation**: GUID matches are confirmed deterministically, structural matches remain review candidates, and unmatched Reality observations never become deletion work by default.
+- **Read-Only DAG Visualization**: Name-first human, safe Mermaid, and JSON views compare bounded Intention and Reality evidence without exposing raw YAML or mutating framework state.
 - **Approval-Aware Drift Triage**: Safe-plan work is withheld from implementation until accepted intent, Reality observability, and digest-bound classification evidence agree.
 - **SDLC Scribe Agent**: An automated Scribe agent executes before the DevOps agent steps to ensure user-facing documentation (like this README) stays perfectly aligned with the codebase's true reality.
 
@@ -163,7 +164,25 @@ uv run dag-tool triage \
   --max-items 100
 ```
 
-Both commands are read-only. Safe diffing is the default: it asks for mapping review or additional
+Inspect the same canonical workspace without reading raw DAG YAML:
+
+```bash
+uv run dag-tool visualize --project-path /absolute/project \
+  --view comparison --max-items 100 --max-edges 200 --max-candidates 20 \
+  --format human
+uv run dag-tool visualize --project-path /absolute/project \
+  --view comparison --focus-node <guid> --depth 1 --format mermaid
+```
+
+Visualization is read-only and available through the equivalent `visualize_dag` MCP tool. Human
+output leads with names and classifications; Mermaid uses synthetic identifiers and escaped,
+bounded labels. Use JSON to inspect complete totals, truncation, reconciliation details, and exact
+source locations. Source locations are included only when fresh in-memory Reality generation
+exactly matches the loaded canonical Reality DAG, and visualization never claims behavioral
+verification. See [DAG visualization and comparison](doc/dag-visualization.md) for view semantics,
+bounds, self-dogfood commands, and the mapping-review workflow.
+
+Reconciliation and safe diffing are read-only. Safe diffing is the default: it asks for mapping review or additional
 implementation evidence rather than interpreting a missing GUID as permission to create or delete
 code. The historical structural algorithm requires the explicit `--mode legacy-structural` option.
 Both top-level records and nested candidate identities are bounded while complete totals and
