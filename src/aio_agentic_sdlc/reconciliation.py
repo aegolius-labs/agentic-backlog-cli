@@ -34,6 +34,10 @@ CLASSIFICATION_PRIORITY = {
 }
 
 
+class ReconciliationError(ValueError):
+    """Raised for an expected invalid reconciliation request or identity."""
+
+
 def normalize_node_name(value: str) -> str:
     """Return a conservative comparison key without inferring semantics."""
 
@@ -54,7 +58,7 @@ def _canonical_guid_index(
     for source_id in nodes:
         canonical_id = str(UUID(source_id))
         if canonical_id in index:
-            raise ValueError(
+            raise ReconciliationError(
                 f"{dag_name} contains duplicate canonical GUID {canonical_id}: "
                 f"{index[canonical_id]} and {source_id}"
             )
@@ -78,7 +82,7 @@ def validate_reconciliation_report_output(
         target.name.casefold() in PROTECTED_STATE_FILENAMES
         or target_identity in protected_identities
     ):
-        raise ValueError(
+        raise ReconciliationError(
             f"Refusing to overwrite protected framework state with a report: {target}"
         )
     return target
@@ -210,7 +214,7 @@ class ReconciliationEngine:
         if isinstance(value, bool) or not isinstance(value, int):
             raise TypeError(f"{name} must be an integer")
         if value < 1:
-            raise ValueError(f"{name} must be at least 1")
+            raise ReconciliationError(f"{name} must be at least 1")
 
     def _classification_context(self) -> dict[str, Any]:
         intention_by_canonical_id = _canonical_guid_index(

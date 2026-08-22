@@ -14,6 +14,10 @@ from .dag_manager import DAGManager
 T = TypeVar("T")
 
 
+class GuardedPathError(ValueError):
+    """Raised when a state or artifact path fails non-following validation."""
+
+
 def _is_link_like(path: Path) -> bool:
     if path.is_symlink():
         return True
@@ -32,15 +36,17 @@ def guarded_file_path(
     for parent in reversed(dag_path.parents):
         if os.path.lexists(parent):
             if _is_link_like(parent) or not parent.is_dir():
-                raise ValueError(f"DAG parent must be a real directory: {parent}")
+                raise GuardedPathError(f"DAG parent must be a real directory: {parent}")
         elif create_parent:
-            parent.mkdir()
+            parent.mkdir(exist_ok=True)
+            if _is_link_like(parent) or not parent.is_dir():
+                raise GuardedPathError(f"DAG parent must be a real directory: {parent}")
         else:
-            raise ValueError(f"DAG parent does not exist: {parent}")
+            raise GuardedPathError(f"DAG parent does not exist: {parent}")
     if os.path.lexists(dag_path) and (
         _is_link_like(dag_path) or not dag_path.is_file()
     ):
-        raise ValueError(f"DAG path must be a regular file: {dag_path}")
+        raise GuardedPathError(f"DAG path must be a regular file: {dag_path}")
     return dag_path
 
 
@@ -50,9 +56,9 @@ def guarded_directory_path(directory: str | Path) -> Path:
     path = Path(os.path.abspath(os.fspath(directory)))
     for candidate in (*reversed(path.parents), path):
         if not os.path.lexists(candidate):
-            raise ValueError(f"Directory does not exist: {candidate}")
+            raise GuardedPathError(f"Directory does not exist: {candidate}")
         if _is_link_like(candidate) or not candidate.is_dir():
-            raise ValueError(f"Directory must be a real directory: {candidate}")
+            raise GuardedPathError(f"Directory must be a real directory: {candidate}")
     return path
 
 
@@ -75,7 +81,7 @@ def dag_file_lock(filepath: str | Path) -> Iterator[Path]:
         dag_path.parent / f".{dag_path.name}.lock",
         create_parent=True,
     )
-    with FileLock(lock_path, timeout=10):
+    with FileLock(lock_path, timeout=10, preserve_lock_file=True):
         yield guarded_file_path(dag_path)
 
 

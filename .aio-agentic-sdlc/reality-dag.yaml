@@ -158,6 +158,10 @@ nodes:
   type: module
   name: core.py
   description: Module src.aio_agentic_sdlc.core
+- id: 7192416e-db0d-53c7-8cf8-b298908b6e33
+  type: component
+  name: BacklogOperationError
+  description: Raised for an expected, user-correctable backlog operation failure.
 - id: f075b9e0-f4cb-528a-b05b-0b3a679257c8
   type: component
   name: validate_hierarchy
@@ -295,6 +299,18 @@ nodes:
   type: component
   name: mapping_approve
   description: Approve exactly one fresh candidate and persist verified source evidence.
+- id: cea00136-69c8-54df-a34d-bb46e4e60cf9
+  type: component
+  name: mapping_receipt
+  description: Review and refresh confirmed source mapping receipts.
+- id: f3611435-a151-5c50-bb99-18677d8441d6
+  type: component
+  name: mapping_receipt_review
+  description: Render fresh maintenance evidence for one confirmed source receipt.
+- id: f491645f-4535-5738-a7f6-90fc849714a5
+  type: component
+  name: mapping_receipt_refresh
+  description: Refresh exactly one confirmed receipt from approved fresh evidence.
 - id: 4c72f245-723a-5df9-b165-9fd5b704c735
   type: component
   name: diff
@@ -352,6 +368,14 @@ nodes:
   type: module
   name: dag_manager.py
   description: Module src.aio_agentic_sdlc.dag_manager
+- id: ea6f1923-6e90-5815-8a46-edf84e5f0f67
+  type: component
+  name: DAGValidationError
+  description: Raised for an expected invalid DAG structure or operation.
+- id: 264c5614-0678-5106-90e3-d00e0f7cd3f1
+  type: component
+  name: DAGNotFoundError
+  description: Raised when a requested DAG artifact does not exist.
 - id: 412c6407-f59f-5d49-973d-945454bb23e3
   type: component
   name: DAGManager
@@ -440,6 +464,10 @@ nodes:
   type: module
   name: dag_store.py
   description: Module src.aio_agentic_sdlc.dag_store
+- id: deb44d20-390c-5bc4-859a-7d12ad675b1c
+  type: component
+  name: GuardedPathError
+  description: Raised when a state or artifact path fails non-following validation.
 - id: af950be8-5c9c-5591-9f1a-31d66d4aa96f
   type: component
   name: guarded_file_path
@@ -465,6 +493,10 @@ nodes:
   type: module
   name: dag_visualization.py
   description: Module 841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58
+- id: e8b4dfb6-d4b0-5266-8079-18dca64cf5d9
+  type: component
+  name: DAGVisualizationError
+  description: Raised for an expected invalid visualization request or DAG identity.
 - id: bd4d54d7-1bf2-5246-b5a3-261a9c28f36d
   type: component
   name: DAGVisualizationEngine
@@ -549,6 +581,10 @@ nodes:
   type: module
   name: drift_triage.py
   description: Module src.aio_agentic_sdlc.drift_triage
+- id: ceb248c0-6ab0-508a-b9bf-19dc802d41af
+  type: component
+  name: DriftTriageError
+  description: Raised for an expected invalid triage request, decision, or DAG identity.
 - id: 49ad556f-0c37-5169-ab72-a1b9fb63d80f
   type: component
   name: DriftClassification
@@ -681,6 +717,10 @@ nodes:
   type: module
   name: intent_store.py
   description: Module src.aio_agentic_sdlc.intent_store
+- id: b5444d48-e78d-58b6-b8d4-2c9d9584f5aa
+  type: component
+  name: IntentStoreError
+  description: Raised for an expected optimistic Intent IR mutation rejection.
 - id: 84123bb2-31f6-550b-add9-315c748a5364
   type: component
   name: create_intent_node_file
@@ -693,10 +733,19 @@ nodes:
   type: module
   name: mapping.py
   description: Module src.aio_agentic_sdlc.mapping
+- id: b057ab3a-9d1e-51e4-98e3-859040dc3dda
+  type: component
+  name: _SourceSnapshot
+  description: Class _SourceSnapshot
 - id: af738342-309b-5d5a-b940-ff6b5cb50a7b
   type: component
   name: render_mapping_review
   description: Render a mapping report as a human decision brief with audit data last.
+- id: a5892e3f-215f-5265-9645-e1368dbc8c0d
+  type: component
+  name: render_receipt_refresh_review
+  description: Render receipt maintenance evidence with GUIDs and digests only at
+    the end.
 - id: 6a32e581-a47a-59f8-acb8-6b59a5020cfa
   type: component
   name: MappingError
@@ -705,6 +754,10 @@ nodes:
   type: entity
   name: MappingApproval
   description: Explicit human approval fields stored in the source receipt.
+- id: f68749ec-4ac6-5224-b026-fb668ce11352
+  type: component
+  name: bound_audit_text
+  description: Function bound_audit_text
 - id: 10e8ca84-bd3d-5f86-87a8-a7dc364d9db5
   type: component
   name: require_timezone_aware_timestamp
@@ -720,15 +773,39 @@ nodes:
 - id: eaf40f28-a4a7-503c-904e-6584d498e113
   type: component
   name: review
-  description: Return fresh source-bound evidence without mutating project state.
+  description: Return fresh source-bound evidence without mutating canonical state.
+- id: 8e61b3f7-4f23-5fc4-a720-035e2ab861f6
+  type: component
+  name: review_receipt_refresh
+  description: Review fresh evidence for one already confirmed mapping receipt.
 - id: a2a30d01-4de7-5dee-bca7-ef3a5f806538
   type: component
   name: approve
   description: Atomically persist one approved candidate as verified source evidence.
+- id: a03577cc-ff8f-588e-ab72-553938656f7b
+  type: component
+  name: refresh_receipt
+  description: Atomically replace one confirmed receipt from exact fresh evidence.
 - id: 905cfe1d-7c37-50cf-b768-9132c88169e7
   type: module
   name: mcp_server.py
   description: Module src.aio_agentic_sdlc.mcp_server
+- id: 59bceb32-2def-5776-836b-65a22cdad3c2
+  type: component
+  name: PromotionError
+  description: Raised when a guarded spec-promotion transition loses identity.
+- id: e28287cd-0eb2-5c63-a5eb-110753d0c178
+  type: component
+  name: _ToolCallMarker
+  description: Class _ToolCallMarker
+- id: 86367041-79ce-5415-b107-ef60cf721bf3
+  type: component
+  name: _SanitizingMCPServer
+  description: Keep unexpected tool failures useful without exposing internal details.
+- id: 18434634-adab-5c9b-9477-79fc2ba35afc
+  type: component
+  name: call_tool
+  description: Function call_tool
 - id: 8c0e4daf-dba6-5a8a-ba9a-02a88a4b50de
   type: component
   name: read_current_backlog
@@ -805,6 +882,15 @@ nodes:
   name: approve_mapping
   description: Approve one fresh candidate and atomically persist verified source
     evidence.
+- id: d6f46f94-fffd-5483-b2e3-bd0b4eb8e8d1
+  type: component
+  name: review_mapping_receipt
+  description: Review fresh maintenance evidence for one confirmed source receipt.
+- id: 09366651-9d9c-508a-b9a7-8b1a8f923df7
+  type: component
+  name: refresh_mapping_receipt
+  description: Atomically refresh one confirmed source receipt from exact approved
+    evidence.
 - id: 0e2977b9-3646-5467-94a9-f1d6f8a17052
   type: component
   name: set_intent
@@ -862,6 +948,11 @@ nodes:
   type: module
   name: reality_dag_generator.py
   description: Module src.aio_agentic_sdlc.reality_dag_generator
+- id: d909df16-a708-59e7-ae7a-0c3ce6596233
+  type: component
+  name: is_ignored_directory
+  description: Return whether one directory name is outside deterministic Reality
+    evidence.
 - id: 0fea8fea-9a23-404b-a16b-a9c9c3990e1b
   type: component
   name: RealityDAGGenerator
@@ -879,6 +970,10 @@ nodes:
   type: module
   name: reconciliation.py
   description: Module 9015c8a3-fd14-5598-916d-d03fcf41e415
+- id: 7712f8ac-5cef-5b5c-ae56-5fb29a389115
+  type: component
+  name: ReconciliationError
+  description: Raised for an expected invalid reconciliation request or identity.
 - id: a913cfa4-0b24-59ed-bed0-483c531138e3
   type: component
   name: normalize_node_name
@@ -923,13 +1018,13 @@ nodes:
 - id: fbf875e6-7c1b-5d5c-8687-a4cc20342dbe
   type: component
   name: sync_documents
-  description: Scan canonical specs and update embeddings for changed Markdown files.
+  description: Serialize cache reconciliation for callers that manage the connection.
 - id: 78731c65-6497-566e-9df6-ee22d88861c8
   type: component
   name: find_duplicate_prds
-  description: "\r\n    Search for similar PRDs.\r\n    Returns a list of matching\
-    \ documents.\r\n    Note: threshold is cosine distance (0 to 2). Smaller is more\
-    \ similar.\r\n    Distance of 0.2 means 0.8 cosine similarity.\r\n    "
+  description: "\n    Search for similar PRDs.\n    Returns a list of matching documents.\n\
+    \    Note: threshold is cosine distance (0 to 2). Smaller is more similar.\n \
+    \   Distance of 0.2 means 0.8 cosine similarity.\n    "
 - id: bc9340ac-838c-5761-bd32-d04ca334c376
   type: module
   name: source_locations.py
@@ -946,6 +1041,19 @@ nodes:
   type: module
   name: source_markers.py
   description: Module src.aio_agentic_sdlc.source_markers
+- id: 0e7ae522-1a55-54bd-abf7-2ee400acf533
+  type: component
+  name: SourceMarkerError
+  description: Raised when a source identity annotation is malformed or ambiguous.
+- id: 644e3c3e-dcb1-5faa-bc1a-f845d15b681d
+  type: component
+  name: MappingReceiptAnnotation
+  description: One validated adjacent receipt-marker pair and its neutral source bytes.
+- id: 28f4eb8a-1809-51e9-8f04-827b00f3808f
+  type: component
+  name: parse_mapping_receipt_annotation
+  description: Validate one exact receipt-marker pair and return annotation-neutral
+    bytes.
 - id: eead12e1-3524-5e23-99c1-c23c44e35eba
   type: component
   name: canonical_node_marker
@@ -953,7 +1061,7 @@ nodes:
 - id: 828c3a86-8c8c-59a9-b76b-194ea93baad6
   type: component
   name: iter_canonical_node_markers
-  description: Yield canonical UUIDs from valid Python source-marker comment lines.
+  description: Return canonical UUIDs from actual Python comment tokens only.
 - id: f71e0f60-3a1d-54d4-ac81-403f66de42c7
   type: module
   name: state.py
@@ -986,6 +1094,13 @@ nodes:
   type: component
   name: load_backlog
   description: Function load_backlog
+- id: a9dea982-28b4-5eec-a5d6-a6eb739cdedc
+  type: component
+  name: mutate_backlog
+  description: "Apply one read-modify-write transaction while holding both state locks.\r\
+    \n\r\n    The callback returns ``(result, changed)``. A false ``changed`` value\
+    \ preserves\r\n    read-only/no-op behavior without incrementing the backlog revision.\r\
+    \n    "
 - id: 4ccffb18-3908-5c7d-9be0-a2826d069185
   type: component
   name: save_backlog
@@ -1002,6 +1117,14 @@ nodes:
   type: module
   name: templating_engine.py
   description: Module src.aio_agentic_sdlc.templating_engine
+- id: 66040f4e-38cb-580e-ad6c-2a7b4ab3e1ba
+  type: component
+  name: TemplateValidationError
+  description: Raised when caller-provided template data cannot render a document.
+- id: e1924d8d-198d-5ab0-b661-f438481e6531
+  type: component
+  name: TemplateNotFoundError
+  description: Raised when a requested framework template is unavailable.
 - id: d76c9ca8-4548-5c54-95cc-86bb437c3acb
   type: component
   name: get_package_templates_dir
@@ -1009,14 +1132,14 @@ nodes:
 - id: 370f8b4f-0766-5ffa-a93f-948947910c79
   type: component
   name: generate_document
-  description: "\r\n    Generates a document from a Jinja2 template and writes it\
-    \ to output_path.\r\n\r\n    Args:\r\n        template_name: The name of the template\
-    \ file in the templates/ directory.\r\n        data: A dictionary of data to populate\
-    \ the template.\r\n        output_path: The path where the generated document\
-    \ will be saved.\r\n        templates_dir: Optional explicit template directory.\
-    \ When omitted, use the templates\r\n            bundled with the installed framework\
-    \ package.\r\n\r\n    Returns:\r\n        The content of the generated document.\r\
-    \n    "
+  description: "\n    Generates a document from a Jinja2 template and writes it to\
+    \ output_path.\n\n    Args:\n        template_name: The name of the template file\
+    \ in the templates/ directory.\n        data: A dictionary of data to populate\
+    \ the template.\n        output_path: The path where the generated document will\
+    \ be saved.\n        templates_dir: Optional explicit template directory. When\
+    \ omitted, use the templates\n            bundled with the installed framework\
+    \ package.\n\n    Returns:\n        The content of the generated document.\n \
+    \   "
 - id: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
   type: module
   name: workspace.py
@@ -1506,10 +1629,10 @@ nodes:
   type: module
   name: test_dependency_contract.py
   description: Module tests.test_dependency_contract
-- id: 1d0f4a6f-61aa-5fe4-9e26-c89634484036
+- id: 87fa0592-ed3e-5be4-abf3-a09736563cc2
   type: component
-  name: test_mcp_dependency_excludes_the_unsupported_v2_api
-  description: Function test_mcp_dependency_excludes_the_unsupported_v2_api
+  name: test_mcp_dependency_targets_the_reviewed_v2_api
+  description: Function test_mcp_dependency_targets_the_reviewed_v2_api
 - id: ba4ab388-6a80-5b3b-b658-cd9d4bb3f5f8
   type: module
   name: test_detect.py
@@ -2109,6 +2232,122 @@ nodes:
   type: component
   name: test_mcp_mapping_review_and_approval_use_source_bound_evidence
   description: Function test_mcp_mapping_review_and_approval_use_source_bound_evidence
+- id: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  type: module
+  name: test_mcp_v2_concurrency.py
+  description: Module tests.test_mcp_v2_concurrency
+- id: 7a89e3be-d7a4-530b-a77e-434ac8d72a19
+  type: component
+  name: test_concurrent_v2_backlog_mutations_do_not_lose_updates
+  description: Function test_concurrent_v2_backlog_mutations_do_not_lose_updates
+- id: b79723d8-dff2-52ec-b968-e7c2e7c1ec83
+  type: component
+  name: test_concurrent_v2_backlog_stress_preserves_every_transaction
+  description: Function test_concurrent_v2_backlog_stress_preserves_every_transaction
+- id: ebeff56a-fe5c-5a7e-88e3-11c1e4b1de4f
+  type: component
+  name: test_concurrent_v2_semantic_cache_calls_are_serialized
+  description: Function test_concurrent_v2_semantic_cache_calls_are_serialized
+- id: 97d17f57-e007-56bb-b28b-662070c4ef28
+  type: component
+  name: test_concurrent_v2_mapping_approvals_commit_one_exact_receipt
+  description: Function test_concurrent_v2_mapping_approvals_commit_one_exact_receipt
+- id: 54e671ca-3246-5d6e-ae0f-4a08a0fa3654
+  type: component
+  name: test_concurrent_v2_mapping_receipt_refreshes_commit_one_transition
+  description: Function test_concurrent_v2_mapping_receipt_refreshes_commit_one_transition
+- id: 8ffe6f24-82e9-5dc4-8a9d-248e713a6d46
+  type: component
+  name: test_concurrent_v2_first_document_generation_creates_workspace_once
+  description: Function test_concurrent_v2_first_document_generation_creates_workspace_once
+- id: 8f9ac7eb-70c3-597a-aca5-e6bc4fdd5498
+  type: component
+  name: test_concurrent_v2_spec_promotions_are_one_atomic_transition
+  description: Function test_concurrent_v2_spec_promotions_are_one_atomic_transition
+- id: dbdb3391-85a6-583b-a89b-171175859e9d
+  type: component
+  name: test_v2_spec_promotion_rejects_source_leaf_swap_without_external_read
+  description: Function test_v2_spec_promotion_rejects_source_leaf_swap_without_external_read
+- id: 2edd9dee-088f-5dcd-ba42-878c0f64e71f
+  type: component
+  name: test_v2_spec_promotion_never_leaves_a_swapped_destination_leaf
+  description: Function test_v2_spec_promotion_never_leaves_a_swapped_destination_leaf
+- id: 81ae4f6f-586d-5464-860d-738281776201
+  type: component
+  name: test_v2_spec_promotion_detects_swap_after_first_destination_postcheck
+  description: Function test_v2_spec_promotion_detects_swap_after_first_destination_postcheck
+- id: 42a3be17-f62b-57e3-aaf8-e8c8e9f34317
+  type: component
+  name: test_v2_spec_promotion_preserves_read_only_source_mode
+  description: Function test_v2_spec_promotion_preserves_read_only_source_mode
+- id: f2d6b7f5-7e5e-529e-ab62-4d1b8a9d48f1
+  type: component
+  name: test_v2_spec_promotion_restores_read_only_source_after_late_failure
+  description: Function test_v2_spec_promotion_restores_read_only_source_after_late_failure
+- id: 28443018-ea61-5b3b-abd1-e6a33736a4bb
+  type: module
+  name: test_mcp_v2_contract.py
+  description: Module tests.test_mcp_v2_contract
+- id: db70a8b0-5bcf-5c7d-8d54-f16ed78bb93e
+  type: component
+  name: test_v2_client_discovers_the_complete_public_surface
+  description: Function test_v2_client_discovers_the_complete_public_surface
+- id: 8ec4bbb1-afa4-53ac-86cc-fb74a4e03b5b
+  type: component
+  name: test_v2_client_exercises_fixed_resources_and_prompt
+  description: Function test_v2_client_exercises_fixed_resources_and_prompt
+- id: 62a11bd6-20e1-5b14-9320-e932134f04e1
+  type: component
+  name: test_v2_schema_errors_fail_closed_without_creating_state
+  description: Function test_v2_schema_errors_fail_closed_without_creating_state
+- id: 696d6888-188c-5dbd-96af-3134622d4918
+  type: component
+  name: test_v2_mapping_review_bounds_hostile_display_fields
+  description: Function test_v2_mapping_review_bounds_hostile_display_fields
+- id: 5821259b-977d-5c1f-8391-aa9c080abdb1
+  type: component
+  name: test_v2_handler_failures_are_error_results_without_internal_details
+  description: Function test_v2_handler_failures_are_error_results_without_internal_details
+- id: 98b13ce1-40ed-52b0-b6d7-6e12569ac3b2
+  type: component
+  name: test_v2_unexpected_value_error_reaches_the_sanitizing_server
+  description: Function test_v2_unexpected_value_error_reaches_the_sanitizing_server
+- id: f84dc57f-eb3c-5dae-9833-34e25ee36706
+  type: component
+  name: test_v2_generate_document_unexpected_failure_is_sanitized
+  description: Function test_v2_generate_document_unexpected_failure_is_sanitized
+- id: a0a0baef-9138-5a01-a4fa-74dcfcae966b
+  type: component
+  name: test_v2_generate_document_rejects_protected_state_aliases_without_mutation
+  description: Function test_v2_generate_document_rejects_protected_state_aliases_without_mutation
+- id: d2bd0160-5cc2-51e6-8647-7e1e830745e4
+  type: component
+  name: test_v2_generate_reality_rejects_protected_aliases_before_subprocess
+  description: Function test_v2_generate_reality_rejects_protected_aliases_before_subprocess
+- id: 3f89f37c-f49c-5b81-bc4d-9c6476f8bf21
+  type: component
+  name: test_v2_generate_reality_suppresses_untrusted_subprocess_stderr
+  description: Function test_v2_generate_reality_suppresses_untrusted_subprocess_stderr
+- id: 6e458548-5c96-5b9f-801f-0fe345ae58af
+  type: component
+  name: test_v2_artifact_handlers_reject_hardlinked_protected_state_aliases
+  description: Function test_v2_artifact_handlers_reject_hardlinked_protected_state_aliases
+- id: d4a5146a-705e-5a3b-b9db-46d1c0533f97
+  type: component
+  name: test_v2_unknown_resource_uri_is_a_protocol_error
+  description: Function test_v2_unknown_resource_uri_is_a_protocol_error
+- id: 1d340b4e-0c66-5c20-9dc9-94b1e674fc29
+  type: component
+  name: test_v2_artifact_handlers_reject_unsafe_paths_before_execution
+  description: Function test_v2_artifact_handlers_reject_unsafe_paths_before_execution
+- id: 65669676-3bef-547a-ad09-4ffbd971fdb7
+  type: component
+  name: test_real_stdio_entrypoint_serves_the_preserved_surface
+  description: Function test_real_stdio_entrypoint_serves_the_preserved_surface
+- id: 6f4307bf-f492-573d-8f0a-bd2555ad85ef
+  type: component
+  name: test_v2_client_exercises_every_published_tool
+  description: Function test_v2_client_exercises_every_published_tool
 - id: c89cf80c-c223-536d-9d0e-235dbd48443c
   type: module
   name: test_migrate_ids_adversarial.py
@@ -2299,6 +2538,14 @@ nodes:
   type: component
   name: test_reality_generator_excludes_framework_state_directories
   description: Function test_reality_generator_excludes_framework_state_directories
+- id: 3b599e2f-cd46-5508-a31f-7c0abe9840f9
+  type: component
+  name: test_reality_generator_excludes_framework_qa_sandbox
+  description: Function test_reality_generator_excludes_framework_qa_sandbox
+- id: 9fb4d7de-336f-5dcb-9d61-57b6fe85dc5f
+  type: component
+  name: test_reality_generator_excludes_repo_local_uv_cache
+  description: Function test_reality_generator_excludes_repo_local_uv_cache
 - id: 42586527-e31b-5d2d-9e65-25b0af2d65af
   type: component
   name: test_reality_generator_excludes_reproducibility_noise_directories
@@ -2415,6 +2662,138 @@ nodes:
   type: component
   name: test_grep_search_in_tools
   description: Function test_grep_search_in_tools
+- id: a096a058-2b83-52b2-b44c-e37e3402be15
+  type: module
+  name: test_source_identity_maintenance.py
+  description: Module tests.test_source_identity_maintenance
+- id: b1c5dcf9-26a6-5835-84fd-92019864c883
+  type: component
+  name: test_explicit_observed_guid_review_binds_differently_named_symbol
+  description: Function test_explicit_observed_guid_review_binds_differently_named_symbol
+- id: fb873ff2-999f-53e2-b969-52a0778db2cc
+  type: component
+  name: test_mapping_review_bounds_hostile_single_field_in_json_human_cli_and_mcp
+  description: Function test_mapping_review_bounds_hostile_single_field_in_json_human_cli_and_mcp
+- id: 1a71df1d-675d-5dc5-939a-ddf89b814588
+  type: component
+  name: test_explicit_observed_guid_approval_replays_selection_and_marks_exact_symbol
+  description: Function test_explicit_observed_guid_approval_replays_selection_and_marks_exact_symbol
+- id: d484ff8e-8d0a-579f-b3c6-bdbfc39c4f85
+  type: component
+  name: test_confirmed_receipt_review_is_deterministic_and_read_only
+  description: Function test_confirmed_receipt_review_is_deterministic_and_read_only
+- id: f78ee5fb-a3b6-5c2b-bc9e-890797dd164c
+  type: component
+  name: test_receipt_refresh_preserves_marker_and_replaces_only_receipt
+  description: Function test_receipt_refresh_preserves_marker_and_replaces_only_receipt
+- id: 840d8c67-05b4-58ba-bd59-94814cc1e4aa
+  type: component
+  name: test_candidate_and_receipt_refresh_preserve_read_only_crlf_source
+  description: Function test_candidate_and_receipt_refresh_preserve_read_only_crlf_source
+- id: 0a9de4e2-1b7a-5b23-acc0-96344f09ca46
+  type: component
+  name: test_repeated_receipt_refresh_preserves_one_flat_identity_approval
+  description: Function test_repeated_receipt_refresh_preserves_one_flat_identity_approval
+- id: da915298-e938-57e9-96cd-79246cbd33cf
+  type: component
+  name: test_receipt_refresh_rejects_stale_digest_without_mutation
+  description: Function test_receipt_refresh_rejects_stale_digest_without_mutation
+- id: 2670af1b-d88e-591a-87f5-4f7b380983a8
+  type: component
+  name: test_receipt_review_rejects_unknown_or_mismatched_receipt_shape
+  description: Function test_receipt_review_rejects_unknown_or_mismatched_receipt_shape
+- id: 5f1fb700-bc20-514e-a545-a482f42baf7a
+  type: component
+  name: test_receipt_review_rejects_duplicate_json_keys_and_duplicate_receipts
+  description: Function test_receipt_review_rejects_duplicate_json_keys_and_duplicate_receipts
+- id: 9be3e2b3-e857-54c6-b86a-8b479ae1cc03
+  type: component
+  name: test_receipt_review_ignores_non_comment_prefix_literal_but_rejects_malformed_comment
+  description: Function test_receipt_review_ignores_non_comment_prefix_literal_but_rejects_malformed_comment
+- id: f70d0444-b344-569d-b1b6-1876f37d3f57
+  type: component
+  name: test_receipt_review_rejects_oversized_receipt_without_mutation
+  description: Function test_receipt_review_rejects_oversized_receipt_without_mutation
+- id: b8fedc1f-d6ac-570f-bf2f-f8973000ccaa
+  type: component
+  name: test_receipt_review_rejects_lone_surrogate_as_bounded_mapping_error
+  description: Function test_receipt_review_rejects_lone_surrogate_as_bounded_mapping_error
+- id: 4ae439b9-4b7d-504c-88ec-e31fafc703e0
+  type: component
+  name: test_mapping_approval_rejects_oversized_audit_text_before_write
+  description: Function test_mapping_approval_rejects_oversized_audit_text_before_write
+- id: 4628630c-0b87-54df-8393-fd698279b649
+  type: component
+  name: test_receipt_review_rejects_symlinked_source_without_external_read_or_write
+  description: Function test_receipt_review_rejects_symlinked_source_without_external_read_or_write
+- id: 968834d9-3cfe-59ed-b73a-5279d62d147f
+  type: component
+  name: test_receipt_review_rejects_hardlinked_source_without_mutation
+  description: Function test_receipt_review_rejects_hardlinked_source_without_mutation
+- id: 38a64baa-4abe-5ea5-8c48-9356b89c7678
+  type: component
+  name: test_receipt_refresh_rolls_back_exact_bytes_when_postcondition_fails
+  description: Function test_receipt_refresh_rolls_back_exact_bytes_when_postcondition_fails
+- id: 4f6c9f70-cac0-5a9a-b08f-ca118d95f67f
+  type: component
+  name: test_receipt_refresh_rejects_source_leaf_swap_before_transition
+  description: Function test_receipt_refresh_rejects_source_leaf_swap_before_transition
+- id: f2e40d98-980a-5875-b0b1-8ab53dd6d44a
+  type: component
+  name: test_mapping_transition_quarantines_leaf_swapped_after_identity_check
+  description: Function test_mapping_transition_quarantines_leaf_swapped_after_identity_check
+- id: c04cb45d-8c22-56b0-8bc0-3661e93ab6c7
+  type: component
+  name: test_mapping_transition_rejects_swapped_or_hardlinked_temporary_before_commit
+  description: Function test_mapping_transition_rejects_swapped_or_hardlinked_temporary_before_commit
+- id: 0b4d0690-879e-50f8-a94c-7916c42466b8
+  type: component
+  name: test_mapping_final_temporary_check_swap_cannot_partially_commit
+  description: Function test_mapping_final_temporary_check_swap_cannot_partially_commit
+- id: 441ce6a0-3493-55ad-98e9-0105503c312a
+  type: component
+  name: test_mapping_ignores_mixed_case_runtime_cache_and_marker_string_literals
+  description: Function test_mapping_ignores_mixed_case_runtime_cache_and_marker_string_literals
+- id: 0d4dcafb-416b-5f52-9238-90750ef918cf
+  type: component
+  name: test_mapping_no_overwrite_install_preserves_newly_occupied_source_and_original
+  description: Function test_mapping_no_overwrite_install_preserves_newly_occupied_source_and_original
+- id: e3fb0291-b3ee-56bf-9448-4a847d1953b4
+  type: component
+  name: test_mapping_private_backup_destination_is_never_overwritten
+  description: Function test_mapping_private_backup_destination_is_never_overwritten
+- id: 3638647c-7f94-53bb-9b4d-46060a0fe48b
+  type: component
+  name: test_mapping_quarantine_destination_race_preserves_every_leaf
+  description: Function test_mapping_quarantine_destination_race_preserves_every_leaf
+- id: 963314c9-31db-59a3-a950-7963f436267a
+  type: component
+  name: test_mapping_postverify_backup_swap_rolls_back_without_partial_commit
+  description: Function test_mapping_postverify_backup_swap_rolls_back_without_partial_commit
+- id: 1201b0bb-2ca1-53b7-8cfc-8e3c9a293b85
+  type: component
+  name: test_mapping_final_source_swap_after_backup_delete_restores_snapshot
+  description: Function test_mapping_final_source_swap_after_backup_delete_restores_snapshot
+- id: 60a90b7e-86c2-5d8d-8661-4df66804674f
+  type: component
+  name: test_concurrent_receipt_refresh_has_one_winner_and_no_corruption
+  description: Function test_concurrent_receipt_refresh_has_one_winner_and_no_corruption
+- id: 6d33321f-d933-5a81-a688-d4d231e02bd8
+  type: component
+  name: test_mapping_transition_holds_intention_lock_through_source_commit
+  description: Function test_mapping_transition_holds_intention_lock_through_source_commit
+- id: c36ea00c-9495-5f88-8dfe-9b7b6bb0cab0
+  type: component
+  name: test_explicit_review_cli_and_mcp_json_match_python
+  description: Function test_explicit_review_cli_and_mcp_json_match_python
+- id: b0b54baa-1f2a-5d60-bc70-0c3596085b8a
+  type: component
+  name: test_receipt_review_cli_and_mcp_json_match_python
+  description: Function test_receipt_review_cli_and_mcp_json_match_python
+- id: 6fb2ccb9-d72a-5ec4-b415-4ecc56e5b41d
+  type: component
+  name: test_receipt_refresh_cli_and_mcp_json_match_python
+  description: Function test_receipt_refresh_cli_and_mcp_json_match_python
 - id: 7bb11dbc-3295-5af9-a19e-70455169489f
   type: module
   name: test_state_integrity.py
@@ -2551,6 +2930,10 @@ nodes:
   type: component
   name: test_generate_document_preserves_template_trailing_newline
   description: Function test_generate_document_preserves_template_trailing_newline
+- id: 9b0ba045-e83f-5fa1-a334-29a111e27656
+  type: component
+  name: test_generate_document_rejects_symlinked_output_without_external_write
+  description: Function test_generate_document_rejects_symlinked_output_without_external_write
 - id: b0996653-f397-5cd5-9f1c-0a0fb6c5160c
   type: module
   name: test_toctou_adversarial.py
@@ -2726,6 +3109,9 @@ edges:
   target: dda24752-8c90-5617-8ee2-4727bb22232f
   type: contains
 - source: dda24752-8c90-5617-8ee2-4727bb22232f
+  target: 7192416e-db0d-53c7-8cf8-b298908b6e33
+  type: contains
+- source: dda24752-8c90-5617-8ee2-4727bb22232f
   target: f075b9e0-f4cb-528a-b05b-0b3a679257c8
   type: contains
 - source: dda24752-8c90-5617-8ee2-4727bb22232f
@@ -2828,6 +3214,15 @@ edges:
   target: 483bcd48-3e11-5f55-a5c6-d3df8e89b4f5
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: cea00136-69c8-54df-a34d-bb46e4e60cf9
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: f3611435-a151-5c50-bb99-18677d8441d6
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: f491645f-4535-5738-a7f6-90fc849714a5
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
   target: 4c72f245-723a-5df9-b165-9fd5b704c735
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
@@ -2868,6 +3263,12 @@ edges:
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 32cbe30e-0414-5b27-a71a-77c392f4b4e9
+  type: contains
+- source: 32cbe30e-0414-5b27-a71a-77c392f4b4e9
+  target: ea6f1923-6e90-5815-8a46-edf84e5f0f67
+  type: contains
+- source: 32cbe30e-0414-5b27-a71a-77c392f4b4e9
+  target: 264c5614-0678-5106-90e3-d00e0f7cd3f1
   type: contains
 - source: 32cbe30e-0414-5b27-a71a-77c392f4b4e9
   target: 412c6407-f59f-5d49-973d-945454bb23e3
@@ -2936,6 +3337,9 @@ edges:
   target: 2f396232-c75e-5a6d-b04b-0fa5f940313b
   type: contains
 - source: 2f396232-c75e-5a6d-b04b-0fa5f940313b
+  target: deb44d20-390c-5bc4-859a-7d12ad675b1c
+  type: contains
+- source: 2f396232-c75e-5a6d-b04b-0fa5f940313b
   target: af950be8-5c9c-5591-9f1a-31d66d4aa96f
   type: contains
 - source: 2f396232-c75e-5a6d-b04b-0fa5f940313b
@@ -2952,6 +3356,9 @@ edges:
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58
+  type: contains
+- source: 841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58
+  target: e8b4dfb6-d4b0-5266-8079-18dca64cf5d9
   type: contains
 - source: 841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58
   target: bd4d54d7-1bf2-5246-b5a3-261a9c28f36d
@@ -3012,6 +3419,9 @@ edges:
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 2d0bae0f-4c1d-5c6e-a67a-1fa09e6bdd76
+  type: contains
+- source: 2d0bae0f-4c1d-5c6e-a67a-1fa09e6bdd76
+  target: ceb248c0-6ab0-508a-b9bf-19dc802d41af
   type: contains
 - source: 2d0bae0f-4c1d-5c6e-a67a-1fa09e6bdd76
   target: 49ad556f-0c37-5169-ab72-a1b9fb63d80f
@@ -3113,6 +3523,9 @@ edges:
   target: 214466a1-8303-573d-abd3-6c91afc5783e
   type: contains
 - source: 214466a1-8303-573d-abd3-6c91afc5783e
+  target: b5444d48-e78d-58b6-b8d4-2c9d9584f5aa
+  type: contains
+- source: 214466a1-8303-573d-abd3-6c91afc5783e
   target: 84123bb2-31f6-550b-add9-315c748a5364
   type: contains
 - source: 214466a1-8303-573d-abd3-6c91afc5783e
@@ -3122,13 +3535,22 @@ edges:
   target: db87f8e5-dca8-5952-91f6-454eec0f1a34
   type: contains
 - source: db87f8e5-dca8-5952-91f6-454eec0f1a34
+  target: b057ab3a-9d1e-51e4-98e3-859040dc3dda
+  type: contains
+- source: db87f8e5-dca8-5952-91f6-454eec0f1a34
   target: af738342-309b-5d5a-b940-ff6b5cb50a7b
+  type: contains
+- source: db87f8e5-dca8-5952-91f6-454eec0f1a34
+  target: a5892e3f-215f-5265-9645-e1368dbc8c0d
   type: contains
 - source: db87f8e5-dca8-5952-91f6-454eec0f1a34
   target: 6a32e581-a47a-59f8-acb8-6b59a5020cfa
   type: contains
 - source: db87f8e5-dca8-5952-91f6-454eec0f1a34
   target: 407dbabf-8298-554b-a0e7-5be2c9162a1e
+  type: contains
+- source: 407dbabf-8298-554b-a0e7-5be2c9162a1e
+  target: f68749ec-4ac6-5224-b026-fb668ce11352
   type: contains
 - source: 407dbabf-8298-554b-a0e7-5be2c9162a1e
   target: 10e8ca84-bd3d-5f86-87a8-a7dc364d9db5
@@ -3143,10 +3565,28 @@ edges:
   target: eaf40f28-a4a7-503c-904e-6584d498e113
   type: contains
 - source: 6317643a-a8fc-5026-b373-9330004bc90d
+  target: 8e61b3f7-4f23-5fc4-a720-035e2ab861f6
+  type: contains
+- source: 6317643a-a8fc-5026-b373-9330004bc90d
   target: a2a30d01-4de7-5dee-bca7-ef3a5f806538
+  type: contains
+- source: 6317643a-a8fc-5026-b373-9330004bc90d
+  target: a03577cc-ff8f-588e-ab72-553938656f7b
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 59bceb32-2def-5776-836b-65a22cdad3c2
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: e28287cd-0eb2-5c63-a5eb-110753d0c178
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 86367041-79ce-5415-b107-ef60cf721bf3
+  type: contains
+- source: 86367041-79ce-5415-b107-ef60cf721bf3
+  target: 18434634-adab-5c9b-9477-79fc2ba35afc
   type: contains
 - source: 905cfe1d-7c37-50cf-b768-9132c88169e7
   target: 8c0e4daf-dba6-5a8a-ba9a-02a88a4b50de
@@ -3203,6 +3643,12 @@ edges:
   target: ec1e27bd-46ff-5749-9218-3e302db760a9
   type: contains
 - source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: d6f46f94-fffd-5483-b2e3-bd0b4eb8e8d1
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 09366651-9d9c-508a-b9a7-8b1a8f923df7
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
   target: 0e2977b9-3646-5467-94a9-f1d6f8a17052
   type: contains
 - source: 905cfe1d-7c37-50cf-b768-9132c88169e7
@@ -3239,6 +3685,9 @@ edges:
   target: 1dbef474-b42c-50ba-81a6-fcf97002ad6c
   type: contains
 - source: 1dbef474-b42c-50ba-81a6-fcf97002ad6c
+  target: d909df16-a708-59e7-ae7a-0c3ce6596233
+  type: contains
+- source: 1dbef474-b42c-50ba-81a6-fcf97002ad6c
   target: 0fea8fea-9a23-404b-a16b-a9c9c3990e1b
   type: contains
 - source: 0fea8fea-9a23-404b-a16b-a9c9c3990e1b
@@ -3249,6 +3698,9 @@ edges:
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 9015c8a3-fd14-5598-916d-d03fcf41e415
+  type: contains
+- source: 9015c8a3-fd14-5598-916d-d03fcf41e415
+  target: 7712f8ac-5cef-5b5c-ae56-5fb29a389115
   type: contains
 - source: 9015c8a3-fd14-5598-916d-d03fcf41e415
   target: a913cfa4-0b24-59ed-bed0-483c531138e3
@@ -3299,6 +3751,15 @@ edges:
   target: c1d5d3f5-9bf5-5de5-aff0-e04a35728545
   type: contains
 - source: c1d5d3f5-9bf5-5de5-aff0-e04a35728545
+  target: 0e7ae522-1a55-54bd-abf7-2ee400acf533
+  type: contains
+- source: c1d5d3f5-9bf5-5de5-aff0-e04a35728545
+  target: 644e3c3e-dcb1-5faa-bc1a-f845d15b681d
+  type: contains
+- source: c1d5d3f5-9bf5-5de5-aff0-e04a35728545
+  target: 28f4eb8a-1809-51e9-8f04-827b00f3808f
+  type: contains
+- source: c1d5d3f5-9bf5-5de5-aff0-e04a35728545
   target: eead12e1-3524-5e23-99c1-c23c44e35eba
   type: contains
 - source: c1d5d3f5-9bf5-5de5-aff0-e04a35728545
@@ -3329,6 +3790,9 @@ edges:
   target: 25dd94d4-55e5-56f8-9d0a-3b616b8cd844
   type: contains
 - source: f71e0f60-3a1d-54d4-ac81-403f66de42c7
+  target: a9dea982-28b4-5eec-a5d6-a6eb739cdedc
+  type: contains
+- source: f71e0f60-3a1d-54d4-ac81-403f66de42c7
   target: 4ccffb18-3908-5c7d-9be0-a2826d069185
   type: contains
 - source: f71e0f60-3a1d-54d4-ac81-403f66de42c7
@@ -3339,6 +3803,12 @@ edges:
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: bcf289fc-073a-5a5c-9e95-c8da5d4d1f1d
+  type: contains
+- source: bcf289fc-073a-5a5c-9e95-c8da5d4d1f1d
+  target: 66040f4e-38cb-580e-ad6c-2a7b4ab3e1ba
+  type: contains
+- source: bcf289fc-073a-5a5c-9e95-c8da5d4d1f1d
+  target: e1924d8d-198d-5ab0-b661-f438481e6531
   type: contains
 - source: bcf289fc-073a-5a5c-9e95-c8da5d4d1f1d
   target: d76c9ca8-4548-5c54-95cc-86bb437c3acb
@@ -3713,7 +4183,7 @@ edges:
   target: bc644a99-9a32-5c73-9d3f-fe9a1f4ff135
   type: contains
 - source: bc644a99-9a32-5c73-9d3f-fe9a1f4ff135
-  target: 1d0f4a6f-61aa-5fe4-9e26-c89634484036
+  target: 87fa0592-ed3e-5be4-abf3-a09736563cc2
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: ba4ab388-6a80-5b3b-b658-cd9d4bb3f5f8
@@ -4172,6 +4642,93 @@ edges:
   target: 88c3cb2c-8920-5b1f-b2fc-83ca5864101e
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: 7a89e3be-d7a4-530b-a77e-434ac8d72a19
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: b79723d8-dff2-52ec-b968-e7c2e7c1ec83
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: ebeff56a-fe5c-5a7e-88e3-11c1e4b1de4f
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: 97d17f57-e007-56bb-b28b-662070c4ef28
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: 54e671ca-3246-5d6e-ae0f-4a08a0fa3654
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: 8ffe6f24-82e9-5dc4-8a9d-248e713a6d46
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: 8f9ac7eb-70c3-597a-aca5-e6bc4fdd5498
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: dbdb3391-85a6-583b-a89b-171175859e9d
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: 2edd9dee-088f-5dcd-ba42-878c0f64e71f
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: 81ae4f6f-586d-5464-860d-738281776201
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: 42a3be17-f62b-57e3-aaf8-e8c8e9f34317
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: f2d6b7f5-7e5e-529e-ab62-4d1b8a9d48f1
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 28443018-ea61-5b3b-abd1-e6a33736a4bb
+  type: contains
+- source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
+  target: db70a8b0-5bcf-5c7d-8d54-f16ed78bb93e
+  type: contains
+- source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
+  target: 8ec4bbb1-afa4-53ac-86cc-fb74a4e03b5b
+  type: contains
+- source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
+  target: 62a11bd6-20e1-5b14-9320-e932134f04e1
+  type: contains
+- source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
+  target: 696d6888-188c-5dbd-96af-3134622d4918
+  type: contains
+- source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
+  target: 5821259b-977d-5c1f-8391-aa9c080abdb1
+  type: contains
+- source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
+  target: 98b13ce1-40ed-52b0-b6d7-6e12569ac3b2
+  type: contains
+- source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
+  target: f84dc57f-eb3c-5dae-9833-34e25ee36706
+  type: contains
+- source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
+  target: a0a0baef-9138-5a01-a4fa-74dcfcae966b
+  type: contains
+- source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
+  target: d2bd0160-5cc2-51e6-8647-7e1e830745e4
+  type: contains
+- source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
+  target: 3f89f37c-f49c-5b81-bc4d-9c6476f8bf21
+  type: contains
+- source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
+  target: 6e458548-5c96-5b9f-801f-0fe345ae58af
+  type: contains
+- source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
+  target: d4a5146a-705e-5a3b-b9db-46d1c0533f97
+  type: contains
+- source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
+  target: 1d340b4e-0c66-5c20-9dc9-94b1e674fc29
+  type: contains
+- source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
+  target: 65669676-3bef-547a-ad09-4ffbd971fdb7
+  type: contains
+- source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
+  target: 6f4307bf-f492-573d-8f0a-bd2555ad85ef
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: c89cf80c-c223-536d-9d0e-235dbd48443c
   type: contains
 - source: c89cf80c-c223-536d-9d0e-235dbd48443c
@@ -4313,6 +4870,12 @@ edges:
   target: eb5a2adf-d33a-5be4-9c15-82b3ccf6b86e
   type: contains
 - source: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
+  target: 3b599e2f-cd46-5508-a31f-7c0abe9840f9
+  type: contains
+- source: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
+  target: 9fb4d7de-336f-5dcb-9d61-57b6fe85dc5f
+  type: contains
+- source: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
   target: 42586527-e31b-5d2d-9e65-25b0af2d65af
   type: contains
 - source: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
@@ -4398,6 +4961,105 @@ edges:
   type: contains
 - source: 70b21164-bf77-5ed5-98ed-fc00789a9087
   target: 809432e9-aaba-5b9d-a1ed-d537129f6259
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: a096a058-2b83-52b2-b44c-e37e3402be15
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: b1c5dcf9-26a6-5835-84fd-92019864c883
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: fb873ff2-999f-53e2-b969-52a0778db2cc
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: 1a71df1d-675d-5dc5-939a-ddf89b814588
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: d484ff8e-8d0a-579f-b3c6-bdbfc39c4f85
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: f78ee5fb-a3b6-5c2b-bc9e-890797dd164c
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: 840d8c67-05b4-58ba-bd59-94814cc1e4aa
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: 0a9de4e2-1b7a-5b23-acc0-96344f09ca46
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: da915298-e938-57e9-96cd-79246cbd33cf
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: 2670af1b-d88e-591a-87f5-4f7b380983a8
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: 5f1fb700-bc20-514e-a545-a482f42baf7a
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: 9be3e2b3-e857-54c6-b86a-8b479ae1cc03
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: f70d0444-b344-569d-b1b6-1876f37d3f57
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: b8fedc1f-d6ac-570f-bf2f-f8973000ccaa
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: 4ae439b9-4b7d-504c-88ec-e31fafc703e0
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: 4628630c-0b87-54df-8393-fd698279b649
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: 968834d9-3cfe-59ed-b73a-5279d62d147f
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: 38a64baa-4abe-5ea5-8c48-9356b89c7678
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: 4f6c9f70-cac0-5a9a-b08f-ca118d95f67f
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: f2e40d98-980a-5875-b0b1-8ab53dd6d44a
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: c04cb45d-8c22-56b0-8bc0-3661e93ab6c7
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: 0b4d0690-879e-50f8-a94c-7916c42466b8
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: 441ce6a0-3493-55ad-98e9-0105503c312a
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: 0d4dcafb-416b-5f52-9238-90750ef918cf
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: e3fb0291-b3ee-56bf-9448-4a847d1953b4
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: 3638647c-7f94-53bb-9b4d-46060a0fe48b
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: 963314c9-31db-59a3-a950-7963f436267a
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: 1201b0bb-2ca1-53b7-8cfc-8e3c9a293b85
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: 60a90b7e-86c2-5d8d-8661-4df66804674f
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: 6d33321f-d933-5a81-a688-d4d231e02bd8
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: c36ea00c-9495-5f88-8dfe-9b7b6bb0cab0
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: b0b54baa-1f2a-5d60-bc70-0c3596085b8a
+  type: contains
+- source: a096a058-2b83-52b2-b44c-e37e3402be15
+  target: 6fb2ccb9-d72a-5ec4-b415-4ecc56e5b41d
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 7bb11dbc-3295-5af9-a19e-70455169489f
@@ -4500,6 +5162,9 @@ edges:
   type: contains
 - source: 0a163bed-7cab-5793-9dd8-c412fcfd6f39
   target: 8c4b52d8-0b20-52d0-a25b-d187fca9f9b2
+  type: contains
+- source: 0a163bed-7cab-5793-9dd8-c412fcfd6f39
+  target: 9b0ba045-e83f-5fa1-a334-29a111e27656
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: b0996653-f397-5cd5-9f1c-0a0fb6c5160c

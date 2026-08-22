@@ -254,6 +254,44 @@ def test_reality_generator_excludes_framework_state_directories(tmp_path):
     assert "ExcludedFrameworkState" not in names
 
 
+def test_reality_generator_excludes_framework_qa_sandbox(tmp_path):
+    (tmp_path / "source.py").write_text(
+        "class IncludedProjectSource:\n    pass\n",
+        encoding="utf-8",
+    )
+    qa_sandbox = tmp_path / ".qa-sandbox"
+    qa_sandbox.mkdir()
+    (qa_sandbox / "adversarial_probe.py").write_text(
+        "class IgnoredQAProbe:\n    pass\n",
+        encoding="utf-8",
+    )
+
+    generated = RealityDAGGenerator(str(tmp_path), "QA exclusion test").generate()
+    names = {node.name for node in generated.nodes.values()}
+
+    assert "IncludedProjectSource" in names
+    assert "IgnoredQAProbe" not in names
+
+
+def test_reality_generator_excludes_repo_local_uv_cache(tmp_path):
+    (tmp_path / "source.py").write_text(
+        "class IncludedProjectSource:\n    pass\n",
+        encoding="utf-8",
+    )
+    uv_cache = tmp_path / ".uv-cache" / "archive-v0" / "dependency"
+    uv_cache.mkdir(parents=True)
+    (uv_cache / "cached_source.py").write_text(
+        "class IgnoredUVCacheDependency:\n    pass\n",
+        encoding="utf-8",
+    )
+
+    generated = RealityDAGGenerator(str(tmp_path), "UV cache exclusion test").generate()
+    names = {node.name for node in generated.nodes.values()}
+
+    assert "IncludedProjectSource" in names
+    assert "IgnoredUVCacheDependency" not in names
+
+
 def test_reality_generator_excludes_reproducibility_noise_directories(tmp_path):
     (tmp_path / "source.py").write_text(
         "class IncludedSource:\n    pass\n",

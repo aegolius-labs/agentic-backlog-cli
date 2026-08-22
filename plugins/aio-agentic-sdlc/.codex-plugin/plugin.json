@@ -1,6 +1,6 @@
 {
   "name": "aio-agentic-sdlc",
-  "version": "0.21.0+codex.20260817170722",
+  "version": "0.21.0+codex.20260822030735",
   "description": "Run a traceable, dual-DAG software delivery workflow with Codex and the AIO Agentic SDLC MCP tools.",
   "author": {
     "name": "aegolius-labs",
@@ -24,7 +24,10 @@
     "longDescription": "Plan requirements, prioritize graph-backed work, orchestrate implementation and QA, visualize and reconcile intention with repository reality, and triage drift before execution.",
     "developerName": "aegolius-labs",
     "category": "Engineering",
-    "capabilities": ["Read", "Write"],
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
     "websiteURL": "https://github.com/aegolius-labs/aio-agentic-sdlc",
     "defaultPrompt": [
       "Turn this feature idea into a traceable PRD.",

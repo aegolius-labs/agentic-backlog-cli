@@ -1,0 +1,837 @@
+{
+  "schema_version": 1,
+  "artifact_type": "source_identity_maintenance_self_dogfood_review",
+  "mode": "read_only",
+  "source": {
+    "intention_path": ".aio-agentic-sdlc/intention-dag.yaml",
+    "intention_sha256": "8a3e5227cc83509d878279c9783f178b69dfa3b224f799975a16f7a8ccf3b4aa",
+    "reality_path": ".qa-sandbox/source-identity-human-review/reality-dag.yaml",
+    "reality_sha256": "6828fa8184296dd3c345f23c1d921dcc71a7ae9d460857ecd6d1babca4c62e32",
+    "reconciliation_path": ".qa-sandbox/source-identity-human-review/reconciliation.json",
+    "reconciliation_sha256": "e874d800d7662b3af1457b421319278c73c4c33e661db6d7db4017e631ad99ab",
+    "reconciliation_summary": {
+      "intention_nodes": 61,
+      "reality_nodes": 736,
+      "confirmed": 9,
+      "candidate": 1,
+      "ambiguous": 0,
+      "unmapped": 51,
+      "unclassified_reality": 727
+    }
+  },
+  "orientation": {
+    "mcp_v2_intent": {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "86367041-79ce-5415-b107-ef60cf721bf3",
+        "type": "component",
+        "name": "MCP SDK v2 Integration"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 10,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    }
+  },
+  "reviews": {
+    "explicit_candidate": {
+      "schema_version": 3,
+      "operation": "candidate_mapping",
+      "selection_mode": "explicit_observed_guid",
+      "classification": "unmapped",
+      "intent": {
+        "id": "86367041-79ce-5415-b107-ef60cf721bf3",
+        "type": "component",
+        "name": "MCP SDK v2 Integration"
+      },
+      "candidates": [
+        {
+          "reality": {
+            "id": "55bef33d-15b7-588b-8712-a2ed3502be62",
+            "type": "component",
+            "name": "_SanitizingMCPServer"
+          },
+          "source_location_count": 1,
+          "source": {
+            "path": "src/aio_agentic_sdlc/mcp_server.py",
+            "symbol_kind": "class",
+            "symbol_name": "_SanitizingMCPServer",
+            "definition_line": 262,
+            "marker_line": 262,
+            "source_sha256": "992b2d5362ecf7d2b1f6a8b49eed1b08c1b2b1d1b0e560c4d3bd5bf690e53021",
+            "raw_source_sha256": "992b2d5362ecf7d2b1f6a8b49eed1b08c1b2b1d1b0e560c4d3bd5bf690e53021",
+            "annotation_neutral_source_sha256": "992b2d5362ecf7d2b1f6a8b49eed1b08c1b2b1d1b0e560c4d3bd5bf690e53021"
+          }
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "explicit_observed_guid",
+          "value": "55bef33d-15b7-588b-8712-a2ed3502be62"
+        }
+      ],
+      "decision_brief": {
+        "decision_scope": "source_identity_linkage",
+        "default_decision": "defer",
+        "meaning": "Approval links one canonical Intent GUID to one exact source symbol. It does not approve the Intent IR or prove acceptance criteria.",
+        "intention": {
+          "title": "MCP SDK v2 Integration",
+          "type": "component",
+          "domain": "platform",
+          "responsibility": "Official MCP Python SDK v2 server integration preserving the Codex stdio contract, public MCP surface, concurrency safety, and legacy compatibility.",
+          "approval_state": "approved",
+          "confidence": 0.96,
+          "acceptance_criteria": {
+            "total": 6,
+            "returned": 6,
+            "truncated": false,
+            "items": [
+              {
+                "id": "MCP-V2-AC1",
+                "statement": "A frozen UV installation resolves the reviewed MCP 2.x release and excludes MCP 1.x and unsupported future majors.",
+                "required_evidence": [
+                  "dependency:pyproject-mcp-v2-bound",
+                  "dependency:uv-lock-mcp-v2",
+                  "build:frozen-uv-sync"
+                ],
+                "mapping_review_status": "not_verified"
+              },
+              {
+                "id": "MCP-V2-AC2",
+                "statement": "The aio-agentic-sdlc-mcp stdio entry point exposes every existing tool, resource, and prompt with compatible names and schemas through MCPServer.",
+                "required_evidence": [
+                  "test:mcp-v2-public-surface",
+                  "test:mcp-v2-stdio-smoke",
+                  "contract:codex-plugin-mcp-launch"
+                ],
+                "mapping_review_status": "not_verified"
+              },
+              {
+                "id": "MCP-V2-AC3",
+                "statement": "The official v2 in-memory Client can list and exercise the complete public MCP surface in modern auto mode and legacy mode.",
+                "required_evidence": [
+                  "test:mcp-v2-client-auto",
+                  "test:mcp-v2-client-legacy",
+                  "test:mcp-v2-client-schema-errors"
+                ],
+                "mapping_review_status": "not_verified"
+              },
+              {
+                "id": "MCP-V2-AC4",
+                "statement": "Concurrent worker-thread execution of synchronous stateful handlers preserves workspace, backlog, audit, mapping, path, lock, and working-directory invariants.",
+                "required_evidence": [
+                  "test:mcp-v2-concurrent-state",
+                  "test:mcp-v2-concurrent-mapping",
+                  "test:mcp-v2-cwd-isolation"
+                ],
+                "mapping_review_status": "not_verified"
+              },
+              {
+                "id": "MCP-V2-AC5",
+                "statement": "Invalid inputs, outputs, URIs, paths, and handler failures are rejected with deterministic protocol-visible error semantics and no protected-state mutation.",
+                "required_evidence": [
+                  "test:mcp-v2-schema-enforcement",
+                  "test:mcp-v2-uri-path-safety",
+                  "test:mcp-v2-error-semantics"
+                ],
+                "mapping_review_status": "not_verified"
+              },
+              {
+                "id": "MCP-V2-AC6",
+                "statement": "The full warning-strict suite, static checks, build, plugin validators, traceability validation, and canonical Reality/reconciliation reproduction pass on the migrated dependency graph.",
+                "required_evidence": [
+                  "test:full-warning-strict",
+                  "validation:plugin-and-skill",
+                  "report:mcp-v2-self-dogfood"
+                ],
+                "mapping_review_status": "not_verified"
+              }
+            ]
+          },
+          "provenance": {
+            "total": 3,
+            "returned": 3,
+            "truncated": false,
+            "items": [
+              {
+                "source_type": "human_statement",
+                "reference": "chat:thread:019f903c-5824-7f62-adbc-55ca9168f094#2026-08-20",
+                "statement": "Persist the MCP v2 upgrade to the roadmap where appropriate and continue with the next milestone."
+              },
+              {
+                "source_type": "document",
+                "reference": ".aio-agentic-sdlc/recovery-roadmap.md#1.7",
+                "statement": "Migrate the MCP integration to SDK v2 while preserving stdio, the complete public contract, concurrency safety, schema enforcement, and legacy compatibility."
+              },
+              {
+                "source_type": "document",
+                "reference": ".aio-agentic-sdlc/changes/mcp-sdk-v2/prd.md",
+                "statement": "Approved product requirements for the official MCP Python SDK v2 migration."
+              }
+            ]
+          },
+          "assumptions": {
+            "total": 3,
+            "returned": 3,
+            "truncated": false,
+            "items": [
+              {
+                "statement": "The current public tool, resource, and prompt names and product behavior remain stable."
+              },
+              {
+                "statement": "The Codex plugin continues to launch the MCP server over stdio through UV."
+              },
+              {
+                "statement": "SDK v2 worker-thread execution must preserve the existing local-first transactional state guarantees."
+              }
+            ]
+          },
+          "open_ambiguities": {
+            "total": 0,
+            "returned": 0,
+            "truncated": false,
+            "items": []
+          },
+          "relationships": {
+            "total": 1,
+            "returned": 1,
+            "truncated": false,
+            "items": [
+              {
+                "direction": "incoming",
+                "relationship": "contains",
+                "other": "MCP Server",
+                "description": "The MCP Server contains the versioned official SDK integration."
+              }
+            ]
+          }
+        },
+        "implementation": {
+          "symbol": "_SanitizingMCPServer",
+          "kind": "class",
+          "signature": "class _SanitizingMCPServer(MCPServer)",
+          "location": "src/aio_agentic_sdlc/mcp_server.py:262",
+          "docstring": "Keep unexpected tool failures useful without exposing internal details.",
+          "bases": [
+            "MCPServer"
+          ],
+          "decorators": [],
+          "public_api": {
+            "total": 1,
+            "returned": 1,
+            "truncated": false,
+            "items": [
+              {
+                "name": "call_tool",
+                "signature": "async call_tool(self, name, arguments, context=None)",
+                "line": 265,
+                "docstring": null
+              }
+            ]
+          },
+          "related_tests": {
+            "total": 0,
+            "returned": 0,
+            "truncated": false,
+            "items": []
+          }
+        },
+        "assessment": {
+          "summary": "Structural evidence narrows the candidate, but human judgment is required to decide responsibility equivalence.",
+          "structurally_unique": true,
+          "behaviorally_verified": false,
+          "established": [
+            "The reviewer explicitly selected one current Reality GUID; caller-supplied source metadata was not trusted.",
+            "Exactly one current Python definition resolves to the candidate source at src/aio_agentic_sdlc/mcp_server.py:262."
+          ],
+          "not_established": [
+            "Whether the source symbol has the same responsibility as the Intention node.",
+            "Whether related tests exercise the acceptance criteria; references are not behavioral proof.",
+            "Acceptance criterion 1 is not behaviorally verified by this mapping review.",
+            "Acceptance criterion 2 is not behaviorally verified by this mapping review.",
+            "Acceptance criterion 3 is not behaviorally verified by this mapping review.",
+            "Acceptance criterion 4 is not behaviorally verified by this mapping review.",
+            "Acceptance criterion 5 is not behaviorally verified by this mapping review.",
+            "Acceptance criterion 6 is not behaviorally verified by this mapping review."
+          ]
+        }
+      },
+      "approval": {
+        "required": true,
+        "supported": true,
+        "blockers": []
+      },
+      "evidence_digest": "e8f0cc340f146fc08809192ed143f0c36b0dc10c345ef05a382e5382ce295094",
+      "display_limits": {
+        "max_string_chars": 256,
+        "max_nested_items": 20
+      }
+    },
+    "receipt_refresh": [
+      {
+        "schema_version": 3,
+        "operation": "receipt_refresh",
+        "selection_mode": "confirmed_marker",
+        "classification": "confirmed",
+        "intent": {
+          "id": "0fea8fea-9a23-404b-a16b-a9c9c3990e1b",
+          "type": "component",
+          "name": "Reality DAG Generator"
+        },
+        "candidates": [
+          {
+            "reality": {
+              "id": "0fea8fea-9a23-404b-a16b-a9c9c3990e1b",
+              "type": "component",
+              "name": "RealityDAGGenerator"
+            },
+            "source_location_count": 1,
+            "source": {
+              "path": "src/aio_agentic_sdlc/reality_dag_generator.py",
+              "symbol_kind": "class",
+              "symbol_name": "RealityDAGGenerator",
+              "definition_line": 42,
+              "marker_line": 41,
+              "source_sha256": "8a2dfd7f9d0f2ebb31dfb54141448c264989dfc3a39423dce7a8cd3e65c75a0c",
+              "raw_source_sha256": "8a2dfd7f9d0f2ebb31dfb54141448c264989dfc3a39423dce7a8cd3e65c75a0c",
+              "annotation_neutral_source_sha256": "9ed6dbbdcb45f593132102e887e897038c553d325b12cfa98cc9215f2c6de0ec",
+              "raw_sha256": "8a2dfd7f9d0f2ebb31dfb54141448c264989dfc3a39423dce7a8cd3e65c75a0c",
+              "annotation_neutral_sha256": "9ed6dbbdcb45f593132102e887e897038c553d325b12cfa98cc9215f2c6de0ec"
+            }
+          }
+        ],
+        "source": {
+          "path": "src/aio_agentic_sdlc/reality_dag_generator.py",
+          "symbol_kind": "class",
+          "symbol_name": "RealityDAGGenerator",
+          "definition_line": 42,
+          "marker_line": 41,
+          "source_sha256": "8a2dfd7f9d0f2ebb31dfb54141448c264989dfc3a39423dce7a8cd3e65c75a0c",
+          "raw_source_sha256": "8a2dfd7f9d0f2ebb31dfb54141448c264989dfc3a39423dce7a8cd3e65c75a0c",
+          "annotation_neutral_source_sha256": "9ed6dbbdcb45f593132102e887e897038c553d325b12cfa98cc9215f2c6de0ec",
+          "raw_sha256": "8a2dfd7f9d0f2ebb31dfb54141448c264989dfc3a39423dce7a8cd3e65c75a0c",
+          "annotation_neutral_sha256": "9ed6dbbdcb45f593132102e887e897038c553d325b12cfa98cc9215f2c6de0ec"
+        },
+        "prior_receipt": {
+          "sha256": "db9054efbca14f4938ab695d3035cde3886bd24a637aa1c1a87f8fc37b4930c6",
+          "data": {
+            "approved_at": "2026-08-13T19:29:14.286017-04:00",
+            "approved_by": "Felix",
+            "candidate_reality_id": "5f9d3dc7-cd7e-5402-86cd-356a4b6846fb",
+            "evidence_digest": "506a82e619bca8370b7af081f885edaa08bea033761e11a5b30924066e73b9f5",
+            "intent_id": "0fea8fea-9a23-404b-a16b-a9c9c3990e1b",
+            "rationale": "Approved the RealityDAGGenerator source identity; responsibility and public API match the reviewed Intention node.",
+            "schema_version": 1,
+            "source_path": "src/aio_agentic_sdlc/reality_dag_generator.py",
+            "source_sha256": "c688f5fe800d8178dae6bb861f71b8ac59e6015165e346bdecb647966371e242",
+            "symbol_kind": "class",
+            "symbol_name": "RealityDAGGenerator"
+          }
+        },
+        "evidence": [
+          {
+            "kind": "canonical_guid",
+            "value": "0fea8fea-9a23-404b-a16b-a9c9c3990e1b"
+          }
+        ],
+        "decision_brief": {
+          "decision_scope": "source_identity_linkage",
+          "default_decision": "defer",
+          "meaning": "Approval links one canonical Intent GUID to one exact source symbol. It does not approve the Intent IR or prove acceptance criteria.",
+          "intention": {
+            "title": "Reality DAG Generator",
+            "type": "component",
+            "domain": "core",
+            "responsibility": "Generates an accurate, real-time graph of the existing codebase",
+            "approval_state": "review_required",
+            "confidence": 0.75,
+            "acceptance_criteria": {
+              "total": 1,
+              "returned": 1,
+              "truncated": false,
+              "items": [
+                {
+                  "id": "LEGACY-0fea8fea-9a23-404b-a16b-a9c9c3990e1b-AC1",
+                  "statement": "Generates an accurate, real-time graph of the existing codebase",
+                  "required_evidence": [
+                    "reconciliation:intent:0fea8fea-9a23-404b-a16b-a9c9c3990e1b"
+                  ],
+                  "mapping_review_status": "not_verified"
+                }
+              ]
+            },
+            "provenance": {
+              "total": 3,
+              "returned": 3,
+              "truncated": false,
+              "items": [
+                {
+                  "source_type": "imported_spec",
+                  "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:0fea8fea-9a23-404b-a16b-a9c9c3990e1b",
+                  "statement": "Generates an accurate, real-time graph of the existing codebase"
+                },
+                {
+                  "source_type": "imported_spec",
+                  "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:fa35fa8a-b6b5-40ca-9080-b31421117e37:depends_on:0fea8fea-9a23-404b-a16b-a9c9c3990e1b",
+                  "statement": "Requires the current reality DAG to calculate differences"
+                },
+                {
+                  "source_type": "document",
+                  "reference": ".aio-agentic-sdlc/specs/reality-dag-generator.md:1",
+                  "statement": "# Reality DAG Generator Specification"
+                }
+              ]
+            },
+            "assumptions": {
+              "total": 2,
+              "returned": 2,
+              "truncated": false,
+              "items": [
+                {
+                  "statement": "The preserved node description is the complete locally available statement of legacy intent."
+                },
+                {
+                  "statement": "Existing graph relationships remain authoritative structural context."
+                }
+              ]
+            },
+            "open_ambiguities": {
+              "total": 1,
+              "returned": 1,
+              "truncated": false,
+              "items": [
+                {
+                  "question": "Does this mechanically compiled payload fully capture the original intent for Reality DAG Generator?"
+                }
+              ]
+            },
+            "relationships": {
+              "total": 5,
+              "returned": 5,
+              "truncated": false,
+              "items": [
+                {
+                  "direction": "incoming",
+                  "relationship": "contains",
+                  "other": "DAG Engine Container",
+                  "description": null
+                },
+                {
+                  "direction": "incoming",
+                  "relationship": "depends_on",
+                  "other": "Diffing Engine",
+                  "description": "Requires the current reality DAG to calculate differences"
+                },
+                {
+                  "direction": "outgoing",
+                  "relationship": "contains",
+                  "other": "AST Visitor",
+                  "description": null
+                },
+                {
+                  "direction": "outgoing",
+                  "relationship": "contains",
+                  "other": "Canonical GUID Extractor",
+                  "description": null
+                },
+                {
+                  "direction": "outgoing",
+                  "relationship": "contains",
+                  "other": "Parser Factory",
+                  "description": null
+                }
+              ]
+            }
+          },
+          "implementation": {
+            "symbol": "RealityDAGGenerator",
+            "kind": "class",
+            "signature": "class RealityDAGGenerator",
+            "location": "src/aio_agentic_sdlc/reality_dag_generator.py:42",
+            "docstring": "Generates a Reality DAG by statically analyzing source code.\nImplements a tree-sitter parser to be stack-agnostic.",
+            "bases": [],
+            "decorators": [],
+            "public_api": {
+              "total": 1,
+              "returned": 1,
+              "truncated": false,
+              "items": [
+                {
+                  "name": "generate",
+                  "signature": "generate(self) -> DAGManager",
+                  "line": 157,
+                  "docstring": null
+                }
+              ]
+            },
+            "related_tests": {
+              "total": 22,
+              "returned": 10,
+              "truncated": true,
+              "items": [
+                {
+                  "path": "tests/test_dag_store.py",
+                  "line": 96,
+                  "test": "test_reality_generation_rejects_leaf_swap_without_external_write",
+                  "match": "exact_symbol_reference",
+                  "source_sha256": "c23f799b213f8d1dc123410e96a1c854ca635bab34b0ef44dafc232424aca74c"
+                },
+                {
+                  "path": "tests/test_guid_extractor_adversarial.py",
+                  "line": 10,
+                  "test": "test_python_malformed_hex_uuid_crash",
+                  "match": "exact_symbol_reference",
+                  "source_sha256": "cd212331763ba2e6a74868eda1ebdf3ef24b1697f5e579143aec1a733b607118"
+                },
+                {
+                  "path": "tests/test_guid_extractor_adversarial.py",
+                  "line": 25,
+                  "test": "test_markdown_invalid_uuid_crash",
+                  "match": "exact_symbol_reference",
+                  "source_sha256": "cd212331763ba2e6a74868eda1ebdf3ef24b1697f5e579143aec1a733b607118"
+                },
+                {
+                  "path": "tests/test_guid_extractor_adversarial.py",
+                  "line": 46,
+                  "test": "test_markdown_integer_uuid_crash",
+                  "match": "exact_symbol_reference",
+                  "source_sha256": "cd212331763ba2e6a74868eda1ebdf3ef24b1697f5e579143aec1a733b607118"
+                },
+                {
+                  "path": "tests/test_mapping.py",
+                  "line": 274,
+                  "test": "test_mapping_approval_atomically_marks_and_confirms_exact_python_symbol",
+                  "match": "exact_symbol_reference",
+                  "source_sha256": "7325c90f4b286600f35c7f36e33238c9fd4334e304c977b6fd61ca4800af8c34"
+                },
+                {
+                  "path": "tests/test_markdown_parser_adversarial.py",
+                  "line": 7,
+                  "test": "test_markdown_parser_realistic_agent_file",
+                  "match": "exact_symbol_reference",
+                  "source_sha256": "333753ed5f4b18156fe10f45f39c414b18148d25160be9c5bc983fd7583f040d"
+                },
+                {
+                  "path": "tests/test_markdown_parser_encoding_adversarial.py",
+                  "line": 7,
+                  "test": "test_markdown_parser_invalid_encoding",
+                  "match": "exact_symbol_reference",
+                  "source_sha256": "51a50500faa6861f210fea72b159dc9d674aa119bb2abecffbebeffc118655f8"
+                },
+                {
+                  "path": "tests/test_mcp_v2_contract.py",
+                  "line": 340,
+                  "test": "test_v2_mapping_review_bounds_hostile_display_fields",
+                  "match": "exact_symbol_reference",
+                  "source_sha256": "86c933461f3df42941f1d705490493f8aeb34a87d3087c5f863c44bb7532f1f0"
+                },
+                {
+                  "path": "tests/test_mcp_v2_contract.py",
+                  "line": 741,
+                  "test": "test_v2_client_exercises_every_published_tool",
+                  "match": "exact_symbol_reference",
+                  "source_sha256": "86c933461f3df42941f1d705490493f8aeb34a87d3087c5f863c44bb7532f1f0"
+                },
+                {
+                  "path": "tests/test_reality_generator.py",
+                  "line": 13,
+                  "test": "test_reality_generator_basic",
+                  "match": "exact_symbol_reference",
+                  "source_sha256": "88b2e88a6400584c0b6ab6c05bda231ebdf4563700ca2b7e601e112dea0265f1"
+                }
+              ]
+            }
+          },
+          "assessment": {
+            "summary": "Structural evidence narrows the candidate, but human judgment is required to decide responsibility equivalence.",
+            "structurally_unique": true,
+            "behaviorally_verified": false,
+            "established": [
+              "Reconciliation classified this intent as confirmed.",
+              "Exactly one current Python definition resolves to the candidate source at src/aio_agentic_sdlc/reality_dag_generator.py:42.",
+              "22 test function(s) contain an exact reference to the symbol.",
+              "Exactly one complete adjacent mapping receipt matches the confirmed marker, path, kind, and symbol."
+            ],
+            "not_established": [
+              "Whether the source symbol has the same responsibility as the Intention node.",
+              "Whether related tests exercise the acceptance criteria; references are not behavioral proof.",
+              "Acceptance criterion 1 is not behaviorally verified by this mapping review.",
+              "Open Intent ambiguity: Does this mechanically compiled payload fully capture the original intent for Reality DAG Generator?",
+              "Receipt freshness does not prove behavior or acceptance criteria."
+            ]
+          }
+        },
+        "approval": {
+          "required": true,
+          "supported": true,
+          "blockers": []
+        },
+        "evidence_digest": "87063b8be5fd321aa8661dcffedbcdab8cc6ee06400a7a21cf769101d87961b3",
+        "display_limits": {
+          "max_string_chars": 256,
+          "max_nested_items": 20
+        }
+      },
+      {
+        "schema_version": 3,
+        "operation": "receipt_refresh",
+        "selection_mode": "confirmed_marker",
+        "classification": "confirmed",
+        "intent": {
+          "id": "685b1d12-3eed-48f6-9fa8-b8ec88a5587f",
+          "type": "component",
+          "name": "Traceability Validator"
+        },
+        "candidates": [
+          {
+            "reality": {
+              "id": "685b1d12-3eed-48f6-9fa8-b8ec88a5587f",
+              "type": "component",
+              "name": "TraceabilityValidator"
+            },
+            "source_location_count": 1,
+            "source": {
+              "path": "src/aio_agentic_sdlc/core.py",
+              "symbol_kind": "class",
+              "symbol_name": "TraceabilityValidator",
+              "definition_line": 501,
+              "marker_line": 500,
+              "source_sha256": "d02522aeffd80911cc49151cd851cd5eef061e3fae1bab15a995672725f63284",
+              "raw_source_sha256": "d02522aeffd80911cc49151cd851cd5eef061e3fae1bab15a995672725f63284",
+              "annotation_neutral_source_sha256": "815994a1ffd8e4d25a6b778096d76afd15a63ba3f57cea214bde1f7821e4ef59",
+              "raw_sha256": "d02522aeffd80911cc49151cd851cd5eef061e3fae1bab15a995672725f63284",
+              "annotation_neutral_sha256": "815994a1ffd8e4d25a6b778096d76afd15a63ba3f57cea214bde1f7821e4ef59"
+            }
+          }
+        ],
+        "source": {
+          "path": "src/aio_agentic_sdlc/core.py",
+          "symbol_kind": "class",
+          "symbol_name": "TraceabilityValidator",
+          "definition_line": 501,
+          "marker_line": 500,
+          "source_sha256": "d02522aeffd80911cc49151cd851cd5eef061e3fae1bab15a995672725f63284",
+          "raw_source_sha256": "d02522aeffd80911cc49151cd851cd5eef061e3fae1bab15a995672725f63284",
+          "annotation_neutral_source_sha256": "815994a1ffd8e4d25a6b778096d76afd15a63ba3f57cea214bde1f7821e4ef59",
+          "raw_sha256": "d02522aeffd80911cc49151cd851cd5eef061e3fae1bab15a995672725f63284",
+          "annotation_neutral_sha256": "815994a1ffd8e4d25a6b778096d76afd15a63ba3f57cea214bde1f7821e4ef59"
+        },
+        "prior_receipt": {
+          "sha256": "98141c7e83e1fd3c82ea6b0002a67d349a430af3b81b43033568287a3d00e639",
+          "data": {
+            "approved_at": "2026-08-13T19:29:14.286017-04:00",
+            "approved_by": "Felix",
+            "candidate_reality_id": "4332ee05-cded-51dc-b884-7249af9d97cd",
+            "evidence_digest": "785fb78003c07acecef12413f387caffdf6eb17b2676b55ee734a51006195c08",
+            "intent_id": "685b1d12-3eed-48f6-9fa8-b8ec88a5587f",
+            "rationale": "Approved the TraceabilityValidator source identity; responsibility and validate API match, without claiming behavioral verification.",
+            "schema_version": 1,
+            "source_path": "src/aio_agentic_sdlc/core.py",
+            "source_sha256": "89b340f7032a84e0c9e7f032814ee15441ed06d4e4409e8d3d790ed6585faa2d",
+            "symbol_kind": "class",
+            "symbol_name": "TraceabilityValidator"
+          }
+        },
+        "evidence": [
+          {
+            "kind": "canonical_guid",
+            "value": "685b1d12-3eed-48f6-9fa8-b8ec88a5587f"
+          }
+        ],
+        "decision_brief": {
+          "decision_scope": "source_identity_linkage",
+          "default_decision": "defer",
+          "meaning": "Approval links one canonical Intent GUID to one exact source symbol. It does not approve the Intent IR or prove acceptance criteria.",
+          "intention": {
+            "title": "Traceability Validator",
+            "type": "component",
+            "domain": "qa",
+            "responsibility": "Automatically validates that Node IDs (GUID/Integer) consistently align across intention DAG, reality DAG, specs, and codebase.",
+            "approval_state": "review_required",
+            "confidence": 0.65,
+            "acceptance_criteria": {
+              "total": 1,
+              "returned": 1,
+              "truncated": false,
+              "items": [
+                {
+                  "id": "LEGACY-685b1d12-3eed-48f6-9fa8-b8ec88a5587f-AC1",
+                  "statement": "Automatically validates that Node IDs (GUID/Integer) consistently align across intention DAG, reality DAG, specs, and codebase.",
+                  "required_evidence": [
+                    "reconciliation:intent:685b1d12-3eed-48f6-9fa8-b8ec88a5587f"
+                  ],
+                  "mapping_review_status": "not_verified"
+                }
+              ]
+            },
+            "provenance": {
+              "total": 3,
+              "returned": 3,
+              "truncated": false,
+              "items": [
+                {
+                  "source_type": "imported_spec",
+                  "reference": ".aio-agentic-sdlc/intention-dag.yaml#node:685b1d12-3eed-48f6-9fa8-b8ec88a5587f",
+                  "statement": "Automatically validates that Node IDs (GUID/Integer) consistently align across intention DAG, reality DAG, specs, and codebase."
+                },
+                {
+                  "source_type": "imported_spec",
+                  "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:cb432b58-db06-4d49-a6ab-c11c9e86bcc2:calls:685b1d12-3eed-48f6-9fa8-b8ec88a5587f",
+                  "statement": "Validates Node ID constraints during DAG parsing and manipulation."
+                },
+                {
+                  "source_type": "imported_spec",
+                  "reference": ".aio-agentic-sdlc/intention-dag.yaml#edge:f4d2f082-e822-4aa6-b74d-38b14bd84c87:calls:685b1d12-3eed-48f6-9fa8-b8ec88a5587f",
+                  "statement": "Invokes traceability validation during QA to ensure Node ID alignment."
+                }
+              ]
+            },
+            "assumptions": {
+              "total": 2,
+              "returned": 2,
+              "truncated": false,
+              "items": [
+                {
+                  "statement": "The preserved node description is the complete locally available statement of legacy intent."
+                },
+                {
+                  "statement": "Existing graph relationships remain authoritative structural context."
+                }
+              ]
+            },
+            "open_ambiguities": {
+              "total": 1,
+              "returned": 1,
+              "truncated": false,
+              "items": [
+                {
+                  "question": "Does this mechanically compiled payload fully capture the original intent for Traceability Validator?"
+                }
+              ]
+            },
+            "relationships": {
+              "total": 3,
+              "returned": 3,
+              "truncated": false,
+              "items": [
+                {
+                  "direction": "incoming",
+                  "relationship": "calls",
+                  "other": "DAG Engine Container",
+                  "description": "Validates Node ID constraints during DAG parsing and manipulation."
+                },
+                {
+                  "direction": "incoming",
+                  "relationship": "calls",
+                  "other": "QA Swarm Orchestrator",
+                  "description": "Invokes traceability validation during QA to ensure Node ID alignment."
+                },
+                {
+                  "direction": "incoming",
+                  "relationship": "contains",
+                  "other": "AIO Agentic SDLC System",
+                  "description": null
+                }
+              ]
+            }
+          },
+          "implementation": {
+            "symbol": "TraceabilityValidator",
+            "kind": "class",
+            "signature": "class TraceabilityValidator",
+            "location": "src/aio_agentic_sdlc/core.py:501",
+            "docstring": null,
+            "bases": [],
+            "decorators": [],
+            "public_api": {
+              "total": 1,
+              "returned": 1,
+              "truncated": false,
+              "items": [
+                {
+                  "name": "validate",
+                  "signature": "validate(self)",
+                  "line": 514,
+                  "docstring": null
+                }
+              ]
+            },
+            "related_tests": {
+              "total": 0,
+              "returned": 0,
+              "truncated": false,
+              "items": []
+            }
+          },
+          "assessment": {
+            "summary": "Structural evidence narrows the candidate, but human judgment is required to decide responsibility equivalence.",
+            "structurally_unique": true,
+            "behaviorally_verified": false,
+            "established": [
+              "Reconciliation classified this intent as confirmed.",
+              "Exactly one current Python definition resolves to the candidate source at src/aio_agentic_sdlc/core.py:501.",
+              "Exactly one complete adjacent mapping receipt matches the confirmed marker, path, kind, and symbol."
+            ],
+            "not_established": [
+              "Whether the source symbol has the same responsibility as the Intention node.",
+              "Whether related tests exercise the acceptance criteria; references are not behavioral proof.",
+              "Acceptance criterion 1 is not behaviorally verified by this mapping review.",
+              "Open Intent ambiguity: Does this mechanically compiled payload fully capture the original intent for Traceability Validator?",
+              "Receipt freshness does not prove behavior or acceptance criteria."
+            ]
+          }
+        },
+        "approval": {
+          "required": true,
+          "supported": true,
+          "blockers": []
+        },
+        "evidence_digest": "b4abf4522e3c6ec90c755dbcf4b4034bb7149d5591b525a8815cb69f6c6514d3",
+        "display_limits": {
+          "max_string_chars": 256,
+          "max_nested_items": 20
+        }
+      }
+    ]
+  },
+  "maintenance_intent_traceability": {
+    "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+    "fresh_reconciliation": {
+      "subject_kind": "intent",
+      "classification": "unmapped",
+      "intent": {
+        "id": "15019926-c6be-5c98-b558-954c7657e5c6",
+        "type": "component",
+        "name": "Explicit Source Identity Maintenance"
+      },
+      "reality_candidates": [],
+      "candidate_limit": {
+        "max_candidates": 10,
+        "total_candidates": 0,
+        "returned_candidates": 0,
+        "truncated": false
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    "cartographer_classification": "framework_tooling_drift",
+    "reason": "The accepted architecture intentionally extends the already-mapped MappingEngine and supporting adapters instead of creating a second component. Fresh Reality therefore has no unique unconfirmed class or function for the distinct maintenance Intent; this is source-traceability representation drift, not missing implementation.",
+    "evidence": [
+      ".aio-agentic-sdlc/changes/source-identity-maintenance/sdd.md specifies extension of MappingEngine owned by parent capability 6317643a-a8fc-5026-b373-9330004bc90d and forbids a second mapping store or ontology.",
+      "src/aio_agentic_sdlc/mapping.py implements explicit candidate review plus confirmed receipt review and refresh within MappingEngine.",
+      "src/aio_agentic_sdlc/dag_cli.py and src/aio_agentic_sdlc/mcp_server.py expose the accepted CLI and MCP operations."
+    ],
+    "unresolved": "A separate architecture decision is required before assigning one unique source identity to this distinct Intent; no marker or receipt mutation is authorized here."
+  },
+  "approval_boundary": {
+    "identity_mutations_performed": false,
+    "candidate_and_receipt_approvals_required_separately": true,
+    "mapping_evidence_is_behavioral_proof": false
+  }
+}

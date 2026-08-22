@@ -9,7 +9,8 @@ import json
 import os
 import tempfile
 import uuid
-from typing import Any
+from collections.abc import Callable
+from typing import Any, TypeVar
 
 from filelock import FileLock
 
@@ -26,6 +27,7 @@ from .workspace import (
 LOCK_FILE = STATE_LOCK_FILE
 CURRENT_BACKLOG_SCHEMA_VERSION = 1
 LOCK_TIMEOUT_SECONDS = 30
+MutationResultT = TypeVar("MutationResultT")
 
 
 class BacklogStateError(ValueError):
@@ -122,7 +124,11 @@ def _read_audit_events(project_path: str) -> list[dict[str, Any]]:
 
 def _state_lock(project_path: str) -> FileLock:
     lock_path = workspace_file_path(project_path, LOCK_FILE)
-    return FileLock(lock_path, timeout=LOCK_TIMEOUT_SECONDS)
+    return FileLock(
+        lock_path,
+        timeout=LOCK_TIMEOUT_SECONDS,
+        preserve_lock_file=True,
+    )
 
 
 def _recover_incomplete_transactions(project_path: str) -> list[dict[str, str]]:
@@ -259,6 +265,35 @@ def load_backlog(project_path: str = ".") -> dict[str, Any]:
                 return migrate_backlog_data({})
             with open(backlog_path, "r", encoding="utf-8") as handle:
                 return migrate_backlog_data(json.load(handle))
+
+
+def mutate_backlog(
+    project_path: str,
+    *,
+    operation: str,
+    mutator: Callable[[dict[str, Any]], tuple[MutationResultT, bool]],
+) -> MutationResultT:
+    """Apply one read-modify-write transaction while holding both state locks.
+
+    The callback returns ``(result, changed)``. A false ``changed`` value preserves
+    read-only/no-op behavior without incrementing the backlog revision.
+    """
+
+    with workspace_migration_lock(project_path):
+        require_current_workspace(project_path)
+        with _state_lock(project_path):
+            _recover_incomplete_transactions(project_path)
+            backlog_path = workspace_file_path(project_path, BACKLOG_FILE)
+            if os.path.exists(backlog_path):
+                with open(backlog_path, "r", encoding="utf-8") as handle:
+                    data = migrate_backlog_data(json.load(handle))
+            else:
+                data = migrate_backlog_data({})
+
+            result, changed = mutator(data)
+            if changed:
+                _save_backlog_unlocked(data, project_path, operation=operation)
+            return result
 
 
 def save_backlog(

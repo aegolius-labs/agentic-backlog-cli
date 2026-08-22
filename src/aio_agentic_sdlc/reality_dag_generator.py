@@ -14,8 +14,10 @@ IGNORED_DIRECTORIES = {
     ".mypy_cache",
     ".nox",
     ".pytest_cache",
+    ".qa-sandbox",
     ".ruff_cache",
     ".tox",
+    ".uv-cache",
     ".venv",
     "__pycache__",
     "build",
@@ -25,12 +27,17 @@ IGNORED_DIRECTORIES = {
 }
 
 
-def _is_ignored_directory(directory: str) -> bool:
+def is_ignored_directory(directory: str) -> bool:
+    """Return whether one directory name is outside deterministic Reality evidence."""
+
     normalized = directory.casefold()
     return normalized in IGNORED_DIRECTORIES or normalized.endswith(".egg-info")
 
 
-# aio-sdlc-mapping-approval: {"approved_at":"2026-08-13T19:29:14.286017-04:00","approved_by":"Felix","candidate_reality_id":"5f9d3dc7-cd7e-5402-86cd-356a4b6846fb","evidence_digest":"506a82e619bca8370b7af081f885edaa08bea033761e11a5b30924066e73b9f5","intent_id":"0fea8fea-9a23-404b-a16b-a9c9c3990e1b","rationale":"Approved the RealityDAGGenerator source identity; responsibility and public API match the reviewed Intention node.","schema_version":1,"source_path":"src/aio_agentic_sdlc/reality_dag_generator.py","source_sha256":"c688f5fe800d8178dae6bb861f71b8ac59e6015165e346bdecb647966371e242","symbol_kind":"class","symbol_name":"RealityDAGGenerator"}
+_is_ignored_directory = is_ignored_directory
+
+
+# aio-sdlc-mapping-approval: {"candidate_reality_id":"5f9d3dc7-cd7e-5402-86cd-356a4b6846fb","identity_approval":{"approved_at":"2026-08-13T19:29:14.286017-04:00","approved_by":"Felix","candidate_reality_id":"5f9d3dc7-cd7e-5402-86cd-356a4b6846fb","evidence_digest":"506a82e619bca8370b7af081f885edaa08bea033761e11a5b30924066e73b9f5","intent_id":"0fea8fea-9a23-404b-a16b-a9c9c3990e1b","rationale":"Approved the RealityDAGGenerator source identity; responsibility and public API match the reviewed Intention node.","schema_version":1,"source_path":"src/aio_agentic_sdlc/reality_dag_generator.py","source_sha256":"c688f5fe800d8178dae6bb861f71b8ac59e6015165e346bdecb647966371e242","symbol_kind":"class","symbol_name":"RealityDAGGenerator"},"intent_id":"0fea8fea-9a23-404b-a16b-a9c9c3990e1b","maintenance_approval":{"approved_at":"2026-08-21T23:03:05.512658-04:00","approved_by":"Felix","evidence_digest":"87063b8be5fd321aa8661dcffedbcdab8cc6ee06400a7a21cf769101d87961b3","rationale":"Felix approved refreshing the existing RealityDAGGenerator mapping receipt to bind current source after validated Reality ignore-boundary changes; identity remains unchanged and behavior remains separately evidenced.","supersedes_receipt_sha256":"db9054efbca14f4938ab695d3035cde3886bd24a637aa1c1a87f8fc37b4930c6"},"schema_version":2,"source_path":"src/aio_agentic_sdlc/reality_dag_generator.py","source_sha256":"9ed6dbbdcb45f593132102e887e897038c553d325b12cfa98cc9215f2c6de0ec","symbol_kind":"class","symbol_name":"RealityDAGGenerator"}
 # aio-sdlc-node: 0fea8fea-9a23-404b-a16b-a9c9c3990e1b
 class RealityDAGGenerator:
     """
@@ -150,7 +157,7 @@ class RealityDAGGenerator:
     def generate(self) -> DAGManager:
         for root, dirs, files in os.walk(self.root_dir):
             dirs[:] = sorted(
-                directory for directory in dirs if not _is_ignored_directory(directory)
+                directory for directory in dirs if not is_ignored_directory(directory)
             )
 
             for file in sorted(files):

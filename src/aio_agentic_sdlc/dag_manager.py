@@ -7,6 +7,14 @@ import yaml
 from aio_agentic_sdlc.dag_models import Edge, EdgeType, Metadata, Node
 
 
+class DAGValidationError(ValueError):
+    """Raised for an expected invalid DAG structure or operation."""
+
+
+class DAGNotFoundError(FileNotFoundError):
+    """Raised when a requested DAG artifact does not exist."""
+
+
 class DAGManager:
     def __init__(self, metadata: Metadata, nodes: List[Node], edges: List[Edge]):
         self.metadata = metadata
@@ -14,15 +22,18 @@ class DAGManager:
         seen_ids: set[str] = set()
         for node in raw_nodes:
             if node.id in seen_ids:
-                raise ValueError(f"Duplicate node ID {node.id}.")
+                raise DAGValidationError(f"Duplicate node ID {node.id}.")
             seen_ids.add(node.id)
         self.nodes: Dict[str, Node] = {n.id: n for n in raw_nodes}
         self.edges: List[Edge] = edges
 
     @classmethod
     def load(cls, filepath: str) -> "DAGManager":
-        with open(filepath, "r", encoding="utf-8") as f:
-            data = yaml.safe_load(f)
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                data = yaml.safe_load(f)
+        except FileNotFoundError as error:
+            raise DAGNotFoundError(f"DAG file does not exist: {filepath}") from error
 
         metadata = Metadata(**data.get("metadata", {}))
         nodes = [Node(**n) for n in data.get("nodes", [])]
@@ -61,9 +72,13 @@ class DAGManager:
         # Reference Integrity
         for edge in self.edges:
             if edge.source not in self.nodes:
-                raise ValueError(f"Edge source node {edge.source} does not exist.")
+                raise DAGValidationError(
+                    f"Edge source node {edge.source} does not exist."
+                )
             if edge.target not in self.nodes:
-                raise ValueError(f"Edge target node {edge.target} does not exist.")
+                raise DAGValidationError(
+                    f"Edge target node {edge.target} does not exist."
+                )
 
         # Cycle detection for specific edge types
         graph = {n_id: [] for n_id in self.nodes}
@@ -91,7 +106,9 @@ class DAGManager:
         for node_id in self.nodes:
             if node_id not in visited:
                 if dfs(node_id):
-                    raise ValueError(f"Cycle detected involving node {node_id}.")
+                    raise DAGValidationError(
+                        f"Cycle detected involving node {node_id}."
+                    )
 
     def validate_intent_ir(self, require_all: bool = True):
         """Validate Intent IR coverage in addition to the base DAG constraints."""
@@ -101,7 +118,7 @@ class DAGManager:
                 node_id for node_id, node in self.nodes.items() if node.intent is None
             ]
             if missing:
-                raise ValueError(
+                raise DAGValidationError(
                     "Intent IR is missing for node(s): " + ", ".join(sorted(missing))
                 )
 
@@ -170,12 +187,12 @@ class DAGManager:
 
     def add_node(self, node: Node):
         if node.id in self.nodes:
-            raise ValueError(f"Node {node.id} already exists.")
+            raise DAGValidationError(f"Node {node.id} already exists.")
         self.nodes[node.id] = node
 
     def update_node(self, node_id: str, **kwargs):
         if node_id not in self.nodes:
-            raise ValueError(f"Node {node_id} does not exist.")
+            raise DAGValidationError(f"Node {node_id} does not exist.")
 
         node = self.nodes[node_id]
         update_data = {k: v for k, v in kwargs.items() if v is not None}
@@ -184,7 +201,7 @@ class DAGManager:
 
     def remove_node(self, node_id: str):
         if node_id not in self.nodes:
-            raise ValueError(f"Node {node_id} does not exist.")
+            raise DAGValidationError(f"Node {node_id} does not exist.")
 
         del self.nodes[node_id]
 
@@ -195,7 +212,7 @@ class DAGManager:
 
     def get_node(self, node_id: str) -> Node:
         if node_id not in self.nodes:
-            raise ValueError(f"Node {node_id} does not exist.")
+            raise DAGValidationError(f"Node {node_id} does not exist.")
         return self.nodes[node_id]
 
     def find_nodes(self, **filters) -> List[Node]:
@@ -214,15 +231,15 @@ class DAGManager:
 
     def add_edge(self, edge: Edge):
         if edge.source not in self.nodes:
-            raise ValueError(f"Source node {edge.source} does not exist.")
+            raise DAGValidationError(f"Source node {edge.source} does not exist.")
         if edge.target not in self.nodes:
-            raise ValueError(f"Target node {edge.target} does not exist.")
+            raise DAGValidationError(f"Target node {edge.target} does not exist.")
 
         self.edges.append(edge)
 
         try:
             self.validate()
-        except ValueError as e:
+        except DAGValidationError as e:
             # Revert if adding creates an invalid DAG
             self.edges.pop()
             raise e
@@ -235,7 +252,9 @@ class DAGManager:
             if not (e.source == source and e.target == target and e.type == edge_type)
         ]
         if len(self.edges) == initial_len:
-            raise ValueError(f"Edge {source} -> {target} ({edge_type}) does not exist.")
+            raise DAGValidationError(
+                f"Edge {source} -> {target} ({edge_type}) does not exist."
+            )
 
     def get_edges(
         self, source: str = None, target: str = None, edge_type: EdgeType = None

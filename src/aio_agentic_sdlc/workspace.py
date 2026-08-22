@@ -77,7 +77,11 @@ def _validated_workspace_root(project_path: str | Path = ".") -> Path:
                 "Canonical workspace must be a real directory, not a symlink or file."
             )
     else:
-        root.mkdir(parents=True)
+        root.mkdir(parents=True, exist_ok=True)
+        if root.is_symlink() or not root.is_dir():
+            raise WorkspaceMigrationError(
+                "Canonical workspace must be a real directory, not a symlink or file."
+            )
     return root
 
 
@@ -93,7 +97,11 @@ def ensure_workspace(project_path: str | Path = ".") -> Path:
                     f"Framework workspace path must be a real directory: {relative}."
                 )
         else:
-            directory.mkdir(parents=True)
+            directory.mkdir(parents=True, exist_ok=True)
+            if directory.is_symlink() or not directory.is_dir():
+                raise WorkspaceMigrationError(
+                    f"Framework workspace path must be a real directory: {relative}."
+                )
     return root
 
 
@@ -124,7 +132,11 @@ def workspace_file_path(
                     f"Workspace parent must be a real directory: {current}."
                 )
         elif create_parent:
-            current.mkdir()
+            current.mkdir(exist_ok=True)
+            if current.is_symlink() or not current.is_dir():
+                raise WorkspaceMigrationError(
+                    f"Workspace parent must be a real directory: {current}."
+                )
         else:
             break
 
@@ -261,7 +273,7 @@ def workspace_migration_lock(project_path: str | Path = ".") -> FileLock:
     """Return the cross-process lock that gates layout checks and migration."""
 
     lock_path = workspace_file_path(project_path, WORKSPACE_MIGRATION_LOCK_FILE)
-    return FileLock(lock_path, timeout=30)
+    return FileLock(lock_path, timeout=30, preserve_lock_file=True)
 
 
 def require_current_workspace(project_path: str | Path = ".") -> None:
@@ -303,13 +315,25 @@ def migrate_legacy_workspace(project_path: str | Path = ".") -> dict[str, Any]:
 
         with ExitStack() as locks:
             if legacy_state_dir.is_dir():
-                locks.enter_context(FileLock(bridge_paths[0], timeout=30))
-                locks.enter_context(FileLock(bridge_paths[1], timeout=30))
+                locks.enter_context(
+                    FileLock(bridge_paths[0], timeout=30, preserve_lock_file=True)
+                )
+                locks.enter_context(
+                    FileLock(bridge_paths[1], timeout=30, preserve_lock_file=True)
+                )
             locks.enter_context(
-                FileLock(workspace_file_path(root, STATE_LOCK_FILE), timeout=30)
+                FileLock(
+                    workspace_file_path(root, STATE_LOCK_FILE),
+                    timeout=30,
+                    preserve_lock_file=True,
+                )
             )
             locks.enter_context(
-                FileLock(workspace_file_path(root, MAPPING_LOCK_FILE), timeout=30)
+                FileLock(
+                    workspace_file_path(root, MAPPING_LOCK_FILE),
+                    timeout=30,
+                    preserve_lock_file=True,
+                )
             )
             migrated = _migrate_legacy_workspace_locked(root)
 
@@ -343,7 +367,11 @@ def migrate_legacy_workspace(project_path: str | Path = ".") -> dict[str, Any]:
             "remaining_legacy_paths": remaining_legacy,
         }
         if changed:
-            with FileLock(workspace_file_path(root, STATE_LOCK_FILE), timeout=30):
+            with FileLock(
+                workspace_file_path(root, STATE_LOCK_FILE),
+                timeout=30,
+                preserve_lock_file=True,
+            ):
                 _append_workspace_migration_audit(root, result)
         return result
 

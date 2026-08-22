@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "plan_digest": "b1aa98d4c6af005e9a8fb7ab58dc846b181756331cdfd2e8f5291f354b6f6c62",
+  "decisions": [
+    {
+      "subject_key": "intent:86367041-79ce-5415-b107-ef60cf721bf3",
+      "classification": "missing_implementation",
+      "rationale": "The approved MCP SDK v2 capability is not implemented: the direct dependency and frozen lock remain on MCP v1, the server still uses FastMCP, and the required v2 client modes and evidence tests are absent. Repository source directly establishes the gap, so this is product implementation drift rather than framework-tooling drift.",
+      "evidence": [
+        "pyproject.toml:22 declares mcp>=1.28.0,<2, explicitly excluding every required MCP 2.x release.",
+        "uv.lock:847-848 resolves mcp 1.28.1 rather than the approved reviewed MCP 2.x line.",
+        "src/aio_agentic_sdlc/mcp_server.py:5,36 imports and instantiates FastMCP instead of the approved MCPServer v2 integration.",
+        "tests/: repository search finds no mcp.client.Client, mode=\"auto\", or mode=\"legacy\" coverage required by MCP-V2-AC3.",
+        "plugins/aio-agentic-sdlc/.mcp.json:4,8 preserves the uvx stdio aio-agentic-sdlc-mcp launch contract whose implementation must be migrated."
+      ],
+      "decided_by": "sdlc_cartographer",
+      "decided_at": "2026-08-20T16:56:25.715074-04:00"
+    }
+  ]
+}

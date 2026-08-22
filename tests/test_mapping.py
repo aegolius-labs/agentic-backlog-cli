@@ -120,7 +120,9 @@ def test_mapping_review_binds_fresh_candidate_to_exact_source_without_mutation(
 
     review = engine.review(INTENT_ID)
 
-    assert review["schema_version"] == 2
+    assert review["schema_version"] == 3
+    assert review["operation"] == "candidate_mapping"
+    assert review["selection_mode"] == "automatic_name_match"
     assert review["classification"] == "candidate"
     assert review["intent"]["id"] == INTENT_ID
     assert len(review["candidates"]) == 1
@@ -133,6 +135,8 @@ def test_mapping_review_binds_fresh_candidate_to_exact_source_without_mutation(
         "definition_line": 1,
         "marker_line": 1,
         "source_sha256": hashlib.sha256(source).hexdigest(),
+        "raw_source_sha256": hashlib.sha256(source).hexdigest(),
+        "annotation_neutral_source_sha256": hashlib.sha256(source).hexdigest(),
     }
     assert review["approval"] == {
         "required": True,
@@ -489,7 +493,7 @@ def test_mapping_approval_rejects_hidden_duplicate_canonical_marker(tmp_path):
         {
             "src/archiver.py": "class PRDArchiver:\n    pass\n",
             "src/hidden.py": (
-                "def unrelated():\n" f"    # aio-sdlc-node: {INTENT_ID}\n" "    pass\n"
+                f"def unrelated():\n    # aio-sdlc-node: {INTENT_ID}\n    pass\n"
             ),
         },
     )
@@ -513,10 +517,7 @@ def test_mapping_review_blocks_one_candidate_with_multiple_source_definitions(tm
         tmp_path,
         {
             "src/archiver.py": (
-                "class PRDArchiver:\n"
-                "    pass\n\n"
-                "class PRDArchiver:\n"
-                "    pass\n"
+                "class PRDArchiver:\n    pass\n\nclass PRDArchiver:\n    pass\n"
             )
         },
     )

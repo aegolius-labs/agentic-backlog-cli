@@ -28,6 +28,7 @@ from aio_agentic_sdlc.mapping import (
     MappingApproval,
     MappingEngine,
     render_mapping_review,
+    render_receipt_refresh_review,
 )
 from aio_agentic_sdlc.reality_dag_generator import RealityDAGGenerator
 from aio_agentic_sdlc.reconciliation import (
@@ -380,6 +381,10 @@ def mapping():
 )
 @click.option("--intent-id", required=True, help="Canonical Intention node GUID.")
 @click.option(
+    "--candidate-reality-id",
+    help="Explicit current observed Reality GUID; omit for automatic name matching.",
+)
+@click.option(
     "--format",
     "output_format",
     type=click.Choice(["human", "json"], case_sensitive=False),
@@ -387,12 +392,15 @@ def mapping():
     show_default=True,
     help="Render a decision brief for people or the complete machine report.",
 )
-def mapping_review(project_path, intent_id, output_format):
+def mapping_review(project_path, intent_id, candidate_reality_id, output_format):
     """Render fresh source-bound evidence for one mapping decision."""
 
     try:
         engine = MappingEngine(project_path, Path(project_path) / INTENTION_DAG_FILE)
-        report = engine.review(intent_id)
+        report = engine.review(
+            intent_id,
+            candidate_reality_id=candidate_reality_id,
+        )
         if output_format == "json":
             click.echo(json.dumps(report, indent=2))
         else:
@@ -420,6 +428,16 @@ def mapping_review(project_path, intent_id, output_format):
     required=True,
     help="Evidence digest from the exact mapping review.",
 )
+@click.option(
+    "--selection-mode",
+    type=click.Choice(
+        ["automatic_name_match", "explicit_observed_guid"],
+        case_sensitive=True,
+    ),
+    default="automatic_name_match",
+    show_default=True,
+    help="Candidate selection mode used by the exact mapping review.",
+)
 @click.option("--approved-by", required=True, help="Identity of the approver.")
 @click.option(
     "--approved-at",
@@ -432,6 +450,7 @@ def mapping_approve(
     intent_id,
     candidate_reality_id,
     evidence_digest,
+    selection_mode,
     approved_by,
     approved_at,
     rationale,
@@ -452,10 +471,101 @@ def mapping_approve(
             candidate_reality_id,
             evidence_digest,
             approval,
+            selection_mode=selection_mode,
         )
         click.echo(json.dumps(result, indent=2))
     except Exception as e:
         click.secho(f"Error approving mapping: {str(e)}", err=True, fg="red")
+        sys.exit(1)
+
+
+@mapping.group("receipt")
+def mapping_receipt():
+    """Review and refresh confirmed source mapping receipts."""
+
+
+@mapping_receipt.command("review")
+@click.option(
+    "--project-path",
+    required=True,
+    type=click.Path(exists=True, file_okay=False),
+    help="Absolute path to the project directory.",
+)
+@click.option("--intent-id", required=True, help="Confirmed Intention node GUID.")
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["human", "json"], case_sensitive=False),
+    default="human",
+    show_default=True,
+    help="Render a decision brief for people or the complete machine report.",
+)
+def mapping_receipt_review(project_path, intent_id, output_format):
+    """Render fresh maintenance evidence for one confirmed source receipt."""
+
+    try:
+        engine = MappingEngine(project_path, Path(project_path) / INTENTION_DAG_FILE)
+        report = engine.review_receipt_refresh(intent_id)
+        if output_format == "json":
+            click.echo(json.dumps(report, indent=2))
+        else:
+            click.echo(render_receipt_refresh_review(report))
+    except Exception as error:
+        click.secho(
+            f"Error reviewing mapping receipt: {str(error)}",
+            err=True,
+            fg="red",
+        )
+        sys.exit(1)
+
+
+@mapping_receipt.command("refresh")
+@click.option(
+    "--project-path",
+    required=True,
+    type=click.Path(exists=True, file_okay=False),
+    help="Absolute path to the project directory.",
+)
+@click.option("--intent-id", required=True, help="Confirmed Intention node GUID.")
+@click.option(
+    "--evidence-digest",
+    required=True,
+    help="Evidence digest from the exact receipt review.",
+)
+@click.option("--approved-by", required=True, help="Identity of the approver.")
+@click.option(
+    "--approved-at",
+    required=True,
+    help="Timezone-aware ISO-8601 approval timestamp.",
+)
+@click.option("--rationale", required=True, help="Reason for refreshing this receipt.")
+def mapping_receipt_refresh(
+    project_path,
+    intent_id,
+    evidence_digest,
+    approved_by,
+    approved_at,
+    rationale,
+):
+    """Refresh exactly one confirmed receipt from approved fresh evidence."""
+
+    try:
+        engine = MappingEngine(project_path, Path(project_path) / INTENTION_DAG_FILE)
+        approval = MappingApproval.model_validate(
+            {
+                "approved_by": approved_by,
+                "approved_at": approved_at,
+                "rationale": rationale,
+            }
+        )
+        result = engine.refresh_receipt(intent_id, evidence_digest, approval)
+        click.echo(json.dumps(result, indent=2))
+    except Exception as error:
+        click.secho(
+            f"Error refreshing mapping receipt: {str(error)}",
+            err=True,
+            fg="red",
+        )
         sys.exit(1)
 
 

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "plan_digest": "3d089b0fac13196a7be084dec40360ee7713bd054fe5c9544af43d7fa71c13c5",
+  "decisions": [
+    {
+      "subject_key": "intent:15019926-c6be-5c98-b558-954c7657e5c6",
+      "classification": "missing_implementation",
+      "rationale": "The approved Explicit Source Identity Maintenance capability is not implemented. Fresh Reality evidence classifies the Intent as unmapped, while the current MappingEngine can review only automatic normalized-name candidates and rejects both differently named observations and already confirmed mappings. Its approval path re-runs that same restricted review, and the CLI and MCP adapters expose no explicit observed-candidate or receipt-refresh operation. This is an actionable framework product implementation gap, not a false reconciliation observation or obsolete intent.",
+      "evidence": [
+        ".qa-sandbox/source-identity-maintenance-pretriage/reconciliation.json records approved Intent 15019926-c6be-5c98-b558-954c7657e5c6 as unmapped with zero Reality candidates in the fresh plan 3d089b0fac13196a7be084dec40360ee7713bd054fe5c9544af43d7fa71c13c5.",
+        "src/aio_agentic_sdlc/mapping.py:668-684 accepts only intent_id, derives candidates exclusively from automatic reconciliation results, and blocks any classification other than one unique candidate.",
+        "src/aio_agentic_sdlc/mapping.py:827-845 exposes only candidate approval and re-runs the restricted review, so it cannot refresh evidence for an already marker-confirmed mapping.",
+        "src/aio_agentic_sdlc/dag_cli.py:375-450 exposes only mapping review by intent ID and approval by automatic candidate GUID and digest; it has no observed-candidate selector or receipt-refresh mode.",
+        "src/aio_agentic_sdlc/mcp_server.py:771-830 mirrors the same restricted review_mapping and approve_mapping contract with no explicit-candidate or receipt-refresh parameters."
+      ],
+      "decided_by": "sdlc_cartographer",
+      "decided_at": "2026-08-21T16:44:34.9708535-04:00"
+    }
+  ]
+}

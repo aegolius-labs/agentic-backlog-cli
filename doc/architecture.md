@@ -7,7 +7,10 @@ This document describes the high-level architecture and data flow of the
 
 > **Note:** Please read [VISION.md](./VISION.md) to understand the foundational North-Star of this project—the Semantic Roadmap Graph—before making architectural changes.
 
-The CLI acts as a deterministic backlog manager using a 3-Dimensional matrix (Impact, Effort, Dependency) to calculate priority scores and topologically sort tasks. All framework state is local. External trackers are not authoritative and synchronization support is intentionally absent.
+The CLI and MCP server act as deterministic backlog interfaces using a 3-Dimensional matrix
+(Impact, Effort, Dependency) to calculate priority scores and topologically sort tasks. The MCP
+adapter uses the official Python SDK v2 `MCPServer` API over stdio. All framework state is local.
+External trackers are not authoritative and synchronization support is intentionally absent.
 
 ## Repository layout
 
@@ -148,11 +151,30 @@ mappings and does not mutate either DAG. Reality nodes without a confirmed GUID 
 `unclassified_reality`; they are not deletion evidence.
 
 Unique Python class and function candidates can pass through a separate approval-gated mapping
-transition. Review binds fresh reconciliation evidence to one exact source symbol and SHA-256.
-Approval requires the reviewed candidate GUID, evidence digest, approver, timezone-aware timestamp,
-and rationale; it then atomically adds an adjacent canonical marker plus audit receipt. Stale,
-ambiguous, unsupported, duplicate-marker, or escaping-path evidence fails without mutation, and a
-failed post-write Reality confirmation restores the original source bytes.
+transition. Automatic normalized name/type matching remains the default, while an explicit current
+observed Reality GUID can select one differently named class or function. The engine independently
+resolves that GUID from a fresh Reality scan; caller-supplied source paths, symbols, and line numbers
+are never trusted.
+
+Candidate review is read-only and binds fresh reconciliation evidence to one exact source symbol
+and SHA-256. Approval requires the reviewed candidate GUID, evidence digest, selection mode,
+approver, timezone-aware timestamp, and rationale; it then atomically adds an adjacent canonical
+marker plus audit receipt. Every exact digest requires a separate human approval. Stale, ambiguous,
+unsupported, duplicate-marker, or escaping-path evidence fails without mutation, and a failed
+post-write Reality confirmation restores the original source bytes.
+
+An already confirmed marker can enter a separate receipt-maintenance flow. Read-only receipt review
+requires one uniquely confirmed class/function marker and one adjacent parseable receipt, then
+binds the current marker, receipt, source bytes, Intent, and fresh Reality observation into a new
+digest. Explicit refresh approval preserves the marker byte-for-byte and atomically replaces only
+the adjacent receipt. Candidate and receipt decisions establish source identity only; they do not
+prove behavior, satisfy acceptance criteria, or approve Intent.
+
+Receipt evidence currently uses the whole annotation-neutral file hash. An unrelated edit in the
+same file therefore intentionally stales the receipt and requires another review and separate human
+approval. Marker and receipt mutations have no manual fallback: Python, CLI, and MCP adapters all
+route through the same persistent locks, stale-evidence checks, guarded atomic transition, rollback,
+and post-write Reality verification.
 
 Safe diffing is the default. It produces bounded mapping-review or implementation-investigation
 work and includes complete totals plus truncation metadata for both top-level work and nested
@@ -198,13 +220,19 @@ the installed framework fails closed.
 
 ### 4. Transactional State Modification
 
-Every backlog contains a monotonic `revision`. A cross-process lock covers the
-compare-and-replace transaction, and stale revisions are rejected instead of
-overwriting newer work. The writer flushes a temporary file, appends a `prepared`
-audit record, atomically replaces the backlog, and appends `committed`. On the next
-read, a prepared transaction without a terminal record is classified by its
-before/after hashes as either `rolled_back` or `recovered_commit`; any other hash
-fails closed.
+Every backlog contains a monotonic `revision`. A cross-process lock covers recovery, load,
+mutation, revision increment, audit preparation, atomic replacement, and audit commit as one
+transaction. Stale revisions are rejected instead of overwriting newer work. The writer flushes a
+temporary file, appends a `prepared` audit record, atomically replaces the backlog, and appends
+`committed`. On the next read, a prepared transaction without a terminal record is classified by
+its before/after hashes as either `rolled_back` or `recovered_commit`; any other hash fails closed.
+
+This full transaction boundary also applies when MCP SDK v2 dispatches synchronous handlers in
+concurrent AnyIO worker threads. Other stateful MCP operations retain their dedicated workspace,
+DAG, mapping, semantic-cache, document-output, and spec-promotion locks and guarded atomic
+transitions. Handlers resolve explicit project paths without changing the process working
+directory. The two fixed resources are the exception to explicit project addressing: they retain
+their public cwd-based meaning and read state relative to the MCP server's launch directory.
 
 ### 5. Prioritization Engine (`_compute_sorted_items`)
 
