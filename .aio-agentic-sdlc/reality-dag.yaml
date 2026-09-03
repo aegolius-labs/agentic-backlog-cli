@@ -2268,14 +2268,26 @@ nodes:
   type: component
   name: test_v2_spec_promotion_rejects_source_leaf_swap_without_external_read
   description: Function test_v2_spec_promotion_rejects_source_leaf_swap_without_external_read
-- id: 2edd9dee-088f-5dcd-ba42-878c0f64e71f
+- id: 5eae9a96-bb03-5512-a1ef-e8dddd5b77f2
   type: component
-  name: test_v2_spec_promotion_never_leaves_a_swapped_destination_leaf
-  description: Function test_v2_spec_promotion_never_leaves_a_swapped_destination_leaf
+  name: test_v2_spec_promotion_preserves_a_foreign_destination_leaf
+  description: Function test_v2_spec_promotion_preserves_a_foreign_destination_leaf
 - id: 81ae4f6f-586d-5464-860d-738281776201
   type: component
   name: test_v2_spec_promotion_detects_swap_after_first_destination_postcheck
   description: Function test_v2_spec_promotion_detects_swap_after_first_destination_postcheck
+- id: ebfe3f82-6022-594d-9935-756d1d2bbced
+  type: component
+  name: test_v2_spec_promotion_preserves_foreign_regular_destination_on_rollback
+  description: Function test_v2_spec_promotion_preserves_foreign_regular_destination_on_rollback
+- id: dbfb5cd2-a425-5790-b964-5bc595ffa15d
+  type: component
+  name: test_v2_spec_promotion_never_overwrites_precommit_regular_destination
+  description: Function test_v2_spec_promotion_never_overwrites_precommit_regular_destination
+- id: 4b089f3b-0614-5b72-91ba-ef91571a5a6e
+  type: component
+  name: test_v2_spec_promotion_preserves_occupied_private_recovery_leaf
+  description: Function test_v2_spec_promotion_preserves_occupied_private_recovery_leaf
 - id: 42a3be17-f62b-57e3-aaf8-e8c8e9f34317
   type: component
   name: test_v2_spec_promotion_preserves_read_only_source_mode
@@ -2284,6 +2296,18 @@ nodes:
   type: component
   name: test_v2_spec_promotion_restores_read_only_source_after_late_failure
   description: Function test_v2_spec_promotion_restores_read_only_source_after_late_failure
+- id: 614b3e21-4b56-570c-9643-eac006d187f4
+  type: component
+  name: test_v2_spec_promotion_never_unlinks_a_foreign_destination_on_rollback
+  description: Function test_v2_spec_promotion_never_unlinks_a_foreign_destination_on_rollback
+- id: 8d79692f-00e8-5ecf-bf37-2161475af142
+  type: component
+  name: test_v2_spec_promotion_preserves_source_swapped_at_final_move_boundary
+  description: Function test_v2_spec_promotion_preserves_source_swapped_at_final_move_boundary
+- id: 316f3091-503f-5c3d-aadb-a42c4366400f
+  type: component
+  name: test_v2_spec_promotion_combined_contention_preserves_every_byte_set
+  description: Function test_v2_spec_promotion_combined_contention_preserves_every_byte_set
 - id: 28443018-ea61-5b3b-abd1-e6a33736a4bb
   type: module
   name: test_mcp_v2_contract.py
@@ -4669,16 +4693,34 @@ edges:
   target: dbdb3391-85a6-583b-a89b-171175859e9d
   type: contains
 - source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
-  target: 2edd9dee-088f-5dcd-ba42-878c0f64e71f
+  target: 5eae9a96-bb03-5512-a1ef-e8dddd5b77f2
   type: contains
 - source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
   target: 81ae4f6f-586d-5464-860d-738281776201
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: ebfe3f82-6022-594d-9935-756d1d2bbced
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: dbfb5cd2-a425-5790-b964-5bc595ffa15d
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: 4b089f3b-0614-5b72-91ba-ef91571a5a6e
   type: contains
 - source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
   target: 42a3be17-f62b-57e3-aaf8-e8c8e9f34317
   type: contains
 - source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
   target: f2d6b7f5-7e5e-529e-ab62-4d1b8a9d48f1
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: 614b3e21-4b56-570c-9643-eac006d187f4
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: 8d79692f-00e8-5ecf-bf37-2161475af142
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: 316f3091-503f-5c3d-aadb-a42c4366400f
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 28443018-ea61-5b3b-abd1-e6a33736a4bb

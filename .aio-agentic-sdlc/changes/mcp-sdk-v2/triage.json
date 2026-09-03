@@ -1,18 +1,18 @@
 {
   "schema_version": 1,
   "source": {
-    "intention_sha256": "4b0d1cca9c0cffeb7d7a14a4afd6e9ccd902ec9513361364f52c4e36f0cf22b1",
-    "reality_sha256": "192902f8a1e568cf73912ba0dda0c93059918c261f0fc0dc0ed087362f373edf",
-    "plan_digest": "b1aa98d4c6af005e9a8fb7ab58dc846b181756331cdfd2e8f5291f354b6f6c62"
+    "intention_sha256": "7133631db8a9631b9f0e515c18be3165305d20ea7975b7de9215bee112acd3a9",
+    "reality_sha256": "cc2cd23ef7154d466e4cf3e40eb171486b7d17a14670a9793ea896edf5c9faac",
+    "plan_digest": "9efd93a99e12c7199cf04793ced7911c886532e661ec18d8668043a8f407c8d4"
   },
   "summary": {
     "plan_tasks": 56,
-    "missing_implementation": 1,
+    "missing_implementation": 0,
     "obsolete_or_unapproved_intent": 52,
     "framework_tooling_drift": 2,
     "identity_review_required": 0,
-    "needs_classification": 1,
-    "actionable_implementation": 1
+    "needs_classification": 2,
+    "actionable_implementation": 0
   },
   "limit": {
     "max_items": 200,
@@ -25,35 +25,35 @@
       "subject": {
         "kind": "intent",
         "type": "component",
-        "name": "MCP SDK v2 Integration",
+        "name": "Explicit Source Identity Maintenance",
         "name_truncated": false
       },
-      "classification": "missing_implementation",
-      "reason": "The approved MCP SDK v2 capability is not implemented: the direct dependency and frozen lock remain on MCP v1, the server still uses FastMCP, and the required v2 client modes and evidence tests are absent. Repository source directly establishes the gap, so this is product implementation drift rather than framework-tooling drift.",
-      "decision_source": "explicit",
-      "implementation_authorized": true,
+      "classification": "needs_classification",
+      "reason": "Approved intent has no deterministic Reality match; explicit evidence is required to distinguish missing implementation from tooling drift.",
+      "decision_source": "pending",
+      "implementation_authorized": false,
       "evidence": {
         "approval_state": "approved",
         "safe_action": "investigate_intent",
         "acceptance_criteria": {
           "items": [
             {
-              "id": "MCP-V2-AC1",
+              "id": "IDENTITY-MAINT-AC1",
               "id_truncated": false,
-              "statement": "A frozen UV installation resolves the reviewed MCP 2.x release and excludes MCP 1.x and unsupported future majors.",
+              "statement": "A read-only review can explicitly select one current observed Reality class or function even when name matching produces no candidate, then bind its exact source location, source hash, observed GUID, intent evidence, and deterministic digest for human review.",
               "statement_truncated": false,
               "required_evidence": {
                 "items": [
                   {
-                    "value": "dependency:pyproject-mcp-v2-bound",
+                    "value": "test:explicit-candidate-source-binding",
                     "value_truncated": false
                   },
                   {
-                    "value": "dependency:uv-lock-mcp-v2",
+                    "value": "cli:mapping-review-explicit-candidate",
                     "value_truncated": false
                   },
                   {
-                    "value": "build:frozen-uv-sync",
+                    "value": "mcp:review-mapping-explicit-candidate",
                     "value_truncated": false
                   }
                 ],
@@ -63,22 +63,22 @@
               }
             },
             {
-              "id": "MCP-V2-AC2",
+              "id": "IDENTITY-MAINT-AC2",
               "id_truncated": false,
-              "statement": "The aio-agentic-sdlc-mcp stdio entry point exposes every existing tool, resource, and prompt with compatible names and schemas through MCPServer.",
+              "statement": "A read-only refresh review can bind one already marker-confirmed symbol and its current adjacent receipt to fresh deterministic evidence without changing source or canonical state.",
               "statement_truncated": false,
               "required_evidence": {
                 "items": [
                   {
-                    "value": "test:mcp-v2-public-surface",
+                    "value": "test:confirmed-receipt-review",
                     "value_truncated": false
                   },
                   {
-                    "value": "test:mcp-v2-stdio-smoke",
+                    "value": "cli:mapping-review-receipt-refresh",
                     "value_truncated": false
                   },
                   {
-                    "value": "contract:codex-plugin-mcp-launch",
+                    "value": "mcp:review-mapping-receipt-refresh",
                     "value_truncated": false
                   }
                 ],
@@ -88,22 +88,22 @@
               }
             },
             {
-              "id": "MCP-V2-AC3",
+              "id": "IDENTITY-MAINT-AC3",
               "id_truncated": false,
-              "statement": "The official v2 in-memory Client can list and exercise the complete public MCP surface in modern auto mode and legacy mode.",
+              "statement": "An explicitly approved candidate mapping or receipt refresh applies atomically only when the reviewed digest, marker, symbol, path, source content, and canonical DAGs remain fresh; every mismatch or failure leaves source, receipts, DAGs, backlog, and audit state unchanged or fully restored.",
               "statement_truncated": false,
               "required_evidence": {
                 "items": [
                   {
-                    "value": "test:mcp-v2-client-auto",
+                    "value": "test:identity-maintenance-stale-evidence",
                     "value_truncated": false
                   },
                   {
-                    "value": "test:mcp-v2-client-legacy",
+                    "value": "test:identity-maintenance-atomic-rollback",
                     "value_truncated": false
                   },
                   {
-                    "value": "test:mcp-v2-client-schema-errors",
+                    "value": "test:identity-maintenance-concurrency",
                     "value_truncated": false
                   }
                 ],
@@ -113,22 +113,22 @@
               }
             },
             {
-              "id": "MCP-V2-AC4",
+              "id": "IDENTITY-MAINT-AC4",
               "id_truncated": false,
-              "statement": "Concurrent worker-thread execution of synchronous stateful handlers preserves workspace, backlog, audit, mapping, path, lock, and working-directory invariants.",
+              "statement": "Python API, CLI, MCP, and Codex workflow guidance expose the same bounded, human-readable decision contract, keep GUIDs and digests in the audit section, and never treat mapping approval as behavioral approval.",
               "statement_truncated": false,
               "required_evidence": {
                 "items": [
                   {
-                    "value": "test:mcp-v2-concurrent-state",
+                    "value": "test:identity-maintenance-cli-mcp-parity",
                     "value_truncated": false
                   },
                   {
-                    "value": "test:mcp-v2-concurrent-mapping",
+                    "value": "validation:manage-sdlc-skill",
                     "value_truncated": false
                   },
                   {
-                    "value": "test:mcp-v2-cwd-isolation",
+                    "value": "validation:codex-plugin",
                     "value_truncated": false
                   }
                 ],
@@ -138,47 +138,22 @@
               }
             },
             {
-              "id": "MCP-V2-AC5",
+              "id": "IDENTITY-MAINT-AC5",
               "id_truncated": false,
-              "statement": "Invalid inputs, outputs, URIs, paths, and handler failures are rejected with deterministic protocol-visible error semantics and no protected-state mutation.",
+              "statement": "Adversarial path, symlink, reparse-point, hardlink, duplicate-marker, stale-writer, and concurrent-review cases fail closed, while a fresh self-dogfood run can review the MCP v2 representative symbol and both stale confirmed receipts without manual marker or receipt edits.",
               "statement_truncated": false,
               "required_evidence": {
                 "items": [
                   {
-                    "value": "test:mcp-v2-schema-enforcement",
+                    "value": "test:identity-maintenance-adversarial",
                     "value_truncated": false
                   },
                   {
-                    "value": "test:mcp-v2-uri-path-safety",
+                    "value": "report:self-dogfood-identity-maintenance",
                     "value_truncated": false
                   },
                   {
-                    "value": "test:mcp-v2-error-semantics",
-                    "value_truncated": false
-                  }
-                ],
-                "total_items": 3,
-                "returned_items": 3,
-                "truncated": false
-              }
-            },
-            {
-              "id": "MCP-V2-AC6",
-              "id_truncated": false,
-              "statement": "The full warning-strict suite, static checks, build, plugin validators, traceability validation, and canonical Reality/reconciliation reproduction pass on the migrated dependency graph.",
-              "statement_truncated": false,
-              "required_evidence": {
-                "items": [
-                  {
-                    "value": "test:full-warning-strict",
-                    "value_truncated": false
-                  },
-                  {
-                    "value": "validation:plugin-and-skill",
-                    "value_truncated": false
-                  },
-                  {
-                    "value": "report:mcp-v2-self-dogfood",
+                    "value": "validation:fresh-reality-reconciliation",
                     "value_truncated": false
                   }
                 ],
@@ -188,26 +163,14 @@
               }
             }
           ],
-          "total_items": 6,
-          "returned_items": 6,
+          "total_items": 5,
+          "returned_items": 5,
           "truncated": false
         }
       },
       "audit": {
-        "subject_key": "intent:86367041-79ce-5415-b107-ef60cf721bf3",
-        "canonical_intent_id": "86367041-79ce-5415-b107-ef60cf721bf3"
-      },
-      "decision": {
-        "rationale": "The approved MCP SDK v2 capability is not implemented: the direct dependency and frozen lock remain on MCP v1, the server still uses FastMCP, and the required v2 client modes and evidence tests are absent. Repository source directly establishes the gap, so this is product implementation drift rather than framework-tooling drift.",
-        "evidence": [
-          "pyproject.toml:22 declares mcp>=1.28.0,<2, explicitly excluding every required MCP 2.x release.",
-          "uv.lock:847-848 resolves mcp 1.28.1 rather than the approved reviewed MCP 2.x line.",
-          "src/aio_agentic_sdlc/mcp_server.py:5,36 imports and instantiates FastMCP instead of the approved MCPServer v2 integration.",
-          "tests/: repository search finds no mcp.client.Client, mode=\"auto\", or mode=\"legacy\" coverage required by MCP-V2-AC3.",
-          "plugins/aio-agentic-sdlc/.mcp.json:4,8 preserves the uvx stdio aio-agentic-sdlc-mcp launch contract whose implementation must be migrated."
-        ],
-        "decided_by": "sdlc_cartographer",
-        "decided_at": "2026-08-20T16:56:25.715074-04:00"
+        "subject_key": "intent:15019926-c6be-5c98-b558-954c7657e5c6",
+        "canonical_intent_id": "15019926-c6be-5c98-b558-954c7657e5c6"
       }
     },
     {

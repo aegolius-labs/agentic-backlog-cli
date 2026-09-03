@@ -24,6 +24,7 @@ from aio_agentic_sdlc.workspace import (
     MAPPING_LOCK_FILE,
     REALITY_DAG_FILE,
     SPECS_DIR,
+    WORKSPACE_DIR,
     ensure_workspace,
 )
 
@@ -418,24 +419,29 @@ async def test_v2_spec_promotion_rejects_source_leaf_swap_without_external_read(
     ensure_workspace(project)
     source = project / CHANGES_DIR / "accepted.md"
     source.write_text("# Accepted\n", encoding="utf-8")
+    original = source.read_bytes()
     destination = project / SPECS_DIR / "accepted.md"
     external = tmp_path / "external.md"
     external.write_text("external-secret\n", encoding="utf-8")
-    original_replace = os.replace
+    original_install = mcp_server_module._install_spec_no_replace
     external_read = False
 
-    def swapping_replace(src, dst):
+    def swapping_install(src, dst):
         if Path(dst) == destination:
             source.unlink()
             os.symlink(external, source)
-        return original_replace(src, dst)
+        return original_install(src, dst)
 
     def reject_external_read(*_args, **_kwargs):
         nonlocal external_read
         external_read = True
         raise AssertionError("promotion followed the swapped external source")
 
-    monkeypatch.setattr(mcp_server_module.os, "replace", swapping_replace)
+    monkeypatch.setattr(
+        mcp_server_module,
+        "_install_spec_no_replace",
+        swapping_install,
+    )
     original_open = Path.open
 
     def guarded_open(path, *args, **kwargs):
@@ -454,15 +460,15 @@ async def test_v2_spec_promotion_rejects_source_leaf_swap_without_external_read(
     assert result.is_error is True
     assert _tool_text(result).startswith("Error promoting spec:")
     assert destination.is_symlink() is False
-    assert destination.exists() is False
+    assert destination.read_bytes() == original
     assert external_read is False
     assert external.read_text(encoding="utf-8") == "external-secret\n"
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("swap_after_replace", [False, True])
-async def test_v2_spec_promotion_never_leaves_a_swapped_destination_leaf(
-    tmp_path, monkeypatch, swap_after_replace
+@pytest.mark.parametrize("swap_after_install", [False, True])
+async def test_v2_spec_promotion_preserves_a_foreign_destination_leaf(
+    tmp_path, monkeypatch, swap_after_install
 ):
     project = tmp_path / "project"
     project.mkdir()
@@ -472,34 +478,35 @@ async def test_v2_spec_promotion_never_leaves_a_swapped_destination_leaf(
     destination = project / SPECS_DIR / "accepted.md"
     external = tmp_path / "external.md"
     external.write_text("external-secret\n", encoding="utf-8")
-    original_replace = os.replace
+    original_install = mcp_server_module._install_spec_no_replace
 
-    def swapping_replace(src, dst):
+    def swapping_install(src, dst):
         if Path(dst) != destination:
-            return original_replace(src, dst)
-        if not swap_after_replace:
+            return original_install(src, dst)
+        if not swap_after_install:
             os.symlink(external, destination)
-        result = original_replace(src, dst)
-        if swap_after_replace:
+        result = original_install(src, dst)
+        if swap_after_install:
             destination.unlink()
             os.symlink(external, destination)
         return result
 
-    monkeypatch.setattr(mcp_server_module.os, "replace", swapping_replace)
+    monkeypatch.setattr(
+        mcp_server_module,
+        "_install_spec_no_replace",
+        swapping_install,
+    )
     async with Client(mcp) as client:
         result = await client.call_tool(
             "promote_spec",
             {"feature_name": "accepted.md", "project_path": str(project)},
         )
 
-    assert destination.is_symlink() is False
+    assert destination.is_symlink() is True
+    assert destination.resolve() == external.resolve()
     assert external.read_text(encoding="utf-8") == "external-secret\n"
-    if swap_after_replace:
-        assert result.is_error is True
-        assert destination.exists() is False
-    else:
-        assert result.is_error is not True
-        assert destination.read_text(encoding="utf-8") == "# Accepted\n"
+    assert result.is_error is True
+    assert source.read_text(encoding="utf-8") == "# Accepted\n"
 
 
 @pytest.mark.asyncio
@@ -514,18 +521,30 @@ async def test_v2_spec_promotion_detects_swap_after_first_destination_postcheck(
     destination = project / SPECS_DIR / "accepted.md"
     external = tmp_path / "external.md"
     external.write_text("external-secret\n", encoding="utf-8")
+    backing = tmp_path / "accepted-backing.md"
+    backing.write_text("# Accepted\n", encoding="utf-8")
     original_guard = mcp_server_module.guarded_file_path
     swapped = False
+
+    def posix_like_open_verified(path):
+        observed = os.stat(path, follow_symlinks=False)
+        descriptor = os.open(backing, os.O_RDONLY | getattr(os, "O_BINARY", 0))
+        return descriptor, observed
 
     def swapping_guard(path, *args, **kwargs):
         nonlocal swapped
         guarded = original_guard(path, *args, **kwargs)
         if Path(path) == destination and destination.exists() and not swapped:
-            swapped = True
             destination.unlink()
             os.symlink(external, destination)
+            swapped = True
         return guarded
 
+    monkeypatch.setattr(
+        mcp_server_module,
+        "_open_verified_regular_leaf",
+        posix_like_open_verified,
+    )
     monkeypatch.setattr(mcp_server_module, "guarded_file_path", swapping_guard)
     async with Client(mcp) as client:
         result = await client.call_tool(
@@ -535,9 +554,151 @@ async def test_v2_spec_promotion_detects_swap_after_first_destination_postcheck(
 
     assert swapped is True
     assert result.is_error is True
-    assert destination.is_symlink() is False
+    assert destination.is_symlink() is True
+    assert destination.resolve() == external.resolve()
     assert source.read_text(encoding="utf-8") == "# Accepted\n"
     assert external.read_text(encoding="utf-8") == "external-secret\n"
+
+
+@pytest.mark.asyncio
+async def test_v2_spec_promotion_preserves_foreign_regular_destination_on_rollback(
+    tmp_path,
+    monkeypatch,
+):
+    project = tmp_path / "project"
+    project.mkdir()
+    ensure_workspace(project)
+    source = project / CHANGES_DIR / "accepted.md"
+    original = b"# Accepted\n"
+    source.write_bytes(original)
+    destination = project / SPECS_DIR / "accepted.md"
+    attacker = tmp_path / "attacker-unique.md"
+    attacker_content = b"ATTACKER-UNIQUE-DATA\n"
+    attacker.write_bytes(attacker_content)
+    original_guard = mcp_server_module.guarded_file_path
+    swapped = False
+
+    def posix_like_open_verified(path):
+        observed = os.stat(path, follow_symlinks=False)
+        descriptor = os.open(source, os.O_RDONLY | getattr(os, "O_BINARY", 0))
+        return descriptor, observed
+
+    def swapping_guard(path, *args, **kwargs):
+        nonlocal swapped
+        guarded = original_guard(path, *args, **kwargs)
+        if Path(path) == destination and destination.exists() and not swapped:
+            swapped = True
+            destination.unlink()
+            attacker.rename(destination)
+        return guarded
+
+    monkeypatch.setattr(
+        mcp_server_module,
+        "_open_verified_regular_leaf",
+        posix_like_open_verified,
+    )
+    monkeypatch.setattr(mcp_server_module, "guarded_file_path", swapping_guard)
+    async with Client(mcp) as client:
+        result = await client.call_tool(
+            "promote_spec",
+            {"feature_name": "accepted.md", "project_path": str(project)},
+        )
+
+    assert swapped is True
+    assert result.is_error is True
+    assert source.read_bytes() == original
+    assert destination.read_bytes() == attacker_content
+    assert attacker.exists() is False
+
+
+@pytest.mark.asyncio
+async def test_v2_spec_promotion_never_overwrites_precommit_regular_destination(
+    tmp_path,
+    monkeypatch,
+):
+    project = tmp_path / "project"
+    project.mkdir()
+    ensure_workspace(project)
+    source = project / CHANGES_DIR / "accepted.md"
+    original = b"# Accepted\n"
+    source.write_bytes(original)
+    destination = project / SPECS_DIR / "accepted.md"
+    attacker_content = b"ATTACKER-UNIQUE-DATA\n"
+    original_install = mcp_server_module._install_spec_no_replace
+    injected = False
+
+    def occupy_before_install(src, dst):
+        nonlocal injected
+        if Path(dst) == destination and not injected:
+            injected = True
+            destination.write_bytes(attacker_content)
+        return original_install(src, dst)
+
+    monkeypatch.setattr(
+        mcp_server_module,
+        "_install_spec_no_replace",
+        occupy_before_install,
+    )
+    async with Client(mcp) as client:
+        result = await client.call_tool(
+            "promote_spec",
+            {"feature_name": "accepted.md", "project_path": str(project)},
+        )
+
+    assert injected is True
+    assert result.is_error is True
+    assert _tool_text(result) == (
+        "Error promoting spec: spec destination changed during promotion"
+    )
+    assert source.read_bytes() == original
+    assert destination.read_bytes() == attacker_content
+
+
+@pytest.mark.asyncio
+async def test_v2_spec_promotion_preserves_occupied_private_recovery_leaf(
+    tmp_path,
+    monkeypatch,
+):
+    project = tmp_path / "project"
+    project.mkdir()
+    ensure_workspace(project)
+    source = project / CHANGES_DIR / "accepted.md"
+    original = b"# Accepted\n"
+    source.write_bytes(original)
+    destination = project / SPECS_DIR / "accepted.md"
+    foreign_recovery = b"FOREIGN-RECOVERY\n"
+    original_reserve = mcp_server_module._reserve_promotion_recovery_leaf
+    occupied_leaf = None
+
+    def occupy_reserved_leaf(recovery_directory, source_name, *, suffix):
+        nonlocal occupied_leaf
+        occupied_leaf = original_reserve(
+            recovery_directory,
+            source_name,
+            suffix=suffix,
+        )
+        occupied_leaf.write_bytes(foreign_recovery)
+        return occupied_leaf
+
+    monkeypatch.setattr(
+        mcp_server_module,
+        "_reserve_promotion_recovery_leaf",
+        occupy_reserved_leaf,
+    )
+    async with Client(mcp) as client:
+        result = await client.call_tool(
+            "promote_spec",
+            {"feature_name": "accepted.md", "project_path": str(project)},
+        )
+
+    assert result.is_error is True
+    assert _tool_text(result) == (
+        "Error promoting spec: spec source changed during promotion"
+    )
+    assert source.read_bytes() == original
+    assert destination.read_bytes() == original
+    assert occupied_leaf is not None
+    assert occupied_leaf.read_bytes() == foreign_recovery
 
 
 @pytest.mark.asyncio
@@ -584,16 +745,35 @@ async def test_v2_spec_promotion_restores_read_only_source_after_late_failure(
     destination = project / SPECS_DIR / "accepted.md"
     external = tmp_path / "external.md"
     external.write_text("external-unchanged\n", encoding="utf-8")
-    original_unlink = os.unlink
+    backing = tmp_path / "accepted-read-only-backing.md"
+    backing.write_text("# Accepted read-only\n", encoding="utf-8")
+    original_open_verified = mcp_server_module._open_verified_regular_leaf
+    original_move = mcp_server_module._move_source_to_promotion_backup
 
-    def fail_after_source_removal(path, *args, **kwargs):
-        result = original_unlink(path, *args, **kwargs)
-        if Path(path) == source:
-            destination.unlink()
-            os.symlink(external, destination)
+    def posix_like_open_verified(path):
+        if Path(path) != destination:
+            return original_open_verified(path)
+        observed = os.stat(path, follow_symlinks=False)
+        descriptor = os.open(backing, os.O_RDONLY | getattr(os, "O_BINARY", 0))
+        return descriptor, observed
+
+    def fail_after_source_removal(path, backup):
+        result = original_move(path, backup)
+        destination.chmod(stat.S_IREAD | stat.S_IWRITE)
+        destination.unlink()
+        os.symlink(external, destination)
         return result
 
-    monkeypatch.setattr(mcp_server_module.os, "unlink", fail_after_source_removal)
+    monkeypatch.setattr(
+        mcp_server_module,
+        "_open_verified_regular_leaf",
+        posix_like_open_verified,
+    )
+    monkeypatch.setattr(
+        mcp_server_module,
+        "_move_source_to_promotion_backup",
+        fail_after_source_removal,
+    )
     try:
         async with Client(mcp) as client:
             result = await client.call_tool(
@@ -604,11 +784,207 @@ async def test_v2_spec_promotion_restores_read_only_source_after_late_failure(
         assert result.is_error is True
         assert source.read_text(encoding="utf-8") == "# Accepted read-only\n"
         assert stat.S_IMODE(source.stat().st_mode) & stat.S_IWRITE == 0
-        assert destination.is_symlink() is False
-        assert destination.exists() is False
+        assert destination.is_symlink() is True
+        assert destination.resolve() == external.resolve()
         assert external.read_text(encoding="utf-8") == "external-unchanged\n"
     finally:
-        if destination.exists():
+        if destination.is_symlink():
+            destination.unlink()
+        elif destination.exists():
             destination.chmod(stat.S_IREAD | stat.S_IWRITE)
         if source.exists():
             source.chmod(stat.S_IREAD | stat.S_IWRITE)
+
+
+@pytest.mark.asyncio
+async def test_v2_spec_promotion_never_unlinks_a_foreign_destination_on_rollback(
+    tmp_path,
+    monkeypatch,
+):
+    project = tmp_path / "project"
+    project.mkdir()
+    ensure_workspace(project)
+    source = project / CHANGES_DIR / "accepted.md"
+    original = b"# Accepted\n"
+    source.write_bytes(original)
+    destination = project / SPECS_DIR / "accepted.md"
+    attacker = tmp_path / "foreign-destination.md"
+    attacker_content = b"FOREIGN-DESTINATION\n"
+    attacker.write_bytes(attacker_content)
+    backing = tmp_path / "accepted-backing.md"
+    backing.write_bytes(original)
+    original_open_verified = mcp_server_module._open_verified_regular_leaf
+    original_move = mcp_server_module._move_source_to_promotion_backup
+    original_unlink = os.unlink
+    destination_unlink_attempted = False
+    swapped = False
+
+    def posix_like_open_verified(path):
+        if Path(path) != destination:
+            return original_open_verified(path)
+        observed = os.stat(path, follow_symlinks=False)
+        descriptor = os.open(backing, os.O_RDONLY | getattr(os, "O_BINARY", 0))
+        return descriptor, observed
+
+    def swap_destination_after_source_move(path, backup):
+        nonlocal swapped
+        result = original_move(path, backup)
+        original_unlink(destination)
+        attacker.rename(destination)
+        swapped = True
+        return result
+
+    def track_product_unlink(path, *args, **kwargs):
+        nonlocal destination_unlink_attempted
+        if Path(path) == destination:
+            destination_unlink_attempted = True
+        return original_unlink(path, *args, **kwargs)
+
+    monkeypatch.setattr(
+        mcp_server_module,
+        "_move_source_to_promotion_backup",
+        swap_destination_after_source_move,
+    )
+    monkeypatch.setattr(
+        mcp_server_module,
+        "_open_verified_regular_leaf",
+        posix_like_open_verified,
+    )
+    monkeypatch.setattr(mcp_server_module.os, "unlink", track_product_unlink)
+
+    async with Client(mcp) as client:
+        result = await client.call_tool(
+            "promote_spec",
+            {"feature_name": "accepted.md", "project_path": str(project)},
+        )
+
+    assert swapped is True
+    assert result.is_error is True
+    assert destination_unlink_attempted is False
+    assert source.read_bytes() == original
+    assert destination.read_bytes() == attacker_content
+
+
+@pytest.mark.asyncio
+async def test_v2_spec_promotion_preserves_source_swapped_at_final_move_boundary(
+    tmp_path,
+    monkeypatch,
+):
+    project = tmp_path / "project"
+    project.mkdir()
+    ensure_workspace(project)
+    source = project / CHANGES_DIR / "accepted.md"
+    original = b"# Accepted\n"
+    source.write_bytes(original)
+    destination = project / SPECS_DIR / "accepted.md"
+    attacker_content = b"FOREIGN-SOURCE\n"
+    original_move = mcp_server_module._move_source_to_promotion_backup
+    original_unlink = os.unlink
+    injected = False
+
+    def swap_source_at_move(path, backup):
+        nonlocal injected
+        original_unlink(source)
+        source.write_bytes(attacker_content)
+        injected = True
+        return original_move(path, backup)
+
+    monkeypatch.setattr(
+        mcp_server_module,
+        "_move_source_to_promotion_backup",
+        swap_source_at_move,
+    )
+
+    async with Client(mcp) as client:
+        result = await client.call_tool(
+            "promote_spec",
+            {"feature_name": "accepted.md", "project_path": str(project)},
+        )
+
+    recovery_dir = project / WORKSPACE_DIR / "backups" / "spec-promotions"
+    recovery_bytes = [path.read_bytes() for path in recovery_dir.iterdir()]
+    assert injected is True
+    assert result.is_error is True
+    assert source.read_bytes() == original
+    assert destination.read_bytes() == original
+    assert attacker_content in recovery_bytes
+
+
+@pytest.mark.asyncio
+async def test_v2_spec_promotion_combined_contention_preserves_every_byte_set(
+    tmp_path,
+    monkeypatch,
+):
+    project = tmp_path / "project"
+    project.mkdir()
+    ensure_workspace(project)
+    source = project / CHANGES_DIR / "accepted.md"
+    original = b"# Accepted\n"
+    source.write_bytes(original)
+    destination = project / SPECS_DIR / "accepted.md"
+    foreign_source = b"FOREIGN-PUBLIC-SOURCE\n"
+    foreign_destination = b"FOREIGN-DESTINATION\n"
+    backing = tmp_path / "accepted-backing.md"
+    backing.write_bytes(original)
+    original_open_verified = mcp_server_module._open_verified_regular_leaf
+    original_move = mcp_server_module._move_source_to_promotion_backup
+    original_restore = mcp_server_module._restore_source_no_replace
+    original_unlink = os.unlink
+    destination_swapped = False
+    source_occupied_at_restore = False
+
+    def posix_like_open_verified(path):
+        if Path(path) != destination:
+            return original_open_verified(path)
+        observed = os.stat(path, follow_symlinks=False)
+        descriptor = os.open(backing, os.O_RDONLY | getattr(os, "O_BINARY", 0))
+        return descriptor, observed
+
+    def contest_every_public_path(path, backup):
+        nonlocal destination_swapped
+        result = original_move(path, backup)
+        original_unlink(destination)
+        destination.write_bytes(foreign_destination)
+        destination_swapped = True
+        return result
+
+    def occupy_source_at_restore(recovery_copy, public_source):
+        nonlocal source_occupied_at_restore
+        source.write_bytes(foreign_source)
+        source_occupied_at_restore = True
+        return original_restore(recovery_copy, public_source)
+
+    monkeypatch.setattr(
+        mcp_server_module,
+        "_move_source_to_promotion_backup",
+        contest_every_public_path,
+    )
+    monkeypatch.setattr(
+        mcp_server_module,
+        "_restore_source_no_replace",
+        occupy_source_at_restore,
+    )
+    monkeypatch.setattr(
+        mcp_server_module,
+        "_open_verified_regular_leaf",
+        posix_like_open_verified,
+    )
+
+    async with Client(mcp) as client:
+        result = await client.call_tool(
+            "promote_spec",
+            {"feature_name": "accepted.md", "project_path": str(project)},
+        )
+
+    recovery_dir = project / WORKSPACE_DIR / "backups" / "spec-promotions"
+    recovery_bytes = [path.read_bytes() for path in recovery_dir.iterdir()]
+    assert destination_swapped is True
+    assert source_occupied_at_restore is True
+    assert result.is_error is True
+    assert _tool_text(result) == (
+        "Error promoting spec: spec promotion rollback failed closed; "
+        "recovery copy retained"
+    )
+    assert source.read_bytes() == foreign_source
+    assert destination.read_bytes() == foreign_destination
+    assert original in recovery_bytes

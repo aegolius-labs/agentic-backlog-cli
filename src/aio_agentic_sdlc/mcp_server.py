@@ -1,5 +1,7 @@
+import hashlib
 import json
 import os
+import secrets
 import stat
 import tempfile
 from contextvars import ContextVar
@@ -160,12 +162,23 @@ def _stat_identity(value: os.stat_result) -> tuple[int, int]:
     return value.st_dev, value.st_ino
 
 
+def _is_link_like_stat(value: os.stat_result) -> bool:
+    return stat.S_ISLNK(value.st_mode) or bool(
+        getattr(value, "st_file_attributes", 0)
+        & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)
+    )
+
+
 def _path_matches_regular_identity(path: Path, identity: tuple[int, int]) -> bool:
     try:
         current = os.stat(path, follow_symlinks=False)
     except OSError:
         return False
-    return stat.S_ISREG(current.st_mode) and _stat_identity(current) == identity
+    return (
+        stat.S_ISREG(current.st_mode)
+        and not _is_link_like_stat(current)
+        and _stat_identity(current) == identity
+    )
 
 
 def _open_verified_regular_leaf(path: Path) -> tuple[int, os.stat_result]:
@@ -176,8 +189,11 @@ def _open_verified_regular_leaf(path: Path) -> tuple[int, os.stat_result]:
     try:
         opened = os.fstat(descriptor)
         leaf = os.stat(path, follow_symlinks=False)
-        if not stat.S_ISREG(opened.st_mode) or _stat_identity(opened) != _stat_identity(
-            leaf
+        if (
+            not stat.S_ISREG(opened.st_mode)
+            or _is_link_like_stat(opened)
+            or _is_link_like_stat(leaf)
+            or _stat_identity(opened) != _stat_identity(leaf)
         ):
             raise PromotionError("spec destination changed during promotion")
         return descriptor, opened
@@ -186,28 +202,107 @@ def _open_verified_regular_leaf(path: Path) -> tuple[int, os.stat_result]:
         raise
 
 
-def _remove_leaf_without_following(path: Path) -> None:
-    if not os.path.lexists(path):
-        return
-    current = os.stat(path, follow_symlinks=False)
-    if stat.S_ISREG(current.st_mode):
-        os.chmod(path, stat.S_IMODE(current.st_mode) | stat.S_IWUSR)
-    os.unlink(path)
+def _install_spec_no_replace(source: Path, destination: Path) -> None:
+    """Atomically install a spec only while its canonical destination is absent."""
+
+    try:
+        MappingEngine._move_no_replace(source, destination)
+    except MappingError as error:
+        raise PromotionError("spec destination changed during promotion") from error
+
+
+def _move_source_to_promotion_backup(source: Path, backup: Path) -> None:
+    """Atomically vacate the public source without replacing a private leaf."""
+
+    try:
+        MappingEngine._move_no_replace(source, backup)
+    except MappingError as error:
+        raise PromotionError("spec source changed during promotion") from error
+
+
+def _restore_source_no_replace(recovery_copy: Path, destination: Path) -> None:
+    """Restore a verified copy without overwriting a newly occupied source."""
+
+    try:
+        MappingEngine._move_no_replace(recovery_copy, destination)
+    except MappingError as error:
+        raise PromotionError(
+            "spec source path changed during rollback; recovery copy retained"
+        ) from error
+
+
+def _descriptor_sha256(descriptor: int) -> str:
+    current_offset = os.lseek(descriptor, 0, os.SEEK_CUR)
+    digest = hashlib.sha256()
+    try:
+        os.lseek(descriptor, 0, os.SEEK_SET)
+        while chunk := os.read(descriptor, 1024 * 1024):
+            digest.update(chunk)
+        return digest.hexdigest()
+    finally:
+        os.lseek(descriptor, current_offset, os.SEEK_SET)
+
+
+def _regular_leaf_matches_snapshot(
+    path: Path,
+    *,
+    identity: tuple[int, int],
+    mode: int,
+    sha256: str,
+) -> bool:
+    try:
+        descriptor, opened = _open_verified_regular_leaf(path)
+    except (OSError, PromotionError):
+        return False
+    try:
+        return (
+            _stat_identity(opened) == identity
+            and opened.st_nlink == 1
+            and stat.S_IMODE(opened.st_mode) == mode
+            and _descriptor_sha256(descriptor) == sha256
+        )
+    finally:
+        os.close(descriptor)
+
+
+def _promotion_recovery_directory(project_root: Path) -> Path:
+    recovery_leaf = guarded_file_path(
+        project_root / WORKSPACE_DIR / "backups" / "spec-promotions" / ".reservation",
+        create_parent=True,
+    )
+    return guarded_directory_path(recovery_leaf.parent)
+
+
+def _reserve_promotion_recovery_leaf(
+    recovery_directory: Path,
+    source_name: str,
+    *,
+    suffix: str,
+) -> Path:
+    recovery_directory = guarded_directory_path(recovery_directory)
+    for _ in range(16):
+        candidate = recovery_directory / (
+            f".{source_name}.{secrets.token_hex(16)}{suffix}"
+        )
+        if os.path.lexists(candidate):
+            continue
+        return guarded_file_path(candidate)
+    raise PromotionError("could not allocate a private spec recovery path")
 
 
 def _restore_regular_file_from_fd(
     descriptor: int,
     destination: Path,
     mode: int,
+    recovery_directory: Path,
 ) -> None:
-    if os.path.lexists(destination):
-        raise PromotionError("spec source path changed during rollback")
     temporary_descriptor, temporary_name = tempfile.mkstemp(
-        dir=destination.parent,
+        dir=recovery_directory,
         prefix=f".{destination.name}.",
         suffix=".rollback",
     )
     temporary = Path(temporary_name)
+    recovery_copy_retained = False
     try:
         os.lseek(descriptor, 0, os.SEEK_SET)
         with os.fdopen(temporary_descriptor, "wb") as handle:
@@ -216,9 +311,14 @@ def _restore_regular_file_from_fd(
             handle.flush()
             os.fsync(handle.fileno())
         os.chmod(temporary, mode)
-        os.replace(temporary, destination)
+        try:
+            _restore_source_no_replace(temporary, destination)
+        except PromotionError:
+            recovery_copy_retained = True
+            raise
     finally:
-        temporary.unlink(missing_ok=True)
+        if not recovery_copy_retained:
+            temporary.unlink(missing_ok=True)
 
 
 def _copy_regular_file_to_atomic_temp(source: Path, destination_dir: Path) -> Path:
@@ -259,7 +359,7 @@ def _copy_regular_file_to_atomic_temp(source: Path, destination_dir: Path) -> Pa
         os.close(source_fd)
 
 
-# aio-sdlc-mapping-approval: {"approved_at":"2026-08-21T23:03:05.512658-04:00","approved_by":"Felix","candidate_reality_id":"55bef33d-15b7-588b-8712-a2ed3502be62","evidence_digest":"e8f0cc340f146fc08809192ed143f0c36b0dc10c345ef05a382e5382ce295094","intent_id":"86367041-79ce-5415-b107-ef60cf721bf3","rationale":"Felix approved _SanitizingMCPServer as the source identity anchor for MCP SDK v2 Integration because it is the instantiated MCPServer subclass owning the public server adapter and sanitized protocol error boundary; behavioral acceptance remains governed separately by QA evidence.","schema_version":1,"source_path":"src/aio_agentic_sdlc/mcp_server.py","source_sha256":"992b2d5362ecf7d2b1f6a8b49eed1b08c1b2b1d1b0e560c4d3bd5bf690e53021","symbol_kind":"class","symbol_name":"_SanitizingMCPServer"}
+# aio-sdlc-mapping-approval: {"candidate_reality_id":"55bef33d-15b7-588b-8712-a2ed3502be62","identity_approval":{"approved_at":"2026-08-21T23:03:05.512658-04:00","approved_by":"Felix","candidate_reality_id":"55bef33d-15b7-588b-8712-a2ed3502be62","evidence_digest":"e8f0cc340f146fc08809192ed143f0c36b0dc10c345ef05a382e5382ce295094","intent_id":"86367041-79ce-5415-b107-ef60cf721bf3","rationale":"Felix approved _SanitizingMCPServer as the source identity anchor for MCP SDK v2 Integration because it is the instantiated MCPServer subclass owning the public server adapter and sanitized protocol error boundary; behavioral acceptance remains governed separately by QA evidence.","schema_version":1,"source_path":"src/aio_agentic_sdlc/mcp_server.py","source_sha256":"992b2d5362ecf7d2b1f6a8b49eed1b08c1b2b1d1b0e560c4d3bd5bf690e53021","symbol_kind":"class","symbol_name":"_SanitizingMCPServer"},"intent_id":"86367041-79ce-5415-b107-ef60cf721bf3","maintenance_approval":{"approved_at":"2026-09-03T10:41:11.415414-04:00","approved_by":"Felix","evidence_digest":"e728917ff80530a4f0ddfdc288fa51232b2346367460ce656ddad868202a39de","rationale":"Felix confirmed that _SanitizingMCPServer is the sole production MCPServer instance and remains the source identity anchor for the MCP SDK v2 integration; all 23 tools, two resources, and one prompt are registered on that instance, while behavioral acceptance remains governed separately by QA evidence.","supersedes_receipt_sha256":"605c9ebbfdb5f34f4fcd5bdf9e26871ddcc6a63d93eba81c452184a34958c431"},"schema_version":2,"source_path":"src/aio_agentic_sdlc/mcp_server.py","source_sha256":"ea924f8335f78cea30956c5fb13c472e0016dc839a6a518148a6c642897ee64d","symbol_kind":"class","symbol_name":"_SanitizingMCPServer"}
 # aio-sdlc-node: 86367041-79ce-5415-b107-ef60cf721bf3
 class _SanitizingMCPServer(MCPServer):
     """Keep unexpected tool failures useful without exposing internal details."""
@@ -1091,13 +1191,12 @@ def promote_spec(
             source_stat = os.stat(src_path, follow_symlinks=False)
             source_identity = _stat_identity(source_stat)
             source_mode = stat.S_IMODE(source_stat.st_mode)
+            recovery_directory = _promotion_recovery_directory(project_root)
             temp_path = _copy_regular_file_to_atomic_temp(src_path, specs_dir)
-            destination_committed = False
             destination_fd: int | None = None
             destination_identity: tuple[int, int] | None = None
-            source_mode_changed = False
-            source_removal_started = False
-            source_removed = False
+            source_digest: str | None = None
+            source_backup: Path | None = None
             try:
                 src_path = guarded_file_path(src_path)
                 if not _path_matches_regular_identity(src_path, source_identity):
@@ -1105,69 +1204,102 @@ def promote_spec(
                 dst_path = guarded_file_path(dst_path)
                 if dst_path.exists():
                     raise PromotionError("spec destination changed during promotion")
-                os.replace(temp_path, dst_path)
-                destination_committed = True
+                _install_spec_no_replace(temp_path, dst_path)
 
                 destination_fd, committed_stat = _open_verified_regular_leaf(dst_path)
                 destination_identity = _stat_identity(committed_stat)
+                source_digest = _descriptor_sha256(destination_fd)
                 dst_path = guarded_file_path(dst_path)
                 if not _path_matches_regular_identity(dst_path, destination_identity):
                     raise PromotionError("spec destination changed during promotion")
 
                 src_path = guarded_file_path(src_path)
-                if not _path_matches_regular_identity(src_path, source_identity):
+                if not _regular_leaf_matches_snapshot(
+                    src_path,
+                    identity=source_identity,
+                    mode=source_mode,
+                    sha256=source_digest,
+                ):
                     raise PromotionError("spec source changed during promotion")
                 dst_path = guarded_file_path(dst_path)
                 if not _path_matches_regular_identity(dst_path, destination_identity):
                     raise PromotionError("spec destination changed during promotion")
 
-                if source_mode & stat.S_IWUSR == 0:
-                    os.chmod(src_path, source_mode | stat.S_IWUSR)
-                    source_mode_changed = True
-                    if not _path_matches_regular_identity(src_path, source_identity):
-                        raise PromotionError("spec source changed during promotion")
-                source_removal_started = True
-                os.unlink(src_path)
-                source_removed = True
+                source_backup = _reserve_promotion_recovery_leaf(
+                    recovery_directory,
+                    feature_name,
+                    suffix=".source-backup",
+                )
+                _move_source_to_promotion_backup(src_path, source_backup)
+                if not _regular_leaf_matches_snapshot(
+                    source_backup,
+                    identity=source_identity,
+                    mode=source_mode,
+                    sha256=source_digest,
+                ):
+                    raise PromotionError(
+                        "spec source changed during promotion; recovery artifact retained"
+                    )
+                if os.path.lexists(src_path):
+                    raise PromotionError("spec source path changed during promotion")
 
                 dst_path = guarded_file_path(dst_path)
                 if not _path_matches_regular_identity(dst_path, destination_identity):
                     raise PromotionError("spec destination changed during promotion")
+                if not _regular_leaf_matches_snapshot(
+                    source_backup,
+                    identity=source_identity,
+                    mode=source_mode,
+                    sha256=source_digest,
+                ):
+                    raise PromotionError(
+                        "spec source recovery identity changed during promotion"
+                    )
             except Exception as transition_error:
                 temp_path.unlink(missing_ok=True)
-                if source_removal_started and not os.path.lexists(src_path):
-                    source_removed = True
                 rollback_error: Exception | None = None
-                if source_removed and destination_fd is not None:
-                    try:
-                        _restore_regular_file_from_fd(
-                            destination_fd,
-                            src_path,
-                            source_mode,
+                source_is_expected = (
+                    source_digest is not None
+                    and _regular_leaf_matches_snapshot(
+                        src_path,
+                        identity=source_identity,
+                        mode=source_mode,
+                        sha256=source_digest,
+                    )
+                )
+                backup_is_expected = (
+                    source_backup is not None
+                    and source_digest is not None
+                    and _regular_leaf_matches_snapshot(
+                        source_backup,
+                        identity=source_identity,
+                        mode=source_mode,
+                        sha256=source_digest,
+                    )
+                )
+                if not source_is_expected and destination_fd is not None:
+                    if backup_is_expected and os.path.lexists(src_path):
+                        rollback_error = PromotionError(
+                            "spec source path changed during rollback; "
+                            "recovery copy retained"
                         )
-                        source_removed = False
-                    except Exception as error:
-                        rollback_error = error
-                elif source_mode_changed and _path_matches_regular_identity(
-                    src_path, source_identity
-                ):
-                    try:
-                        os.chmod(src_path, source_mode)
-                    except OSError as error:
-                        rollback_error = error
+                    else:
+                        try:
+                            _restore_regular_file_from_fd(
+                                destination_fd,
+                                src_path,
+                                source_mode,
+                                recovery_directory,
+                            )
+                        except Exception as error:
+                            rollback_error = error
 
                 if destination_fd is not None:
                     os.close(destination_fd)
                     destination_fd = None
-                if destination_committed and os.path.lexists(dst_path):
-                    try:
-                        _remove_leaf_without_following(dst_path)
-                        destination_committed = False
-                    except OSError as error:
-                        rollback_error = rollback_error or error
                 if rollback_error is not None:
                     raise PromotionError(
-                        "spec promotion rollback failed closed"
+                        "spec promotion rollback failed closed; recovery copy retained"
                     ) from rollback_error
                 raise transition_error
             finally:
