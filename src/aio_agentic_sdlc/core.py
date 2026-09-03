@@ -5,10 +5,15 @@ import yaml
 
 from .config import load_config
 from .state import load_backlog as _load_backlog
+from .state import mutate_backlog as _mutate_backlog
 from .state import save_backlog as _save_backlog
 from .workspace import INTENTION_DAG_FILE, REALITY_DAG_FILE, SPECS_DIR
 
 VALID_STATUSES = ("New", "In Progress", "Completed", "Blocked")
+
+
+class BacklogOperationError(ValueError):
+    """Raised for an expected, user-correctable backlog operation failure."""
 
 
 def _get_status(item):
@@ -19,10 +24,11 @@ def _get_blockers(item):
     return item.get("blockers", [])
 
 
-def validate_hierarchy(item_type, parent_id, data, project_path):
+def validate_hierarchy(item_type, parent_id, data, project_path, *, config=None):
     if not item_type and not parent_id:
         return
-    config = load_config(project_path)
+    if config is None:
+        config = load_config(project_path)
     hierarchy = config.get("hierarchy")
     if not hierarchy:
         hierarchy = {"1": ["Epic"], "2": ["Feature"], "3": ["Task", "Bug"]}
@@ -34,7 +40,7 @@ def validate_hierarchy(item_type, parent_id, data, project_path):
                 level = int(level_key)
                 break
         if level is None:
-            raise ValueError(
+            raise BacklogOperationError(
                 f"Invalid item_type '{item_type}'. Valid types: {hierarchy}"
             )
 
@@ -52,12 +58,12 @@ def validate_hierarchy(item_type, parent_id, data, project_path):
         if level is not None:
             if validation_mode == "strict":
                 if level != parent_level + 1:
-                    raise ValueError(
+                    raise BacklogOperationError(
                         f"Strict Mode Violation: Child '{item_type}' (Level {level}) must be exactly Parent '{parent_type}' (Level {parent_level}) + 1."
                     )
             else:
                 if level <= parent_level:
-                    raise ValueError(
+                    raise BacklogOperationError(
                         f"Flex Mode Violation: Child '{item_type}' (Level {level}) must be > Parent '{parent_type}' (Level {parent_level})."
                     )
 
@@ -141,7 +147,7 @@ def _compute_sorted_items(nodes, edges):
 
     def visit(n):
         if n in temp_mark:
-            raise ValueError(
+            raise BacklogOperationError(
                 f"Circular dependency detected involving [{n}]. Analyze items to clarify what genuinely depends on what."
             )
         if n not in visited:
@@ -230,25 +236,29 @@ def _compute_sorted_items(nodes, edges):
 
 
 def prioritize_items(project_path="."):
-    data = load_backlog(project_path)
-    if not data.get("nodes"):
-        return False
+    def mutate(data):
+        if not data.get("nodes"):
+            return False, False
 
-    nodes = data["nodes"]
-    edges = data.get("edges", [])
-    final_ordered_keys = _compute_sorted_items(nodes, edges)
+        nodes = data["nodes"]
+        edges = data.get("edges", [])
+        final_ordered_keys = _compute_sorted_items(nodes, edges)
 
-    new_nodes = {k: nodes[k] for k in final_ordered_keys}
-    data["nodes"] = new_nodes
+        new_nodes = {k: nodes[k] for k in final_ordered_keys}
+        data["nodes"] = new_nodes
 
-    for name, item in new_nodes.items():
-        if _get_blockers(item) and _get_status(item) != "Completed":
-            item["status"] = "Blocked"
-        elif _get_status(item) == "Blocked" and not _get_blockers(item):
-            item["status"] = "New"
+        for item in new_nodes.values():
+            if _get_blockers(item) and _get_status(item) != "Completed":
+                item["status"] = "Blocked"
+            elif _get_status(item) == "Blocked" and not _get_blockers(item):
+                item["status"] = "New"
+        return True, True
 
-    save_backlog(data, project_path, operation="backlog.prioritize")
-    return True
+    return _mutate_backlog(
+        project_path,
+        operation="backlog.prioritize",
+        mutator=mutate,
+    )
 
 
 def get_next_item(project_path="."):
@@ -262,7 +272,7 @@ def get_next_item(project_path="."):
     edges = copy.deepcopy(data.get("edges", []))
     try:
         ordered_keys = _compute_sorted_items(nodes, edges)
-    except ValueError as e:
+    except BacklogOperationError as e:
         return None, str(e)
 
     top_key = ordered_keys[0] if ordered_keys else None
@@ -318,35 +328,44 @@ def add_item(
     parent_id=None,
 ):
     if not description or not str(description).strip():
-        raise ValueError(
+        raise BacklogOperationError(
             "Description cannot be empty. Please provide a detailed description of the task."
         )
 
-    data = load_backlog(project_path)
-    if name in data.get("nodes", {}):
-        raise ValueError(f"Item '{name}' already exists.")
+    config = load_config(project_path)
 
-    validate_hierarchy(item_type, parent_id, data, project_path)
+    def mutate(data):
+        if name in data.get("nodes", {}):
+            raise BacklogOperationError(f"Item '{name}' already exists.")
 
-    requires_list = [r.strip() for r in requires.split(",")] if requires else []
-    warnings = ensure_dependencies(data, requires_list)
-    blockers_list = [b.strip() for b in blockers.split(",")] if blockers else []
+        validate_hierarchy(
+            item_type,
+            parent_id,
+            data,
+            project_path,
+            config=config,
+        )
 
-    data["nodes"][name] = {
-        "item_type": item_type,
-        "impact": impact,
-        "effort": effort,
-        "category": category,
-        "description": description or "",
-        "ai_driven": ai_driven,
-        "status": status,
-        "blockers": blockers_list,
-        "scores": {},
-    }
-    set_requires(data, name, requires_list)
-    set_parent(data, name, parent_id)
-    save_backlog(data, project_path, operation="backlog.add")
-    return warnings
+        requires_list = [r.strip() for r in requires.split(",")] if requires else []
+        warnings = ensure_dependencies(data, requires_list)
+        blockers_list = [b.strip() for b in blockers.split(",")] if blockers else []
+
+        data["nodes"][name] = {
+            "item_type": item_type,
+            "impact": impact,
+            "effort": effort,
+            "category": category,
+            "description": description or "",
+            "ai_driven": ai_driven,
+            "status": status,
+            "blockers": blockers_list,
+            "scores": {},
+        }
+        set_requires(data, name, requires_list)
+        set_parent(data, name, parent_id)
+        return warnings, True
+
+    return _mutate_backlog(project_path, operation="backlog.add", mutator=mutate)
 
 
 def update_item(
@@ -364,102 +383,120 @@ def update_item(
     parent_id=None,
 ):
     if description is not None and not str(description).strip():
-        raise ValueError(
+        raise BacklogOperationError(
             "Description cannot be empty. Please provide a detailed description of the task."
         )
 
-    data = load_backlog(project_path)
-    if name not in data.get("nodes", {}):
-        raise ValueError(f"Item '{name}' not found.")
+    def mutate(data):
+        if name not in data.get("nodes", {}):
+            raise BacklogOperationError(f"Item '{name}' not found.")
 
-    item = data["nodes"][name]
-    warnings = []
+        item = data["nodes"][name]
+        warnings = []
 
-    if item_type is not None:
-        item["item_type"] = item_type
-    if impact is not None:
-        item["impact"] = impact
-    if effort is not None:
-        item["effort"] = effort
-    if category is not None:
-        item["category"] = category
-    if requires is not None:
-        requires_list = [r.strip() for r in requires.split(",")] if requires else []
-        warnings = ensure_dependencies(data, requires_list)
-        set_requires(data, name, requires_list)
-    if ai_driven is not None:
-        item["ai_driven"] = ai_driven
-    if status is not None:
-        item["status"] = status
-    if description is not None:
-        item["description"] = description
-    if blockers is not None:
-        blockers_list = [b.strip() for b in blockers.split(",")] if blockers else []
-        item["blockers"] = blockers_list
-    if parent_id is not None:
-        set_parent(data, name, parent_id)
+        if item_type is not None:
+            item["item_type"] = item_type
+        if impact is not None:
+            item["impact"] = impact
+        if effort is not None:
+            item["effort"] = effort
+        if category is not None:
+            item["category"] = category
+        if requires is not None:
+            requires_list = [r.strip() for r in requires.split(",")] if requires else []
+            warnings = ensure_dependencies(data, requires_list)
+            set_requires(data, name, requires_list)
+        if ai_driven is not None:
+            item["ai_driven"] = ai_driven
+        if status is not None:
+            item["status"] = status
+        if description is not None:
+            item["description"] = description
+        if blockers is not None:
+            blockers_list = [b.strip() for b in blockers.split(",")] if blockers else []
+            item["blockers"] = blockers_list
+        if parent_id is not None:
+            set_parent(data, name, parent_id)
+        return warnings, True
 
-    save_backlog(data, project_path, operation="backlog.update")
-    return warnings
+    return _mutate_backlog(project_path, operation="backlog.update", mutator=mutate)
 
 
 def set_status(name, new_status, project_path="."):
-    data = load_backlog(project_path)
-    if name not in data.get("nodes", {}):
-        raise ValueError(f"Item '{name}' not found.")
-    data["nodes"][name]["status"] = new_status
-    save_backlog(data, project_path, operation="backlog.set-status")
+    def mutate(data):
+        if name not in data.get("nodes", {}):
+            raise BacklogOperationError(f"Item '{name}' not found.")
+        data["nodes"][name]["status"] = new_status
+        return None, True
+
+    return _mutate_backlog(
+        project_path,
+        operation="backlog.set-status",
+        mutator=mutate,
+    )
 
 
 def add_blocker(name, reason, project_path="."):
-    data = load_backlog(project_path)
-    if name not in data.get("nodes", {}):
-        raise ValueError(f"Item '{name}' not found.")
-    item = data["nodes"][name]
-    blockers = _get_blockers(item)
-    if reason not in blockers:
-        blockers.append(reason)
-    item["blockers"] = blockers
-    if _get_status(item) != "Completed":
-        item["status"] = "Blocked"
-    save_backlog(data, project_path, operation="backlog.add-blocker")
+    def mutate(data):
+        if name not in data.get("nodes", {}):
+            raise BacklogOperationError(f"Item '{name}' not found.")
+        item = data["nodes"][name]
+        blockers = _get_blockers(item)
+        if reason not in blockers:
+            blockers.append(reason)
+        item["blockers"] = blockers
+        if _get_status(item) != "Completed":
+            item["status"] = "Blocked"
+        return None, True
+
+    return _mutate_backlog(
+        project_path,
+        operation="backlog.add-blocker",
+        mutator=mutate,
+    )
 
 
 def remove_blocker(name, reason, project_path="."):
-    data = load_backlog(project_path)
-    if name not in data.get("nodes", {}):
-        raise ValueError(f"Item '{name}' not found.")
-    item = data["nodes"][name]
-    blockers = _get_blockers(item)
-    if reason in blockers:
-        blockers.remove(reason)
-    item["blockers"] = blockers
-    if not blockers and _get_status(item) == "Blocked":
-        item["status"] = "New"
-    save_backlog(data, project_path, operation="backlog.remove-blocker")
+    def mutate(data):
+        if name not in data.get("nodes", {}):
+            raise BacklogOperationError(f"Item '{name}' not found.")
+        item = data["nodes"][name]
+        blockers = _get_blockers(item)
+        if reason in blockers:
+            blockers.remove(reason)
+        item["blockers"] = blockers
+        if not blockers and _get_status(item) == "Blocked":
+            item["status"] = "New"
+        return None, True
+
+    return _mutate_backlog(
+        project_path,
+        operation="backlog.remove-blocker",
+        mutator=mutate,
+    )
 
 
 def remove_item(name, project_path="."):
-    data = load_backlog(project_path)
-    if name not in data.get("nodes", {}):
-        raise ValueError(f"Item '{name}' not found.")
+    def mutate(data):
+        if name not in data.get("nodes", {}):
+            raise BacklogOperationError(f"Item '{name}' not found.")
 
-    # Remove from edges
-    data["edges"] = [
-        e for e in data.get("edges", []) if e["from"] != name and e["to"] != name
-    ]
-    # Remove from nodes
-    del data["nodes"][name]
+        data["edges"] = [
+            edge
+            for edge in data.get("edges", [])
+            if edge["from"] != name and edge["to"] != name
+        ]
+        del data["nodes"][name]
 
-    # Also remove from blockers if it was explicitly a blocker string
-    for n, item in data["nodes"].items():
-        if "blockers" in item and name in item["blockers"]:
-            item["blockers"].remove(name)
+        for item in data["nodes"].values():
+            if "blockers" in item and name in item["blockers"]:
+                item["blockers"].remove(name)
+        return None, True
 
-    save_backlog(data, project_path, operation="backlog.remove")
+    return _mutate_backlog(project_path, operation="backlog.remove", mutator=mutate)
 
 
-# aio-sdlc-mapping-approval: {"approved_at":"2026-08-13T19:29:14.286017-04:00","approved_by":"Felix","candidate_reality_id":"4332ee05-cded-51dc-b884-7249af9d97cd","evidence_digest":"785fb78003c07acecef12413f387caffdf6eb17b2676b55ee734a51006195c08","intent_id":"685b1d12-3eed-48f6-9fa8-b8ec88a5587f","rationale":"Approved the TraceabilityValidator source identity; responsibility and validate API match, without claiming behavioral verification.","schema_version":1,"source_path":"src/aio_agentic_sdlc/core.py","source_sha256":"89b340f7032a84e0c9e7f032814ee15441ed06d4e4409e8d3d790ed6585faa2d","symbol_kind":"class","symbol_name":"TraceabilityValidator"}
+# aio-sdlc-mapping-approval: {"candidate_reality_id":"4332ee05-cded-51dc-b884-7249af9d97cd","identity_approval":{"approved_at":"2026-08-13T19:29:14.286017-04:00","approved_by":"Felix","candidate_reality_id":"4332ee05-cded-51dc-b884-7249af9d97cd","evidence_digest":"785fb78003c07acecef12413f387caffdf6eb17b2676b55ee734a51006195c08","intent_id":"685b1d12-3eed-48f6-9fa8-b8ec88a5587f","rationale":"Approved the TraceabilityValidator source identity; responsibility and validate API match, without claiming behavioral verification.","schema_version":1,"source_path":"src/aio_agentic_sdlc/core.py","source_sha256":"89b340f7032a84e0c9e7f032814ee15441ed06d4e4409e8d3d790ed6585faa2d","symbol_kind":"class","symbol_name":"TraceabilityValidator"},"intent_id":"685b1d12-3eed-48f6-9fa8-b8ec88a5587f","maintenance_approval":{"approved_at":"2026-08-21T23:03:05.512658-04:00","approved_by":"Felix","evidence_digest":"b4abf4522e3c6ec90c755dbcf4b4034bb7149d5591b525a8815cb69f6c6514d3","rationale":"Felix approved refreshing the existing TraceabilityValidator mapping receipt to bind current source after unrelated same-file changes; identity remains unchanged and legacy Intent completeness remains unresolved.","supersedes_receipt_sha256":"98141c7e83e1fd3c82ea6b0002a67d349a430af3b81b43033568287a3d00e639"},"schema_version":2,"source_path":"src/aio_agentic_sdlc/core.py","source_sha256":"815994a1ffd8e4d25a6b778096d76afd15a63ba3f57cea214bde1f7821e4ef59","symbol_kind":"class","symbol_name":"TraceabilityValidator"}
 # aio-sdlc-node: 685b1d12-3eed-48f6-9fa8-b8ec88a5587f
 class TraceabilityValidator:
     def __init__(

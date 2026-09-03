@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "provenance": [
+    {
+      "source_type": "human_statement",
+      "reference": "chat:thread:019f903c-5824-7f62-adbc-55ca9168f094#2026-08-21",
+      "statement": "Approved implementing the mapping-tool extension that had been presented, while retaining separate approval for each eventual source identity and receipt digest."
+    },
+    {
+      "source_type": "document",
+      "reference": ".aio-agentic-sdlc/recovery-roadmap.md#18-close-source-identity-maintenance-gaps-exposed-by-dogfooding",
+      "statement": "Add explicit representative-candidate review and approval-gated receipt refresh without manual markers, receipts, or code renames made only to satisfy matching."
+    },
+    {
+      "source_type": "document",
+      "reference": ".aio-agentic-sdlc/changes/mcp-sdk-v2/triage.json",
+      "statement": "Post-QA MCP v2 dogfooding found one differently named implementation identity and two confirmed mappings with stale whole-file source receipts."
+    }
+  ],
+  "assumptions": [
+    "Canonical Intention GUIDs remain authoritative and an observed Reality GUID cannot redefine intent.",
+    "The first extension continues to support exact Python class and function symbols already represented by the Reality parser.",
+    "Selecting a representative symbol establishes only identity evidence; it does not prove behavioral completeness or acceptance criteria.",
+    "A receipt refresh preserves the existing canonical marker and changes only fresh approval evidence after exact human authorization."
+  ],
+  "ambiguities": [
+    {
+      "question": "Should source identity receipts change from whole-file hashes to symbol-scoped hashes in this milestone?",
+      "status": "resolved",
+      "resolution": "No. Preserve the current whole-file evidence model and treat symbol-scoped provenance as a separate architecture decision."
+    },
+    {
+      "question": "Does approval of this capability also approve the three source identities discovered during MCP v2 dogfooding?",
+      "status": "resolved",
+      "resolution": "No. Each exact candidate and evidence digest requires a separate human identity decision after this tooling passes QA."
+    }
+  ],
+  "confidence": 0.98,
+  "acceptance_criteria": [
+    {
+      "id": "IDENTITY-MAINT-AC1",
+      "statement": "A read-only review can explicitly select one current observed Reality class or function even when name matching produces no candidate, then bind its exact source location, source hash, observed GUID, intent evidence, and deterministic digest for human review.",
+      "required_evidence": [
+        "test:explicit-candidate-source-binding",
+        "cli:mapping-review-explicit-candidate",
+        "mcp:review-mapping-explicit-candidate"
+      ]
+    },
+    {
+      "id": "IDENTITY-MAINT-AC2",
+      "statement": "A read-only refresh review can bind one already marker-confirmed symbol and its current adjacent receipt to fresh deterministic evidence without changing source or canonical state.",
+      "required_evidence": [
+        "test:confirmed-receipt-review",
+        "cli:mapping-review-receipt-refresh",
+        "mcp:review-mapping-receipt-refresh"
+      ]
+    },
+    {
+      "id": "IDENTITY-MAINT-AC3",
+      "statement": "An explicitly approved candidate mapping or receipt refresh applies atomically only when the reviewed digest, marker, symbol, path, source content, and canonical DAGs remain fresh; every mismatch or failure leaves source, receipts, DAGs, backlog, and audit state unchanged or fully restored.",
+      "required_evidence": [
+        "test:identity-maintenance-stale-evidence",
+        "test:identity-maintenance-atomic-rollback",
+        "test:identity-maintenance-concurrency"
+      ]
+    },
+    {
+      "id": "IDENTITY-MAINT-AC4",
+      "statement": "Python API, CLI, MCP, and Codex workflow guidance expose the same bounded, human-readable decision contract, keep GUIDs and digests in the audit section, and never treat mapping approval as behavioral approval.",
+      "required_evidence": [
+        "test:identity-maintenance-cli-mcp-parity",
+        "validation:manage-sdlc-skill",
+        "validation:codex-plugin"
+      ]
+    },
+    {
+      "id": "IDENTITY-MAINT-AC5",
+      "statement": "Adversarial path, symlink, reparse-point, hardlink, duplicate-marker, stale-writer, and concurrent-review cases fail closed, while a fresh self-dogfood run can review the MCP v2 representative symbol and both stale confirmed receipts without manual marker or receipt edits.",
+      "required_evidence": [
+        "test:identity-maintenance-adversarial",
+        "report:self-dogfood-identity-maintenance",
+        "validation:fresh-reality-reconciliation"
+      ]
+    }
+  ],
+  "revision_history": [
+    {
+      "revision": 1,
+      "recorded_at": "2026-08-21T16:31:54.9807952-04:00",
+      "actor": "sdlc_intake",
+      "generator_version": "aio-agentic-sdlc/intake-v1",
+      "summary": "Compiled the source-identity maintenance extension from the MCP v2 post-QA tooling gap, recovery roadmap, and proposed approval boundary."
+    },
+    {
+      "revision": 2,
+      "recorded_at": "2026-08-21T16:33:22.1194853-04:00",
+      "actor": "Felix",
+      "generator_version": "aio-agentic-sdlc/intake-v1",
+      "summary": "Approved implementing the exact source-candidate review and guarded receipt-refresh tooling scope while reserving each source identity for separate approval."
+    }
+  ],
+  "responsible_agent": "sdlc_architect",
+  "generator_version": "aio-agentic-sdlc/intake-v1",
+  "approval": {
+    "state": "approved",
+    "approved_by": "Felix",
+    "approved_at": "2026-08-21T16:33:22.1194853-04:00",
+    "rationale": "Felix explicitly approved implementing the mapping-tool extension presented after MCP v2 QA, while retaining separate approval for every exact source identity and evidence digest."
+  }
+}

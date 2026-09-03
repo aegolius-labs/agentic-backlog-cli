@@ -1,0 +1,2806 @@
+{
+  "schema_version": 1,
+  "source": {
+    "intention_sha256": "7133631db8a9631b9f0e515c18be3165305d20ea7975b7de9215bee112acd3a9",
+    "reality_sha256": "95f4cd600db04b1df8a2f96f6471b0b87d673cedb72d5bd5e507ddd1b3a4a6d2",
+    "plan_digest": "cb5f2c4f7a1336daab77bb50464b427584092f3bae285bf0cce900647c1e411c"
+  },
+  "summary": {
+    "plan_tasks": 56,
+    "missing_implementation": 0,
+    "obsolete_or_unapproved_intent": 52,
+    "framework_tooling_drift": 3,
+    "identity_review_required": 0,
+    "needs_classification": 1,
+    "actionable_implementation": 0
+  },
+  "limit": {
+    "max_items": 100,
+    "total_items": 56,
+    "returned_items": 56,
+    "truncated": false
+  },
+  "items": [
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Legacy Intent IR Migration",
+        "name_truncated": false
+      },
+      "classification": "needs_classification",
+      "reason": "Approved intent has no deterministic Reality match; explicit evidence is required to distinguish missing implementation from tooling drift.",
+      "decision_source": "pending",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "approved",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "INTENT-MIGRATION-AC1",
+              "id_truncated": false,
+              "statement": "The framework inventories every Intention node without Intent IR and produces a deterministic coverage report with complete totals and bounded detail.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "test:legacy-intent-inventory",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "report:intent-ir-coverage",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 2,
+                "returned_items": 2,
+                "truncated": false
+              }
+            },
+            {
+              "id": "INTENT-MIGRATION-AC2",
+              "id_truncated": false,
+              "statement": "A migration compiler creates versioned Intent IR from existing local descriptions, relationships, specifications, and provenance without inventing requirements; uncertain interpretations remain review-required.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "test:legacy-intent-compilation",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "test:uncertain-intent-review-gate",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "report:migration-provenance",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 3,
+                "returned_items": 3,
+                "truncated": false
+              }
+            },
+            {
+              "id": "INTENT-MIGRATION-AC3",
+              "id_truncated": false,
+              "statement": "Each accepted migration is an atomic framework transition that preserves canonical GUIDs, graph edges, prior fields, and revision history and rejects stale writers without partial mutation.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "test:atomic-intent-migration",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "test:migration-graph-preservation",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "test:migration-stale-writer",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 3,
+                "returned_items": 3,
+                "truncated": false
+              }
+            },
+            {
+              "id": "INTENT-MIGRATION-AC4",
+              "id_truncated": false,
+              "statement": "After migration, strict Intent IR validation succeeds for every node and intent-summary renders each node without requiring raw YAML inspection.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "validation:strict-intent-ir",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "test:intent-summary-complete-coverage",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 2,
+                "returned_items": 2,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 4,
+          "returned_items": 4,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+        "canonical_intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Explicit Source Identity Maintenance",
+        "name_truncated": false
+      },
+      "classification": "framework_tooling_drift",
+      "reason": "The accepted Source Identity Maintenance behavior is implemented and QA-accepted, but the distinct Intent remains structurally unmapped because its approved architecture deliberately extends the already-confirmed MappingEngine and supporting adapters instead of introducing a unique source component. Assigning a second canonical Intent GUID to that same class would invent a source identity and violate the one-confirmed-identity model. This is source-traceability representation drift requiring a later architecture decision, not missing implementation and not authorization for more product code.",
+      "decision_source": "explicit",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "approved",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "IDENTITY-MAINT-AC1",
+              "id_truncated": false,
+              "statement": "A read-only review can explicitly select one current observed Reality class or function even when name matching produces no candidate, then bind its exact source location, source hash, observed GUID, intent evidence, and deterministic digest for human review.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "test:explicit-candidate-source-binding",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "cli:mapping-review-explicit-candidate",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "mcp:review-mapping-explicit-candidate",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 3,
+                "returned_items": 3,
+                "truncated": false
+              }
+            },
+            {
+              "id": "IDENTITY-MAINT-AC2",
+              "id_truncated": false,
+              "statement": "A read-only refresh review can bind one already marker-confirmed symbol and its current adjacent receipt to fresh deterministic evidence without changing source or canonical state.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "test:confirmed-receipt-review",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "cli:mapping-review-receipt-refresh",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "mcp:review-mapping-receipt-refresh",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 3,
+                "returned_items": 3,
+                "truncated": false
+              }
+            },
+            {
+              "id": "IDENTITY-MAINT-AC3",
+              "id_truncated": false,
+              "statement": "An explicitly approved candidate mapping or receipt refresh applies atomically only when the reviewed digest, marker, symbol, path, source content, and canonical DAGs remain fresh; every mismatch or failure leaves source, receipts, DAGs, backlog, and audit state unchanged or fully restored.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "test:identity-maintenance-stale-evidence",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "test:identity-maintenance-atomic-rollback",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "test:identity-maintenance-concurrency",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 3,
+                "returned_items": 3,
+                "truncated": false
+              }
+            },
+            {
+              "id": "IDENTITY-MAINT-AC4",
+              "id_truncated": false,
+              "statement": "Python API, CLI, MCP, and Codex workflow guidance expose the same bounded, human-readable decision contract, keep GUIDs and digests in the audit section, and never treat mapping approval as behavioral approval.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "test:identity-maintenance-cli-mcp-parity",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "validation:manage-sdlc-skill",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "validation:codex-plugin",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 3,
+                "returned_items": 3,
+                "truncated": false
+              }
+            },
+            {
+              "id": "IDENTITY-MAINT-AC5",
+              "id_truncated": false,
+              "statement": "Adversarial path, symlink, reparse-point, hardlink, duplicate-marker, stale-writer, and concurrent-review cases fail closed, while a fresh self-dogfood run can review the MCP v2 representative symbol and both stale confirmed receipts without manual marker or receipt edits.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "test:identity-maintenance-adversarial",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "report:self-dogfood-identity-maintenance",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "validation:fresh-reality-reconciliation",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 3,
+                "returned_items": 3,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 5,
+          "returned_items": 5,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:15019926-c6be-5c98-b558-954c7657e5c6",
+        "canonical_intent_id": "15019926-c6be-5c98-b558-954c7657e5c6"
+      },
+      "decision": {
+        "rationale": "The accepted Source Identity Maintenance behavior is implemented and QA-accepted, but the distinct Intent remains structurally unmapped because its approved architecture deliberately extends the already-confirmed MappingEngine and supporting adapters instead of introducing a unique source component. Assigning a second canonical Intent GUID to that same class would invent a source identity and violate the one-confirmed-identity model. This is source-traceability representation drift requiring a later architecture decision, not missing implementation and not authorization for more product code.",
+        "evidence": [
+          ".aio-agentic-sdlc/changes/source-identity-maintenance/reconciliation.json confirms 10 mappings after the approved writes but records Intent 15019926-c6be-5c98-b558-954c7657e5c6 as unmapped with zero candidates.",
+          ".aio-agentic-sdlc/changes/source-identity-maintenance/sdd.md:14 requires extending MappingEngine owned by parent capability 6317643a-a8fc-5026-b373-9330004bc90d and explicitly forbids a second mapping store or ontology.",
+          "src/aio_agentic_sdlc/mapping.py:465-466 binds MappingEngine to parent Intent 6317643a-a8fc-5026-b373-9330004bc90d; no source marker exists for maintenance Intent 15019926-c6be-5c98-b558-954c7657e5c6.",
+          "src/aio_agentic_sdlc/mapping.py:1071,1242,2126 contains the accepted explicit-candidate review, confirmed-receipt review, and receipt-refresh implementation inside MappingEngine.",
+          ".aio-agentic-sdlc/changes/source-identity-maintenance/self-dogfood-review.json records three fresh approval-supported dogfood reviews, and the user-approved writes now independently verify as confirmed with matching receipt digests and source hashes."
+        ],
+        "decided_by": "sdlc_cartographer",
+        "decided_at": "2026-08-21T23:08:29.583196-04:00"
+      }
+    },
+    {
+      "subject": {
+        "kind": "relationship",
+        "source": {
+          "type": "component",
+          "name": "Approval-Gated Source Mapping",
+          "name_truncated": false
+        },
+        "relation": "depends_on",
+        "target": {
+          "type": "component",
+          "name": "Evidence-Gated Reconciliation Baseline",
+          "name_truncated": false
+        }
+      },
+      "classification": "framework_tooling_drift",
+      "reason": "The current Reality parser does not emit depends_on relationships for component-to-component endpoints.",
+      "decision_source": "observation_contract",
+      "implementation_authorized": false,
+      "evidence": {
+        "source_approval_state": "approved",
+        "target_approval_state": "approved",
+        "safe_action": "connect_confirmed",
+        "relationship_observable": false
+      },
+      "audit": {
+        "subject_key": "relationship:6317643a-a8fc-5026-b373-9330004bc90d:depends_on:9015c8a3-fd14-5598-916d-d03fcf41e415",
+        "source_intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+        "target_intent_id": "9015c8a3-fd14-5598-916d-d03fcf41e415"
+      }
+    },
+    {
+      "subject": {
+        "kind": "relationship",
+        "source": {
+          "type": "component",
+          "name": "DAG Visualization and Comparison",
+          "name_truncated": false
+        },
+        "relation": "depends_on",
+        "target": {
+          "type": "component",
+          "name": "Evidence-Gated Reconciliation Baseline",
+          "name_truncated": false
+        }
+      },
+      "classification": "framework_tooling_drift",
+      "reason": "The current Reality parser does not emit depends_on relationships for component-to-component endpoints.",
+      "decision_source": "observation_contract",
+      "implementation_authorized": false,
+      "evidence": {
+        "source_approval_state": "approved",
+        "target_approval_state": "approved",
+        "safe_action": "connect_confirmed",
+        "relationship_observable": false
+      },
+      "audit": {
+        "subject_key": "relationship:841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58:depends_on:9015c8a3-fd14-5598-916d-d03fcf41e415",
+        "source_intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+        "target_intent_id": "9015c8a3-fd14-5598-916d-d03fcf41e415"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "agent",
+        "name": "SDLC Architect Agent",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-07e7e16c-c4d7-4f59-ac98-5d33599f0270-AC1",
+              "id_truncated": false,
+              "statement": "Reads PRDs from .aio-agentic-sdlc/inbox/, performs technical research, maps new architectural nodes into .aio-agentic-sdlc/intention-dag.yaml, and moves processed PRDs to .aio-agentic-sdlc/specs/.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:07e7e16c-c4d7-4f59-ac98-5d33599f0270",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:07e7e16c-c4d7-4f59-ac98-5d33599f0270",
+        "canonical_intent_id": "07e7e16c-c4d7-4f59-ac98-5d33599f0270"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "TUI Dashboard",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-09497db1-e4c8-43f3-8c27-ee8577b2b59f-AC1",
+              "id_truncated": false,
+              "statement": "Local terminal UI dashboard providing real-time visibility into the dynamic DAG and parallel swarms.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:09497db1-e4c8-43f3-8c27-ee8577b2b59f",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:09497db1-e4c8-43f3-8c27-ee8577b2b59f",
+        "canonical_intent_id": "09497db1-e4c8-43f3-8c27-ee8577b2b59f"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Daemon Watcher",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-10d4c0ba-de03-49ac-ae0e-41048fd557ed-AC1",
+              "id_truncated": false,
+              "statement": "Long-running background process that monitors the inbox directory for PRDs and triggers pipelines.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:10d4c0ba-de03-49ac-ae0e-41048fd557ed",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:10d4c0ba-de03-49ac-ae0e-41048fd557ed",
+        "canonical_intent_id": "10d4c0ba-de03-49ac-ae0e-41048fd557ed"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "endpoint",
+        "name": "Health Check Endpoint",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-1525a991-0ffa-4f82-b5a1-b23602346ca4-AC1",
+              "id_truncated": false,
+              "statement": "Lightweight health check endpoint for liveness probes",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:1525a991-0ffa-4f82-b5a1-b23602346ca4",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:1525a991-0ffa-4f82-b5a1-b23602346ca4",
+        "canonical_intent_id": "1525a991-0ffa-4f82-b5a1-b23602346ca4"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Cross-language Ontology Portability",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "ONTOLOGY-AC1",
+              "id_truncated": false,
+              "statement": "Python and TypeScript parsers emit the same stable core node and edge ontology.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "test:cross-language-ontology-contract",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "fixture:mixed-python-typescript-project",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 2,
+                "returned_items": 2,
+                "truncated": false
+              }
+            },
+            {
+              "id": "ONTOLOGY-AC2",
+              "id_truncated": false,
+              "statement": "Language-specific concepts do not leak into the core schema and GUID traceability remains valid across languages.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "test:mixed-project-guid-traceability",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "review:ontology-boundary",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 2,
+                "returned_items": 2,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 2,
+          "returned_items": 2,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:15302505-8828-525a-bebb-f72621f467a1",
+        "canonical_intent_id": "15302505-8828-525a-bebb-f72621f467a1"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "agent",
+        "name": "SDLC Intake Agent",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-22822d50-4438-4b48-821f-451933f557dd-AC1",
+              "id_truncated": false,
+              "statement": "Chats with the user, distills ideas into PRDs, and writes them to .aio-agentic-sdlc/inbox/ safely without writing execution code",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:22822d50-4438-4b48-821f-451933f557dd",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:22822d50-4438-4b48-821f-451933f557dd",
+        "canonical_intent_id": "22822d50-4438-4b48-821f-451933f557dd"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "DAG Schema Migrator",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-2499ec97-aa53-4f54-8a55-5406403a647b-AC1",
+              "id_truncated": false,
+              "statement": "Tooling to migrate existing DAG schema states to enforce strict GUID/Integer node IDs and eliminate fuzzy string matching.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:2499ec97-aa53-4f54-8a55-5406403a647b",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:2499ec97-aa53-4f54-8a55-5406403a647b",
+        "canonical_intent_id": "2499ec97-aa53-4f54-8a55-5406403a647b"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "entity",
+        "name": "Unified Agent Definitions",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-277fe548-6b99-4711-a89c-b681d262f820-AC1",
+              "id_truncated": false,
+              "statement": "Standardized agent definitions using the unified agent.md format with YAML frontmatter and markdown instructions.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:277fe548-6b99-4711-a89c-b681d262f820",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:277fe548-6b99-4711-a89c-b681d262f820",
+        "canonical_intent_id": "277fe548-6b99-4711-a89c-b681d262f820"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Canonical GUID Extractor",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-2e8a1562-7e77-4402-992f-f461e8c7161f-AC1",
+              "id_truncated": false,
+              "statement": "Extracts 'aio-sdlc-node' UUIDs from code comments via Tree-Sitter and agent frontmatters via PyYAML.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:2e8a1562-7e77-4402-992f-f461e8c7161f",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:2e8a1562-7e77-4402-992f-f461e8c7161f",
+        "canonical_intent_id": "2e8a1562-7e77-4402-992f-f461e8c7161f"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Agent Format Migrator",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-37c790a3-75a2-4533-9384-889a06a9e573-AC1",
+              "id_truncated": false,
+              "statement": "Tooling to scan .agents/agents/ for legacy agent.json and system_prompt.md files, consolidate them into agent.md with YAML frontmatter, and delete the legacy files.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:37c790a3-75a2-4533-9384-889a06a9e573",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:37c790a3-75a2-4533-9384-889a06a9e573",
+        "canonical_intent_id": "37c790a3-75a2-4533-9384-889a06a9e573"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "EULA & Privacy Prompt",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-3ea4e322-7259-4f15-99c8-cbee950afe00-AC1",
+              "id_truncated": false,
+              "statement": "Clickwrap prompt for first-time users to accept the Non-Commercial terms and Privacy Policy.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:3ea4e322-7259-4f15-99c8-cbee950afe00",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:3ea4e322-7259-4f15-99c8-cbee950afe00",
+        "canonical_intent_id": "3ea4e322-7259-4f15-99c8-cbee950afe00"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Approval Gate",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-40566eb0-0911-40cc-a1df-9ff6697734c8-AC1",
+              "id_truncated": false,
+              "statement": "Pauses pipeline before merging for user review, bypassable via configuration.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:40566eb0-0911-40cc-a1df-9ff6697734c8",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:40566eb0-0911-40cc-a1df-9ff6697734c8",
+        "canonical_intent_id": "40566eb0-0911-40cc-a1df-9ff6697734c8"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "endpoint",
+        "name": "Telemetry Backend",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-415fa500-6e50-488d-97ee-39ec4a9b2255-AC1",
+              "id_truncated": false,
+              "statement": "Third-party managed telemetry provider (e.g., PostHog/Sentry).",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:415fa500-6e50-488d-97ee-39ec4a9b2255",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:415fa500-6e50-488d-97ee-39ec4a9b2255",
+        "canonical_intent_id": "415fa500-6e50-488d-97ee-39ec4a9b2255"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "entity",
+        "name": "Agent Personas Config",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-45b34e7b-3c77-48f9-9b7c-8ec541243767-AC1",
+              "id_truncated": false,
+              "statement": "Configuration for custom names and personalities of user-facing agents, injected into prompts.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:45b34e7b-3c77-48f9-9b7c-8ec541243767",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:45b34e7b-3c77-48f9-9b7c-8ec541243767",
+        "canonical_intent_id": "45b34e7b-3c77-48f9-9b7c-8ec541243767"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "agent",
+        "name": "Implementer Agent",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-48295997-8b54-4168-bccc-30d49ae766d8-AC1",
+              "id_truncated": false,
+              "statement": "Swarm agent that implements SDDs, returning Variance Reports if technical roadblocks occur.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:48295997-8b54-4168-bccc-30d49ae766d8",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:48295997-8b54-4168-bccc-30d49ae766d8",
+        "canonical_intent_id": "48295997-8b54-4168-bccc-30d49ae766d8"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Variance Report Router",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-483abc2c-fab5-460f-9cd7-47bc25e0d3b3-AC1",
+              "id_truncated": false,
+              "statement": "Captures spec pushback from implementers and routes it to the Architect for dynamic SDD revision.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:483abc2c-fab5-460f-9cd7-47bc25e0d3b3",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:483abc2c-fab5-460f-9cd7-47bc25e0d3b3",
+        "canonical_intent_id": "483abc2c-fab5-460f-9cd7-47bc25e0d3b3"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "system",
+        "name": "AIO Agentic SDLC System",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-4d76717e-55cd-4768-b05e-06a3cce1128b-AC1",
+              "id_truncated": false,
+              "statement": "Dual-DAG reconciliation engine for autonomous software development",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:4d76717e-55cd-4768-b05e-06a3cce1128b",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:4d76717e-55cd-4768-b05e-06a3cce1128b",
+        "canonical_intent_id": "4d76717e-55cd-4768-b05e-06a3cce1128b"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Agent Runtime Portability",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "RUNTIME-AC1",
+              "id_truncated": false,
+              "statement": "Runtime-specific agent invocation is isolated behind a stable adapter contract.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "test:runtime-adapter-contract",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "architecture:runtime-boundary",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 2,
+                "returned_items": 2,
+                "truncated": false
+              }
+            },
+            {
+              "id": "RUNTIME-AC2",
+              "id_truncated": false,
+              "statement": "Codex-native orchestration advances one selected task through its lifecycle without modifying canonical intent semantics.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "test:codex-orchestration-lifecycle",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "demo:two-runtime-state-compatibility",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 2,
+                "returned_items": 2,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 2,
+          "returned_items": 2,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:4f6cdecf-639d-50e5-bc6d-ad71c1750000",
+        "canonical_intent_id": "4f6cdecf-639d-50e5-bc6d-ad71c1750000"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "agent",
+        "name": "Specialized QA Agents",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-54a600df-269a-42b2-a7e1-62f2a6687169-AC1",
+              "id_truncated": false,
+              "statement": "Swarm of specialized subagents (A11Y, Security, API Contracts, etc.) invoked for domain-specific checks.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:54a600df-269a-42b2-a7e1-62f2a6687169",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:54a600df-269a-42b2-a7e1-62f2a6687169",
+        "canonical_intent_id": "54a600df-269a-42b2-a7e1-62f2a6687169"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "container",
+        "name": "Agentic Orchestrator Loop",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-54b91d55-08fe-48df-be35-445be7cd1e46-AC1",
+              "id_truncated": false,
+              "statement": "Main orchestrator binding the calculated Diff to the SDLC Pipeline",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:54b91d55-08fe-48df-be35-445be7cd1e46",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:54b91d55-08fe-48df-be35-445be7cd1e46",
+        "canonical_intent_id": "54b91d55-08fe-48df-be35-445be7cd1e46"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Artifact Templating Engine",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-5a81e63d-85c7-4704-a0b1-e076367b2fd1-AC1",
+              "id_truncated": false,
+              "statement": "Programmatically generates standardized documentation artifacts from structured data.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:5a81e63d-85c7-4704-a0b1-e076367b2fd1",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:5a81e63d-85c7-4704-a0b1-e076367b2fd1",
+        "canonical_intent_id": "5a81e63d-85c7-4704-a0b1-e076367b2fd1"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Conflict Resolution Manager",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-5a916efe-75ec-4b0d-a8de-79fcd8e5035c-AC1",
+              "id_truncated": false,
+              "statement": "Detects and resolves DAG and file-level merge conflicts across parallel execution tasks.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:5a916efe-75ec-4b0d-a8de-79fcd8e5035c",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:5a916efe-75ec-4b0d-a8de-79fcd8e5035c",
+        "canonical_intent_id": "5a916efe-75ec-4b0d-a8de-79fcd8e5035c"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "entity",
+        "name": "Unified Configuration File",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-64b5afea-5e38-4659-82bb-662be3f3458e-AC1",
+              "id_truncated": false,
+              "statement": "Project-local configuration at .aio-agentic-sdlc/config.json, replacing legacy external tracker configuration.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:64b5afea-5e38-4659-82bb-662be3f3458e",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:64b5afea-5e38-4659-82bb-662be3f3458e",
+        "canonical_intent_id": "64b5afea-5e38-4659-82bb-662be3f3458e"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Explicit Evidence Model",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "EVIDENCE-AC1",
+              "id_truncated": false,
+              "statement": "Completion distinguishes declared, mapped, structural, tested, behaviorally verified, and approved evidence levels.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "test:evidence-level-state-machine",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "schema:evidence-v1",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 2,
+                "returned_items": 2,
+                "truncated": false
+              }
+            },
+            {
+              "id": "EVIDENCE-AC2",
+              "id_truncated": false,
+              "statement": "Reconciliation reports cite supporting evidence and list acceptance criteria that remain unverified.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "test:reconciliation-evidence-report",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "demo:traceability-report",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 2,
+                "returned_items": 2,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 2,
+          "returned_items": 2,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:6b1b3459-38a0-5cd5-8ff4-1453f17c3d76",
+        "canonical_intent_id": "6b1b3459-38a0-5cd5-8ff4-1453f17c3d76"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "entity",
+        "name": "Research Spikes Directory",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-6ff0c1eb-b872-4036-987b-20988d9b380f-AC1",
+              "id_truncated": false,
+              "statement": "Output location for Research Spikes generated by the Researcher Agent.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:6ff0c1eb-b872-4036-987b-20988d9b380f",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:6ff0c1eb-b872-4036-987b-20988d9b380f",
+        "canonical_intent_id": "6ff0c1eb-b872-4036-987b-20988d9b380f"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "module",
+        "name": "AST Visitor",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-7418a0a0-0d7e-45ba-94a3-b388cfa0ec5f-AC1",
+              "id_truncated": false,
+              "statement": "Traverses parsed ASTs (or YAML data) and constructs Reality DAG Nodes.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:7418a0a0-0d7e-45ba-94a3-b388cfa0ec5f",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:7418a0a0-0d7e-45ba-94a3-b388cfa0ec5f",
+        "canonical_intent_id": "7418a0a0-0d7e-45ba-94a3-b388cfa0ec5f"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "entity",
+        "name": "Operational Modes Config",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-7b029abd-1321-4cd7-9c1d-9e9f7b62046c-AC1",
+              "id_truncated": false,
+              "statement": "Configuration for approval gates vs bypass mode for continuous delivery",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:7b029abd-1321-4cd7-9c1d-9e9f7b62046c",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:7b029abd-1321-4cd7-9c1d-9e9f7b62046c",
+        "canonical_intent_id": "7b029abd-1321-4cd7-9c1d-9e9f7b62046c"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Intent IR v1",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "INTENT-IR-AC1",
+              "id_truncated": false,
+              "statement": "Intent nodes preserve source provenance, assumptions, ambiguities, bounded confidence, evidence requirements, revision history, ownership, and approval state in a versioned schema.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "test:intent-ir-schema-validation",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "adr:0002-intent-ir-v1",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 2,
+                "returned_items": 2,
+                "truncated": false
+              }
+            },
+            {
+              "id": "INTENT-IR-AC2",
+              "id_truncated": false,
+              "statement": "Agents can create, revise, validate, and review Intent IR through protected framework operations without editing raw YAML.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "test:intent-ir-protected-mutation",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "cli:dag-tool-intent",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "mcp:create-set-validate-review-intent",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 3,
+                "returned_items": 3,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 2,
+          "returned_items": 2,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:7bcd1683-2a10-5cbc-ab91-440ea920eaf1",
+        "canonical_intent_id": "7bcd1683-2a10-5cbc-ab91-440ea920eaf1"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Product Hardening",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "HARDENING-AC1",
+              "id_truncated": false,
+              "statement": "A clean environment can install and validate the CLI, MCP server, and Codex plugin through stable documented contracts.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "ci:clean-install-matrix",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "test:plugin-install-smoke",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "artifact:release-contract-documentation",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 3,
+                "returned_items": 3,
+                "truncated": false
+              }
+            },
+            {
+              "id": "HARDENING-AC2",
+              "id_truncated": false,
+              "statement": "The repository contains a deliberate license, recovery procedures, and evidence-backed dogfooding reports understandable to external adopters.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "file:LICENSE",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "doc:recovery-procedure",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "report:dogfooding-evidence",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 3,
+                "returned_items": 3,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 2,
+          "returned_items": 2,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:82579715-d088-51ac-999f-4a95235b561c",
+        "canonical_intent_id": "82579715-d088-51ac-999f-4a95235b561c"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Commercial Licensing Enforcer",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-900f5127-2c5e-46e1-890e-991ef7b27043-AC1",
+              "id_truncated": false,
+              "statement": "Validates commercial usage via license keys against an external Merchant of Record API.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:900f5127-2c5e-46e1-890e-991ef7b27043",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:900f5127-2c5e-46e1-890e-991ef7b27043",
+        "canonical_intent_id": "900f5127-2c5e-46e1-890e-991ef7b27043"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Parallel Task Runner",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-9066081a-24ea-4937-9f47-5ba87e09f731-AC1",
+              "id_truncated": false,
+              "statement": "Spawns concurrent subagents for unblocked items in the backlog, handling DAG concurrency and merge conflicts",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:9066081a-24ea-4937-9f47-5ba87e09f731",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:9066081a-24ea-4937-9f47-5ba87e09f731",
+        "canonical_intent_id": "9066081a-24ea-4937-9f47-5ba87e09f731"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "entity",
+        "name": "Archive Directory",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-908d2539-0567-41cd-9d34-260e1ef345a1-AC1",
+              "id_truncated": false,
+              "statement": "Storage for successfully processed Product Requirement Documents (PRDs).",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:908d2539-0567-41cd-9d34-260e1ef345a1",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:908d2539-0567-41cd-9d34-260e1ef345a1",
+        "canonical_intent_id": "908d2539-0567-41cd-9d34-260e1ef345a1"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Version Command",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-989b390d-aa2a-4cdc-8dc5-593b76c4b08b-AC1",
+              "id_truncated": false,
+              "statement": "CLI and MCP entrypoint for safely reporting framework version before initialization.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:989b390d-aa2a-4cdc-8dc5-593b76c4b08b",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:989b390d-aa2a-4cdc-8dc5-593b76c4b08b",
+        "canonical_intent_id": "989b390d-aa2a-4cdc-8dc5-593b76c4b08b"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Telemetry Module",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-a187faf6-c03a-4657-9ac6-9319e51499b8-AC1",
+              "id_truncated": false,
+              "statement": "Lightweight client for collecting anonymized usage metrics and crash reports, opt-out enabled.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:a187faf6-c03a-4657-9ac6-9319e51499b8",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:a187faf6-c03a-4657-9ac6-9319e51499b8",
+        "canonical_intent_id": "a187faf6-c03a-4657-9ac6-9319e51499b8"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "entity",
+        "name": "Templates Directory",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-a6cf0410-832b-4597-a505-8fd5eb90d367-AC1",
+              "id_truncated": false,
+              "statement": "Centralized storage for structured Markdown templates (PRD, SDD, Research Spike).",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:a6cf0410-832b-4597-a505-8fd5eb90d367",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:a6cf0410-832b-4597-a505-8fd5eb90d367",
+        "canonical_intent_id": "a6cf0410-832b-4597-a505-8fd5eb90d367"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Markdown Parser",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-a937dc0f-c261-461a-975f-03950289be88-AC1",
+              "id_truncated": false,
+              "statement": "Parses Markdown files to extract YAML frontmatter for agent configuration.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:a937dc0f-c261-461a-975f-03950289be88",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:a937dc0f-c261-461a-975f-03950289be88",
+        "canonical_intent_id": "a937dc0f-c261-461a-975f-03950289be88"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "entity",
+        "name": "Subagent Output Templates",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-b4e6a8f3-a7f7-489e-8192-6d969a8fa6dd-AC1",
+              "id_truncated": false,
+              "statement": "Structured reporting templates for each subagent so the Orchestrator can compile a clean, human-readable summary of the entire parallel session.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:b4e6a8f3-a7f7-489e-8192-6d969a8fa6dd",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:b4e6a8f3-a7f7-489e-8192-6d969a8fa6dd",
+        "canonical_intent_id": "b4e6a8f3-a7f7-489e-8192-6d969a8fa6dd"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Session Report Compiler",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-b9c4304e-70cd-47de-a94c-dcfbbca66335-AC1",
+              "id_truncated": false,
+              "statement": "Compiles structured subagent templates into unified Markdown session summaries.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:b9c4304e-70cd-47de-a94c-dcfbbca66335",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:b9c4304e-70cd-47de-a94c-dcfbbca66335",
+        "canonical_intent_id": "b9c4304e-70cd-47de-a94c-dcfbbca66335"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "agent",
+        "name": "SDLC Researcher Agent",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-bcb5855b-46cf-475c-bf5c-5267a124e58a-AC1",
+              "id_truncated": false,
+              "statement": "Dedicated subagent spawned by the Architect to perform deep technical research and draft spikes.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:bcb5855b-46cf-475c-bf5c-5267a124e58a",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:bcb5855b-46cf-475c-bf5c-5267a124e58a",
+        "canonical_intent_id": "bcb5855b-46cf-475c-bf5c-5267a124e58a"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "entity",
+        "name": "Specs Directory",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-c2d35f1b-2d6c-43db-9c54-91f1f5d125f2-AC1",
+              "id_truncated": false,
+              "statement": "Directory storing deterministic Markdown Software Design Documents natively bound to the DAG.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:c2d35f1b-2d6c-43db-9c54-91f1f5d125f2",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:c2d35f1b-2d6c-43db-9c54-91f1f5d125f2",
+        "canonical_intent_id": "c2d35f1b-2d6c-43db-9c54-91f1f5d125f2"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Closed-loop Reference Demo",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "DEMO-AC1",
+              "id_truncated": false,
+              "statement": "A fresh checkout reproduces one requirement through intent, implementation, tests, evidence, and approval.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "demo:closed-loop-reproduction-script",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "test:closed-loop-integration",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 2,
+                "returned_items": 2,
+                "truncated": false
+              }
+            },
+            {
+              "id": "DEMO-AC2",
+              "id_truncated": false,
+              "statement": "The resulting traceability report is understandable without knowledge of framework internals.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "artifact:human-readable-traceability-report",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "review:external-reader-usability",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 2,
+                "returned_items": 2,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 2,
+          "returned_items": 2,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:cb02a996-6d3f-5610-9043-b1e768587d84",
+        "canonical_intent_id": "cb02a996-6d3f-5610-9043-b1e768587d84"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "container",
+        "name": "DAG Engine Container",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-cb432b58-db06-4d49-a6ab-c11c9e86bcc2-AC1",
+              "id_truncated": false,
+              "statement": "Core container for DAG management and difference calculation",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:cb432b58-db06-4d49-a6ab-c11c9e86bcc2",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:cb432b58-db06-4d49-a6ab-c11c9e86bcc2",
+        "canonical_intent_id": "cb432b58-db06-4d49-a6ab-c11c9e86bcc2"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "entity",
+        "name": "Inbox Directory",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-d4049c0c-4bf8-4d13-94b6-5e5410190f49-AC1",
+              "id_truncated": false,
+              "statement": "Directory containing new, unprocessed Product Requirement Documents (PRDs).",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:d4049c0c-4bf8-4d13-94b6-5e5410190f49",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:d4049c0c-4bf8-4d13-94b6-5e5410190f49",
+        "canonical_intent_id": "d4049c0c-4bf8-4d13-94b6-5e5410190f49"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Intent Translation Benchmark",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "BENCHMARK-AC1",
+              "id_truncated": false,
+              "statement": "A versioned golden corpus covers requirements, constraints, dependencies, ambiguities, evidence, and correction after feedback.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "fixture:intent-translation-golden-corpus",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "review:golden-case-approval",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 2,
+                "returned_items": 2,
+                "truncated": false
+              }
+            },
+            {
+              "id": "BENCHMARK-AC2",
+              "id_truncated": false,
+              "statement": "CI reports omissions, inventions, incorrect dependencies, unjustified completion claims, repeated-run stability, and correction quality against explicit thresholds.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "test:intent-translation-benchmark",
+                    "value_truncated": false
+                  },
+                  {
+                    "value": "ci:intent-quality-thresholds",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 2,
+                "returned_items": 2,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 2,
+          "returned_items": 2,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:d64fbc3a-bdde-5672-8645-4aaa75464e46",
+        "canonical_intent_id": "d64fbc3a-bdde-5672-8645-4aaa75464e46"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "endpoint",
+        "name": "Merchant of Record API",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-da3ee4cb-c37b-40f1-a1c4-93c24822e597-AC1",
+              "id_truncated": false,
+              "statement": "External API (e.g., Lemon Squeezy/Paddle) to validate keys and manage software monetization.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:da3ee4cb-c37b-40f1-a1c4-93c24822e597",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:da3ee4cb-c37b-40f1-a1c4-93c24822e597",
+        "canonical_intent_id": "da3ee4cb-c37b-40f1-a1c4-93c24822e597"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "entity",
+        "name": "Shared State Store",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-ea4ceb31-1218-43b9-becc-333e69e98abe-AC1",
+              "id_truncated": false,
+              "statement": "Local state tracking mechanism to feed the TUI dashboard live updates.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:ea4ceb31-1218-43b9-becc-333e69e98abe",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:ea4ceb31-1218-43b9-becc-333e69e98abe",
+        "canonical_intent_id": "ea4ceb31-1218-43b9-becc-333e69e98abe"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "container",
+        "name": "MCP Server",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-f1009cfe-9cde-4260-9235-72886d71fa94-AC1",
+              "id_truncated": false,
+              "statement": "Primary MCP-First interface for agents, exposing dynamic resources (e.g., the diff backlog) and core tools.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:f1009cfe-9cde-4260-9235-72886d71fa94",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:f1009cfe-9cde-4260-9235-72886d71fa94",
+        "canonical_intent_id": "f1009cfe-9cde-4260-9235-72886d71fa94"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "CLI Entrypoint",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-f24b7477-032b-4f93-abcf-9b1c70627900-AC1",
+              "id_truncated": false,
+              "statement": "Exposes plan and apply commands to run the DiffingEngine and Orchestrator Loop",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:f24b7477-032b-4f93-abcf-9b1c70627900",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:f24b7477-032b-4f93-abcf-9b1c70627900",
+        "canonical_intent_id": "f24b7477-032b-4f93-abcf-9b1c70627900"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "module",
+        "name": "QA Swarm Orchestrator",
+        "name_truncated": false
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "Intent approval state is review_required; implementation is withheld until the canonical intent is approved or retired.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "review_required",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-f4d2f082-e822-4aa6-b74d-38b14bd84c87-AC1",
+              "id_truncated": false,
+              "statement": "Manages a swarm of specialized QA subagents to ensure bulletproof code generation",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:f4d2f082-e822-4aa6-b74d-38b14bd84c87",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:f4d2f082-e822-4aa6-b74d-38b14bd84c87",
+        "canonical_intent_id": "f4d2f082-e822-4aa6-b74d-38b14bd84c87"
+      }
+    },
+    {
+      "subject": {
+        "kind": "relationship",
+        "source": {
+          "type": "component",
+          "name": "Reality DAG Generator",
+          "name_truncated": false
+        },
+        "relation": "contains",
+        "target": {
+          "type": "component",
+          "name": "Parser Factory",
+          "name_truncated": false
+        }
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "At least one relationship endpoint is not approved; no implementation work may be inferred from the missing observation.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "source_approval_state": "review_required",
+        "target_approval_state": "review_required",
+        "safe_action": "connect_confirmed",
+        "relationship_observable": true
+      },
+      "audit": {
+        "subject_key": "relationship:0fea8fea-9a23-404b-a16b-a9c9c3990e1b:contains:d0307d83-371e-4bb6-925d-84a4b70beb6b",
+        "source_intent_id": "0fea8fea-9a23-404b-a16b-a9c9c3990e1b",
+        "target_intent_id": "d0307d83-371e-4bb6-925d-84a4b70beb6b"
+      }
+    },
+    {
+      "subject": {
+        "kind": "relationship",
+        "source": {
+          "type": "component",
+          "name": "Parser Factory",
+          "name_truncated": false
+        },
+        "relation": "calls",
+        "target": {
+          "type": "component",
+          "name": "Tree-Sitter Parser",
+          "name_truncated": false
+        }
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "At least one relationship endpoint is not approved; no implementation work may be inferred from the missing observation.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "source_approval_state": "review_required",
+        "target_approval_state": "review_required",
+        "safe_action": "connect_confirmed",
+        "relationship_observable": false
+      },
+      "audit": {
+        "subject_key": "relationship:d0307d83-371e-4bb6-925d-84a4b70beb6b:calls:9865715b-99a5-4dcb-ba92-90b03cc3cf1c",
+        "source_intent_id": "d0307d83-371e-4bb6-925d-84a4b70beb6b",
+        "target_intent_id": "9865715b-99a5-4dcb-ba92-90b03cc3cf1c"
+      }
+    },
+    {
+      "subject": {
+        "kind": "relationship",
+        "source": {
+          "type": "component",
+          "name": "Diffing Engine",
+          "name_truncated": false
+        },
+        "relation": "depends_on",
+        "target": {
+          "type": "component",
+          "name": "Reality DAG Generator",
+          "name_truncated": false
+        }
+      },
+      "classification": "obsolete_or_unapproved_intent",
+      "reason": "At least one relationship endpoint is not approved; no implementation work may be inferred from the missing observation.",
+      "decision_source": "approval_gate",
+      "implementation_authorized": false,
+      "evidence": {
+        "source_approval_state": "review_required",
+        "target_approval_state": "review_required",
+        "safe_action": "connect_confirmed",
+        "relationship_observable": false
+      },
+      "audit": {
+        "subject_key": "relationship:fa35fa8a-b6b5-40ca-9080-b31421117e37:depends_on:0fea8fea-9a23-404b-a16b-a9c9c3990e1b",
+        "source_intent_id": "fa35fa8a-b6b5-40ca-9080-b31421117e37",
+        "target_intent_id": "0fea8fea-9a23-404b-a16b-a9c9c3990e1b"
+      }
+    }
+  ]
+}

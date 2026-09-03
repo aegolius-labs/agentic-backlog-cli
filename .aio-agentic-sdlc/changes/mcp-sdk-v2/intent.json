@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "provenance": [
+    {
+      "source_type": "human_statement",
+      "reference": "chat:thread:019f903c-5824-7f62-adbc-55ca9168f094#2026-08-20",
+      "statement": "Persist the MCP v2 upgrade to the roadmap where appropriate and continue with the next milestone."
+    },
+    {
+      "source_type": "document",
+      "reference": ".aio-agentic-sdlc/recovery-roadmap.md#1.7",
+      "statement": "Migrate the MCP integration to SDK v2 while preserving stdio, the complete public contract, concurrency safety, schema enforcement, and legacy compatibility."
+    },
+    {
+      "source_type": "document",
+      "reference": ".aio-agentic-sdlc/changes/mcp-sdk-v2/prd.md",
+      "statement": "Approved product requirements for the official MCP Python SDK v2 migration."
+    }
+  ],
+  "assumptions": [
+    "The current public tool, resource, and prompt names and product behavior remain stable.",
+    "The Codex plugin continues to launch the MCP server over stdio through UV.",
+    "SDK v2 worker-thread execution must preserve the existing local-first transactional state guarantees."
+  ],
+  "ambiguities": [
+    {
+      "question": "Which MCP v2 release line should the migration target?",
+      "status": "resolved",
+      "resolution": "Target the official stable 2.0.0 line, lock the reviewed release, and exclude unsupported future majors."
+    },
+    {
+      "question": "May the migration rename or remove existing MCP operations?",
+      "status": "resolved",
+      "resolution": "No. Preserve the existing tools, resources, prompts, schemas, and stdio entry point."
+    }
+  ],
+  "confidence": 0.96,
+  "acceptance_criteria": [
+    {
+      "id": "MCP-V2-AC1",
+      "statement": "A frozen UV installation resolves the reviewed MCP 2.x release and excludes MCP 1.x and unsupported future majors.",
+      "required_evidence": [
+        "dependency:pyproject-mcp-v2-bound",
+        "dependency:uv-lock-mcp-v2",
+        "build:frozen-uv-sync"
+      ]
+    },
+    {
+      "id": "MCP-V2-AC2",
+      "statement": "The aio-agentic-sdlc-mcp stdio entry point exposes every existing tool, resource, and prompt with compatible names and schemas through MCPServer.",
+      "required_evidence": [
+        "test:mcp-v2-public-surface",
+        "test:mcp-v2-stdio-smoke",
+        "contract:codex-plugin-mcp-launch"
+      ]
+    },
+    {
+      "id": "MCP-V2-AC3",
+      "statement": "The official v2 in-memory Client can list and exercise the complete public MCP surface in modern auto mode and legacy mode.",
+      "required_evidence": [
+        "test:mcp-v2-client-auto",
+        "test:mcp-v2-client-legacy",
+        "test:mcp-v2-client-schema-errors"
+      ]
+    },
+    {
+      "id": "MCP-V2-AC4",
+      "statement": "Concurrent worker-thread execution of synchronous stateful handlers preserves workspace, backlog, audit, mapping, path, lock, and working-directory invariants.",
+      "required_evidence": [
+        "test:mcp-v2-concurrent-state",
+        "test:mcp-v2-concurrent-mapping",
+        "test:mcp-v2-cwd-isolation"
+      ]
+    },
+    {
+      "id": "MCP-V2-AC5",
+      "statement": "Invalid inputs, outputs, URIs, paths, and handler failures are rejected with deterministic protocol-visible error semantics and no protected-state mutation.",
+      "required_evidence": [
+        "test:mcp-v2-schema-enforcement",
+        "test:mcp-v2-uri-path-safety",
+        "test:mcp-v2-error-semantics"
+      ]
+    },
+    {
+      "id": "MCP-V2-AC6",
+      "statement": "The full warning-strict suite, static checks, build, plugin validators, traceability validation, and canonical Reality/reconciliation reproduction pass on the migrated dependency graph.",
+      "required_evidence": [
+        "test:full-warning-strict",
+        "validation:plugin-and-skill",
+        "report:mcp-v2-self-dogfood"
+      ]
+    }
+  ],
+  "revision_history": [
+    {
+      "revision": 1,
+      "recorded_at": "2026-08-20T15:07:52.8144834-04:00",
+      "actor": "sdlc_intake",
+      "generator_version": "aio-agentic-sdlc/intake-v1",
+      "summary": "Compiled the approved MCP SDK v2 migration from the recovery roadmap, user authorization, generated PRD, and official SDK v2 documentation."
+    },
+    {
+      "revision": 2,
+      "recorded_at": "2026-08-20T16:51:57.5941961-04:00",
+      "actor": "Felix",
+      "generator_version": "aio-agentic-sdlc/intake-v1",
+      "summary": "Approved the exact six-criterion MCP SDK v2 migration intent."
+    }
+  ],
+  "responsible_agent": "sdlc_architect",
+  "generator_version": "aio-agentic-sdlc/intake-v1",
+  "approval": {
+    "state": "approved",
+    "approved_by": "Felix",
+    "approved_at": "2026-08-20T16:51:57.5941961-04:00",
+    "rationale": "Felix explicitly approved the exact six-criterion MCP SDK v2 migration intent presented in this task."
+  }
+}

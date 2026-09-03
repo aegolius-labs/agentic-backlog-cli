@@ -29,6 +29,10 @@ SUPPORTED_VIEWS = {"intention", "reality", "comparison"}
 CLASSIFICATIONS = ("confirmed", "candidate", "ambiguous", "unmapped")
 
 
+class DAGVisualizationError(ValueError):
+    """Raised for an expected invalid visualization request or DAG identity."""
+
+
 def _canonical_guid(value: str) -> str:
     return str(UUID(value))
 
@@ -37,7 +41,7 @@ def _validate_integer(value: int, *, name: str, minimum: int) -> None:
     if isinstance(value, bool) or not isinstance(value, int):
         raise TypeError(f"{name} must be an integer")
     if value < minimum:
-        raise ValueError(f"{name} must be at least {minimum}")
+        raise DAGVisualizationError(f"{name} must be at least {minimum}")
 
 
 def _bounded_text(value: Any, limit: int = MAX_REPORT_TEXT) -> tuple[str, bool]:
@@ -67,7 +71,7 @@ def _normalize_dag(manager: DAGManager, *, dag_name: str) -> DAGManager:
     for source_id, node in manager.nodes.items():
         canonical_id = _canonical_guid(source_id)
         if canonical_id in canonical_sources:
-            raise ValueError(
+            raise DAGVisualizationError(
                 f"{dag_name} contains duplicate canonical GUID {canonical_id}: "
                 f"{canonical_sources[canonical_id]} and {source_id}"
             )
@@ -539,7 +543,7 @@ class DAGVisualizationEngine:
         """Build one deterministic bounded view without mutating either DAG."""
 
         if not isinstance(view, str) or view.casefold() not in SUPPORTED_VIEWS:
-            raise ValueError(f"Unsupported view: {view}")
+            raise DAGVisualizationError(f"Unsupported view: {view}")
         view = view.casefold()
         _validate_integer(depth, name="depth", minimum=0)
         _validate_integer(max_items, name="max_items", minimum=1)
@@ -559,7 +563,9 @@ class DAGVisualizationEngine:
             )
         )
         if focus_id is not None and not focus_is_known:
-            raise ValueError(f"Unknown focus node for {view} view: {focus_id}")
+            raise DAGVisualizationError(
+                f"Unknown focus node for {view} view: {focus_id}"
+            )
 
         intention_distances = self._distances(
             self.intention,
@@ -882,8 +888,7 @@ def render_dag_human(report: Mapping[str, Any]) -> str:
             audit_ids[("Intention", node["id"])] = name
             label = "Intent" if record["subject_kind"] == "intent" else "Intention"
             lines.append(
-                f"- {label}: {name} [{_plain_label(node['type'])}] — "
-                f"{classification}"
+                f"- {label}: {name} [{_plain_label(node['type'])}] — {classification}"
             )
             for candidate in record.get("reality_candidates", []):
                 candidate_name = display_name(candidate)
@@ -960,4 +965,4 @@ def render_dag(report: Mapping[str, Any], output_format: str) -> str:
         return render_dag_human(report)
     if normalized == "mermaid":
         return render_dag_mermaid(report)
-    raise ValueError(f"Unsupported output format: {output_format}")
+    raise DAGVisualizationError(f"Unsupported output format: {output_format}")

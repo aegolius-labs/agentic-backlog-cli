@@ -39,6 +39,10 @@ EvidenceText = Annotated[
 ]
 
 
+class DriftTriageError(ValueError):
+    """Raised for an expected invalid triage request, decision, or DAG identity."""
+
+
 class DriftClassification(str, Enum):
     """Permitted explicit reconciliation-drift decisions."""
 
@@ -63,7 +67,7 @@ class TriageDecision(BaseModel):
     @classmethod
     def require_timezone_aware_timestamp(cls, value: datetime) -> datetime:
         if value.tzinfo is None or value.utcoffset() is None:
-            raise ValueError("decided_at must be timezone-aware")
+            raise DriftTriageError("decided_at must be timezone-aware")
         return value
 
 
@@ -80,7 +84,9 @@ class TriageDecisionSet(BaseModel):
     def reject_duplicate_subjects(self):
         keys = [decision.subject_key for decision in self.decisions]
         if len(keys) != len(set(keys)):
-            raise ValueError("triage decisions contain duplicate subject_key values")
+            raise DriftTriageError(
+                "triage decisions contain duplicate subject_key values"
+            )
         return self
 
 
@@ -106,7 +112,9 @@ def _canonical_dag_sha256(manager: DAGManager) -> str:
     for source_id, node in manager.nodes.items():
         canonical_id = str(UUID(source_id))
         if canonical_id in canonical_nodes:
-            raise ValueError(f"DAG contains duplicate canonical GUID {canonical_id}")
+            raise DriftTriageError(
+                f"DAG contains duplicate canonical GUID {canonical_id}"
+            )
         canonical_nodes[canonical_id] = node
 
     digest = hashlib.sha256()
@@ -254,7 +262,7 @@ class DriftTriageEngine:
         for source_id, node in manager.nodes.items():
             canonical_id = str(UUID(source_id))
             if canonical_id in index:
-                raise ValueError(
+                raise DriftTriageError(
                     f"{dag_name} contains duplicate canonical GUID {canonical_id}"
                 )
             index[canonical_id] = node
@@ -265,7 +273,7 @@ class DriftTriageEngine:
         if isinstance(value, bool) or not isinstance(value, int):
             raise TypeError("max_items must be an integer")
         if value < 1:
-            raise ValueError("max_items must be at least 1")
+            raise DriftTriageError("max_items must be at least 1")
 
     def source_identity(self) -> dict[str, str]:
         intention_sha256 = _canonical_dag_sha256(self.intention)
@@ -293,7 +301,7 @@ class DriftTriageEngine:
             policy=DiffPolicy.safe(max_tasks=maximum_tasks),
         ).calculate_diff()
         if plan["meta"]["truncated"]:
-            raise ValueError(
+            raise DriftTriageError(
                 "internal safe plan bound did not retain every triage subject"
             )
         return plan
@@ -317,7 +325,9 @@ class DriftTriageEngine:
             "canonical_guid"
         )
         if source_id is None:
-            raise ValueError(f"safe task {task['action']} has no canonical intent ID")
+            raise DriftTriageError(
+                f"safe task {task['action']} has no canonical intent ID"
+            )
         canonical_id = str(UUID(source_id))
         node = self._intent_by_canonical_id[canonical_id]
         subject_key = f"intent:{canonical_id}"
@@ -459,7 +469,7 @@ class DriftTriageEngine:
         self._validate_limit(max_items)
         source = self.source_identity()
         if decisions is not None and decisions.plan_digest != source["plan_digest"]:
-            raise ValueError(
+            raise DriftTriageError(
                 "stale triage decisions: plan_digest does not match current DAG state"
             )
         decision_index = {
@@ -494,7 +504,7 @@ class DriftTriageEngine:
 
         unused = sorted(set(decision_index).difference(used_decisions))
         if unused:
-            raise ValueError(
+            raise DriftTriageError(
                 "triage decisions reference unknown or inapplicable subjects: "
                 + ", ".join(unused)
             )
@@ -545,7 +555,7 @@ def render_drift_triage(report: dict[str, Any]) -> str:
         f"Needs classification: {summary['needs_classification']}",
         f"Identity review required: {summary['identity_review_required']}",
         f"Framework tooling drift: {summary['framework_tooling_drift']}",
-        "Obsolete or unapproved intent: " f"{summary['obsolete_or_unapproved_intent']}",
+        f"Obsolete or unapproved intent: {summary['obsolete_or_unapproved_intent']}",
         "",
     ]
     for item in report["items"]:

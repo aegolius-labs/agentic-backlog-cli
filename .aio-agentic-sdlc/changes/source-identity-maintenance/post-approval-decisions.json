@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "plan_digest": "cb5f2c4f7a1336daab77bb50464b427584092f3bae285bf0cce900647c1e411c",
+  "decisions": [
+    {
+      "subject_key": "intent:15019926-c6be-5c98-b558-954c7657e5c6",
+      "classification": "framework_tooling_drift",
+      "rationale": "The accepted Source Identity Maintenance behavior is implemented and QA-accepted, but the distinct Intent remains structurally unmapped because its approved architecture deliberately extends the already-confirmed MappingEngine and supporting adapters instead of introducing a unique source component. Assigning a second canonical Intent GUID to that same class would invent a source identity and violate the one-confirmed-identity model. This is source-traceability representation drift requiring a later architecture decision, not missing implementation and not authorization for more product code.",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/source-identity-maintenance/reconciliation.json confirms 10 mappings after the approved writes but records Intent 15019926-c6be-5c98-b558-954c7657e5c6 as unmapped with zero candidates.",
+        ".aio-agentic-sdlc/changes/source-identity-maintenance/sdd.md:14 requires extending MappingEngine owned by parent capability 6317643a-a8fc-5026-b373-9330004bc90d and explicitly forbids a second mapping store or ontology.",
+        "src/aio_agentic_sdlc/mapping.py:465-466 binds MappingEngine to parent Intent 6317643a-a8fc-5026-b373-9330004bc90d; no source marker exists for maintenance Intent 15019926-c6be-5c98-b558-954c7657e5c6.",
+        "src/aio_agentic_sdlc/mapping.py:1071,1242,2126 contains the accepted explicit-candidate review, confirmed-receipt review, and receipt-refresh implementation inside MappingEngine.",
+        ".aio-agentic-sdlc/changes/source-identity-maintenance/self-dogfood-review.json records three fresh approval-supported dogfood reviews, and the user-approved writes now independently verify as confirmed with matching receipt digests and source hashes."
+      ],
+      "decided_by": "sdlc_cartographer",
+      "decided_at": "2026-08-21T23:08:29.5831967-04:00"
+    }
+  ]
+}

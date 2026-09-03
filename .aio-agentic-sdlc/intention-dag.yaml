@@ -2770,6 +2770,221 @@ nodes:
       approved_at: '2026-08-10T10:12:30.970663-04:00'
       rationale: Felix explicitly approved recording visualization as upcoming recovery
         roadmap work.
+- id: 86367041-79ce-5415-b107-ef60cf721bf3
+  type: component
+  name: MCP SDK v2 Integration
+  domain: platform
+  description: Official MCP Python SDK v2 server integration preserving the Codex
+    stdio contract, public MCP surface, concurrency safety, and legacy compatibility.
+  intent:
+    schema_version: 1
+    provenance:
+    - source_type: human_statement
+      reference: chat:thread:019f903c-5824-7f62-adbc-55ca9168f094#2026-08-20
+      statement: Persist the MCP v2 upgrade to the roadmap where appropriate and continue
+        with the next milestone.
+    - source_type: document
+      reference: .aio-agentic-sdlc/recovery-roadmap.md#1.7
+      statement: Migrate the MCP integration to SDK v2 while preserving stdio, the
+        complete public contract, concurrency safety, schema enforcement, and legacy
+        compatibility.
+    - source_type: document
+      reference: .aio-agentic-sdlc/changes/mcp-sdk-v2/prd.md
+      statement: Approved product requirements for the official MCP Python SDK v2
+        migration.
+    assumptions:
+    - The current public tool, resource, and prompt names and product behavior remain
+      stable.
+    - The Codex plugin continues to launch the MCP server over stdio through UV.
+    - SDK v2 worker-thread execution must preserve the existing local-first transactional
+      state guarantees.
+    ambiguities:
+    - question: Which MCP v2 release line should the migration target?
+      status: resolved
+      resolution: Target the official stable 2.0.0 line, lock the reviewed release,
+        and exclude unsupported future majors.
+    - question: May the migration rename or remove existing MCP operations?
+      status: resolved
+      resolution: No. Preserve the existing tools, resources, prompts, schemas, and
+        stdio entry point.
+    confidence: 0.96
+    acceptance_criteria:
+    - id: MCP-V2-AC1
+      statement: A frozen UV installation resolves the reviewed MCP 2.x release and
+        excludes MCP 1.x and unsupported future majors.
+      required_evidence:
+      - dependency:pyproject-mcp-v2-bound
+      - dependency:uv-lock-mcp-v2
+      - build:frozen-uv-sync
+    - id: MCP-V2-AC2
+      statement: The aio-agentic-sdlc-mcp stdio entry point exposes every existing
+        tool, resource, and prompt with compatible names and schemas through MCPServer.
+      required_evidence:
+      - test:mcp-v2-public-surface
+      - test:mcp-v2-stdio-smoke
+      - contract:codex-plugin-mcp-launch
+    - id: MCP-V2-AC3
+      statement: The official v2 in-memory Client can list and exercise the complete
+        public MCP surface in modern auto mode and legacy mode.
+      required_evidence:
+      - test:mcp-v2-client-auto
+      - test:mcp-v2-client-legacy
+      - test:mcp-v2-client-schema-errors
+    - id: MCP-V2-AC4
+      statement: Concurrent worker-thread execution of synchronous stateful handlers
+        preserves workspace, backlog, audit, mapping, path, lock, and working-directory
+        invariants.
+      required_evidence:
+      - test:mcp-v2-concurrent-state
+      - test:mcp-v2-concurrent-mapping
+      - test:mcp-v2-cwd-isolation
+    - id: MCP-V2-AC5
+      statement: Invalid inputs, outputs, URIs, paths, and handler failures are rejected
+        with deterministic protocol-visible error semantics and no protected-state
+        mutation.
+      required_evidence:
+      - test:mcp-v2-schema-enforcement
+      - test:mcp-v2-uri-path-safety
+      - test:mcp-v2-error-semantics
+    - id: MCP-V2-AC6
+      statement: The full warning-strict suite, static checks, build, plugin validators,
+        traceability validation, and canonical Reality/reconciliation reproduction
+        pass on the migrated dependency graph.
+      required_evidence:
+      - test:full-warning-strict
+      - validation:plugin-and-skill
+      - report:mcp-v2-self-dogfood
+    revision_history:
+    - revision: 1
+      recorded_at: '2026-08-20T15:07:52.814483-04:00'
+      actor: sdlc_intake
+      generator_version: aio-agentic-sdlc/intake-v1
+      summary: Compiled the approved MCP SDK v2 migration from the recovery roadmap,
+        user authorization, generated PRD, and official SDK v2 documentation.
+    - revision: 2
+      recorded_at: '2026-08-20T16:51:57.594196-04:00'
+      actor: Felix
+      generator_version: aio-agentic-sdlc/intake-v1
+      summary: Approved the exact six-criterion MCP SDK v2 migration intent.
+    responsible_agent: sdlc_architect
+    generator_version: aio-agentic-sdlc/intake-v1
+    approval:
+      state: approved
+      approved_by: Felix
+      approved_at: '2026-08-20T16:51:57.594196-04:00'
+      rationale: Felix explicitly approved the exact six-criterion MCP SDK v2 migration
+        intent presented in this task.
+- id: 15019926-c6be-5c98-b558-954c7657e5c6
+  type: component
+  name: Explicit Source Identity Maintenance
+  domain: verification
+  description: Review exact differently named source candidates and refresh stale
+    confirmed source receipts through explicit, digest-bound human approval.
+  intent:
+    schema_version: 1
+    provenance:
+    - source_type: human_statement
+      reference: chat:thread:019f903c-5824-7f62-adbc-55ca9168f094#2026-08-21
+      statement: Approved implementing the mapping-tool extension that had been presented,
+        while retaining separate approval for each eventual source identity and receipt
+        digest.
+    - source_type: document
+      reference: .aio-agentic-sdlc/recovery-roadmap.md#18-close-source-identity-maintenance-gaps-exposed-by-dogfooding
+      statement: Add explicit representative-candidate review and approval-gated receipt
+        refresh without manual markers, receipts, or code renames made only to satisfy
+        matching.
+    - source_type: document
+      reference: .aio-agentic-sdlc/changes/mcp-sdk-v2/triage.json
+      statement: Post-QA MCP v2 dogfooding found one differently named implementation
+        identity and two confirmed mappings with stale whole-file source receipts.
+    assumptions:
+    - Canonical Intention GUIDs remain authoritative and an observed Reality GUID
+      cannot redefine intent.
+    - The first extension continues to support exact Python class and function symbols
+      already represented by the Reality parser.
+    - Selecting a representative symbol establishes only identity evidence; it does
+      not prove behavioral completeness or acceptance criteria.
+    - A receipt refresh preserves the existing canonical marker and changes only fresh
+      approval evidence after exact human authorization.
+    ambiguities:
+    - question: Should source identity receipts change from whole-file hashes to symbol-scoped
+        hashes in this milestone?
+      status: resolved
+      resolution: No. Preserve the current whole-file evidence model and treat symbol-scoped
+        provenance as a separate architecture decision.
+    - question: Does approval of this capability also approve the three source identities
+        discovered during MCP v2 dogfooding?
+      status: resolved
+      resolution: No. Each exact candidate and evidence digest requires a separate
+        human identity decision after this tooling passes QA.
+    confidence: 0.98
+    acceptance_criteria:
+    - id: IDENTITY-MAINT-AC1
+      statement: A read-only review can explicitly select one current observed Reality
+        class or function even when name matching produces no candidate, then bind
+        its exact source location, source hash, observed GUID, intent evidence, and
+        deterministic digest for human review.
+      required_evidence:
+      - test:explicit-candidate-source-binding
+      - cli:mapping-review-explicit-candidate
+      - mcp:review-mapping-explicit-candidate
+    - id: IDENTITY-MAINT-AC2
+      statement: A read-only refresh review can bind one already marker-confirmed
+        symbol and its current adjacent receipt to fresh deterministic evidence without
+        changing source or canonical state.
+      required_evidence:
+      - test:confirmed-receipt-review
+      - cli:mapping-review-receipt-refresh
+      - mcp:review-mapping-receipt-refresh
+    - id: IDENTITY-MAINT-AC3
+      statement: An explicitly approved candidate mapping or receipt refresh applies
+        atomically only when the reviewed digest, marker, symbol, path, source content,
+        and canonical DAGs remain fresh; every mismatch or failure leaves source,
+        receipts, DAGs, backlog, and audit state unchanged or fully restored.
+      required_evidence:
+      - test:identity-maintenance-stale-evidence
+      - test:identity-maintenance-atomic-rollback
+      - test:identity-maintenance-concurrency
+    - id: IDENTITY-MAINT-AC4
+      statement: Python API, CLI, MCP, and Codex workflow guidance expose the same
+        bounded, human-readable decision contract, keep GUIDs and digests in the audit
+        section, and never treat mapping approval as behavioral approval.
+      required_evidence:
+      - test:identity-maintenance-cli-mcp-parity
+      - validation:manage-sdlc-skill
+      - validation:codex-plugin
+    - id: IDENTITY-MAINT-AC5
+      statement: Adversarial path, symlink, reparse-point, hardlink, duplicate-marker,
+        stale-writer, and concurrent-review cases fail closed, while a fresh self-dogfood
+        run can review the MCP v2 representative symbol and both stale confirmed receipts
+        without manual marker or receipt edits.
+      required_evidence:
+      - test:identity-maintenance-adversarial
+      - report:self-dogfood-identity-maintenance
+      - validation:fresh-reality-reconciliation
+    revision_history:
+    - revision: 1
+      recorded_at: '2026-08-21T16:31:54.980795-04:00'
+      actor: sdlc_intake
+      generator_version: aio-agentic-sdlc/intake-v1
+      summary: Compiled the source-identity maintenance extension from the MCP v2
+        post-QA tooling gap, recovery roadmap, and proposed approval boundary.
+    - revision: 2
+      recorded_at: '2026-08-21T16:33:22.119485-04:00'
+      actor: Felix
+      generator_version: aio-agentic-sdlc/intake-v1
+      summary: Approved implementing the exact source-candidate review and guarded
+        receipt-refresh tooling scope while reserving each source identity for separate
+        approval.
+    responsible_agent: sdlc_architect
+    generator_version: aio-agentic-sdlc/intake-v1
+    approval:
+      state: approved
+      approved_by: Felix
+      approved_at: '2026-08-21T16:33:22.119485-04:00'
+      rationale: Felix explicitly approved implementing the mapping-tool extension
+        presented after MCP v2 QA, while retaining separate approval for every exact
+        source identity and evidence digest.
 edges:
 - source: 4d76717e-55cd-4768-b05e-06a3cce1128b
   target: 54b91d55-08fe-48df-be35-445be7cd1e46
@@ -3116,3 +3331,12 @@ edges:
   target: 9015c8a3-fd14-5598-916d-d03fcf41e415
   type: depends_on
   description: Comparison view consumes evidence-gated reconciliation classifications.
+- source: f1009cfe-9cde-4260-9235-72886d71fa94
+  target: 86367041-79ce-5415-b107-ef60cf721bf3
+  type: contains
+  description: The MCP Server contains the versioned official SDK integration.
+- source: 15019926-c6be-5c98-b558-954c7657e5c6
+  target: 6317643a-a8fc-5026-b373-9330004bc90d
+  type: depends_on
+  description: Explicit candidate selection and receipt refresh extend the existing
+    approval-gated source mapping contract.

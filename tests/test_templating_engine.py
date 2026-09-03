@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 from aio_agentic_sdlc.templating_engine import generate_document
@@ -57,3 +59,26 @@ def test_generate_document_preserves_template_trailing_newline(tmp_path):
 
     assert rendered == "# Evidence\n"
     assert (tmp_path / "report.md").read_bytes().endswith(b"\n")
+
+
+def test_generate_document_rejects_symlinked_output_without_external_write(tmp_path):
+    templates_dir = tmp_path / "templates"
+    templates_dir.mkdir()
+    (templates_dir / "report.md").write_text("# {{ title }}\n", encoding="utf-8")
+    external = tmp_path / "external.md"
+    external.write_text("preserve", encoding="utf-8")
+    output = tmp_path / "output.md"
+    try:
+        os.symlink(external, output)
+    except OSError as error:
+        pytest.skip(f"Symlink creation unavailable: {error}")
+
+    with pytest.raises(ValueError, match="regular file"):
+        generate_document(
+            "report.md",
+            {"title": "escaped"},
+            str(output),
+            templates_dir=str(templates_dir),
+        )
+
+    assert external.read_text(encoding="utf-8") == "preserve"

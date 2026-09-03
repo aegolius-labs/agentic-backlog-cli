@@ -68,7 +68,7 @@ test_symlink_attack
 .aio-agentic-sdlc/backlog.json
 .aio-agentic-sdlc/backlog.md
 .aio-agentic-sdlc/state-audit.jsonl
-.aio-agentic-sdlc/*.lock
+.aio-agentic-sdlc/**/*.lock
 .aio-agentic-sdlc/backups/
 .aio-agentic-sdlc/legacy/
 .aio-agentic-sdlc/local/

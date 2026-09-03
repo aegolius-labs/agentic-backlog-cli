@@ -1,5 +1,19 @@
+import os
+import tempfile
 from pathlib import Path
 from typing import Any, Dict, Optional
+
+from filelock import FileLock
+
+from .dag_store import guarded_file_path
+
+
+class TemplateValidationError(ValueError):
+    """Raised when caller-provided template data cannot render a document."""
+
+
+class TemplateNotFoundError(FileNotFoundError):
+    """Raised when a requested framework template is unavailable."""
 
 
 def get_package_templates_dir() -> Path:
@@ -33,7 +47,7 @@ def generate_document(
         resolved_templates_dir = get_package_templates_dir()
 
     if not resolved_templates_dir.exists():
-        raise FileNotFoundError(
+        raise TemplateNotFoundError(
             f"Templates directory not found at {resolved_templates_dir}"
         )
 
@@ -49,17 +63,39 @@ def generate_document(
     try:
         template = env.get_template(template_name)
     except jinja2.TemplateNotFound:
-        raise FileNotFoundError(
+        raise TemplateNotFoundError(
             f"Template '{template_name}' not found in {resolved_templates_dir}"
         )
 
     try:
         rendered_content = template.render(**data)
     except jinja2.exceptions.UndefinedError as e:
-        raise ValueError(f"Template validation error: missing data field - {str(e)}")
+        raise TemplateValidationError(
+            f"Template validation error: missing data field - {str(e)}"
+        )
 
-    out_file = Path(output_path)
-    out_file.parent.mkdir(parents=True, exist_ok=True)
-    out_file.write_text(rendered_content, encoding="utf-8")
+    out_file = guarded_file_path(output_path, create_parent=True)
+    lock_file = guarded_file_path(
+        out_file.parent / f".{out_file.name}.lock",
+        create_parent=True,
+    )
+    payload = rendered_content.encode("utf-8")
+    with FileLock(lock_file, timeout=30, preserve_lock_file=True):
+        out_file = guarded_file_path(out_file)
+        descriptor, temporary = tempfile.mkstemp(
+            dir=out_file.parent,
+            prefix=f".{out_file.name}.",
+            suffix=".tmp",
+        )
+        try:
+            with os.fdopen(descriptor, "wb") as handle:
+                handle.write(payload)
+                handle.flush()
+                os.fsync(handle.fileno())
+            guarded_file_path(out_file)
+            os.replace(temporary, out_file)
+        finally:
+            if os.path.exists(temporary):
+                os.remove(temporary)
 
     return rendered_content
